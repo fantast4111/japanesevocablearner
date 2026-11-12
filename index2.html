@@ -8,38 +8,39 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @keyframes fall {
-            from { transform: translateY(0px); }
-            to { transform: translateY(280px); }
-        }
-        .falling-box {
-            animation: fall linear forwards;
-        }
-        dialog::backdrop {
-            background-color: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(4px);
-        }
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .card-flip {
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-        }
-        .card-flip.flipped {
-            transform: rotateY(180deg);
-        }
-        .card-face {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .card-revealed-face {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            transform: rotateY(180deg);
-        }
-    </style>
+   <style>
+  @keyframes fall {
+    from { transform: translateY(0px); }
+    to { transform: translateY(280px); }
+  }
+  .falling-box {
+    animation: fall linear forwards;
+  }
+  /* 彈出視窗遮罩改為更深色 */
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .card-flip {
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+  }
+  .card-flip.flipped {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .card-revealed-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: rotateY(180deg);
+  }
+</style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
