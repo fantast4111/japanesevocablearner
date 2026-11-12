@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日語生字遊戲化互動溫習系統 v36 (抽牌卡片點擊放大)</title>
+    <title>日語生字遊戲化互動溫習系統 v37 (獎勵圖庫收集冊與不重複抽卡)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   <style>
+    <style>
   @keyframes fall {
     from { transform: translateY(0px); }
     to { transform: translateY(280px); }
@@ -52,6 +52,9 @@
             </h1>
             <div class="flex items-center gap-2">
                 <span id="lessonTitleDisplay" class="text-xs md:text-sm bg-indigo-700 px-3 py-1 rounded-full text-indigo-100">請先選取詞庫</span>
+                <button onclick="openCollectionModal()" class="text-xs bg-pink-500 hover:bg-pink-600 text-white px-3 py-1 rounded-lg transition shadow-sm flex items-center gap-1 font-medium">
+                    <i class="fa-solid fa-box-archive"></i> 我的圖庫 (<span id="collectedCountBadge">0</span>)
+                </button>
                 <button id="toggleConfigBtn" onclick="toggleImportSection()" class="text-xs bg-indigo-500 hover:bg-indigo-400 text-white px-2.5 py-1 rounded-lg transition">
                     <i class="fa-solid fa-gear"></i> 設定
                 </button>
@@ -122,7 +125,7 @@
                 </div>
 
                 <div id="folderStatus" class="text-xs font-medium text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg">
-                    📁 目前獎勵圖庫來源：<strong id="rewardSourceLabel">預設 Pokémon 圖庫</strong>，共可用 <span id="folderImgCount" class="font-bold">5</span> 張圖片。
+                    📁 目前獎勵圖庫來源：<strong id="rewardSourceLabel">預設 Pokémon 圖庫</strong>，總計 <span id="folderImgCount" class="font-bold">8</span> 張圖片（已收集 <span id="collectedStatusCount" class="font-bold text-pink-600">0</span> 張）。
                 </div>
             </div>
         </section>
@@ -427,22 +430,20 @@
 
     </main>
 
-    <!-- 🌟 抽牌解鎖互動視窗 (純色卡背 + 點擊卡片放大) -->
+    <!-- 🌟 抽牌解鎖互動視窗 (不重複抽卡，純色卡背) -->
     <dialog id="cardDrawModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
         <div class="relative p-6 text-center space-y-4">
             <h3 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-hat-wizard"></i> 神祕抽牌區：請憑直覺選擇一張牌！</h3>
-            <p class="text-xs text-slate-400">桌面上有 3 張純色神祕獎勵卡，點擊其中一張來翻開它！(翻開後點擊圖片可放大檢視)</p>
+            <p id="drawModalSubtitle" class="text-xs text-slate-400">桌面上有 3 張純色神祕獎勵卡，點擊其中一張來翻開它！</p>
             
             <div id="cardsTable" class="flex justify-center gap-4 py-6">
                 <!-- 卡牌 1 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-pointer perspective-1000" onclick="pickCard(0)">
                     <div id="mysteryCard-0" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <!-- 未翻開的純色牌背 -->
                         <div class="card-face absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-100 font-bold">神秘卡 #1</span>
                         </div>
-                        <!-- 翻開後的獎勵圖面 (點擊可放大) -->
                         <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center" onclick="event.stopPropagation(); zoomRewardImage(0)">
                             <img id="drawnImg-0" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg cursor-zoom-in hover:scale-105 transition-transform" title="點擊放大圖片" onerror="handleRewardImgError(this)">
                         </div>
@@ -475,9 +476,36 @@
             </div>
 
             <div id="drawResultArea" class="hidden space-y-3">
-                <p id="drawResultMessage" class="text-sm font-bold text-emerald-400">🎉 恭喜翻出大獎！(點擊卡片圖片可放大觀看)</p>
+                <p id="drawResultMessage" class="text-sm font-bold text-emerald-400">🎉 恭喜獲得新卡並已存入圖庫！</p>
                 <button onclick="closeCardDrawModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs md:text-sm font-medium transition shadow-md">
                     收下獎勵並關閉
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- 📚「我的圖庫」收集冊彈窗 -->
+    <dialog id="collectionModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-2xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
+        <div class="relative p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2">
+                    <i class="fa-solid fa-box-archive"></i> 我的獎勵圖庫收集冊 (<span id="modalCollectedCount">0</span> / <span id="modalTotalCount">0</span>)
+                </h3>
+                <button onclick="closeCollectionModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="max-h-[60vh] overflow-y-auto p-2">
+                <div id="collectionGrid" class="grid grid-cols-3 md:grid-cols-4 gap-3">
+                    <!-- 動態渲染已收集卡片 -->
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-3 border-t border-slate-800 text-xs text-slate-400">
+                <span>💡 提示：抽中的卡片會永久保存在此瀏覽器圖庫中。</span>
+                <button onclick="clearCollection()" class="text-rose-400 hover:text-rose-300 transition text-xs">
+                    <i class="fa-solid fa-trash-can mr-1"></i> 清空圖庫記錄
                 </button>
             </div>
         </div>
@@ -503,7 +531,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
-        XML Vocab Trainer v36 &copy; 2026 | Zoomable Reward Cards & Sheet D Integration
+        XML Vocab Trainer v37 &copy; 2026 | Reward Card Collection & No-Repeat Draw
     </footer>
 
     <!-- JavaScript Logic -->
@@ -530,13 +558,14 @@
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png"
         ];
 
-        // 發佈到網絡的 Google Spreadsheet 網址 (自動轉 CSV 讀取 D 欄)
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRceONgowH9Reg0_NY3qNrB4nWGqYrUJsjgglVQlfNQO3LL9dRaJCw1z6526UIp3CKWg-ShXU3Nu8XE/pub?output=csv";
 
         let rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
+        let collectedCardsSet = new Set(JSON.parse(localStorage.getItem('vocab_collected_reward_cards') || '[]'));
 
         window.addEventListener('DOMContentLoaded', () => {
             loadGoogleSheetColumnD(true);
+            updateCollectionUI();
         });
 
         function handleRewardImgError(imgEl) {
@@ -575,6 +604,7 @@
                 useDefaultPokemonImages(isSilent);
                 if (!isSilent) alert('讀取 Google Sheet 失敗（請確認試算表已發佈到網絡），已使用預設 Pokémon 圖庫。');
             }
+            updateCollectionUI();
         }
 
         function parseCSV(text) {
@@ -616,6 +646,7 @@
             rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
             updateRewardStatus('預設 Pokémon 圖庫', rewardImagesArray.length);
             if (!isSilent) alert(`已切換為預設 Pokémon 圖庫（共 ${rewardImagesArray.length} 張）！`);
+            updateCollectionUI();
         }
 
         function updateRewardStatus(label, count) {
@@ -636,10 +667,63 @@
                 rewardImagesArray = localImgs;
                 updateRewardStatus('本地資料夾圖庫', rewardImagesArray.length);
                 alert(`成功批次載入 ${rewardImagesArray.length} 張本地獎勵圖片！`);
+                updateCollectionUI();
             } else {
                 alert('所選資料夾中找不到任何圖片檔案！');
             }
         });
+
+        function updateCollectionUI() {
+            const collectedArr = Array.from(collectedCardsSet);
+            document.getElementById('collectedCountBadge').textContent = collectedArr.length;
+            document.getElementById('collectedStatusCount').textContent = collectedArr.length;
+        }
+
+        // 開啟我的圖庫收集冊
+        function openCollectionModal() {
+            const grid = document.getElementById('collectionGrid');
+            grid.innerHTML = '';
+            const allPool = rewardImagesArray.length > 0 ? rewardImagesArray : DEFAULT_POKEMON_IMAGES;
+            
+            document.getElementById('modalCollectedCount').textContent = collectedCardsSet.size;
+            document.getElementById('modalTotalCount').textContent = allPool.length;
+
+            allPool.forEach((imgUrl, idx) => {
+                const isCollected = collectedCardsSet.has(imgUrl);
+                const div = document.createElement('div');
+                div.className = `relative aspect-square rounded-xl border-2 p-1 flex items-center justify-center bg-slate-950 overflow-hidden ${isCollected ? 'border-pink-500 shadow-md' : 'border-slate-800 opacity-30 grayscale'}`;
+                
+                if (isCollected) {
+                    div.innerHTML = `
+                        <img src="${imgUrl}" class="w-full h-full object-contain rounded-lg cursor-zoom-in hover:scale-105 transition-transform" onclick="zoomSpecificImage('${imgUrl}')" title="點擊放大">
+                        <span class="absolute top-1 right-1 bg-pink-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">已收集</span>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="flex flex-col items-center justify-center text-slate-500 text-xs">
+                            <i class="fa-solid fa-lock text-xl mb-1"></i>
+                            <span>未解鎖 #${idx + 1}</span>
+                        </div>
+                    `;
+                }
+                grid.appendChild(div);
+            });
+
+            document.getElementById('collectionModal').showModal();
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').close();
+        }
+
+        function clearCollection() {
+            if (confirm('確定要清空所有已收集的獎勵卡記錄嗎？')) {
+                collectedCardsSet.clear();
+                localStorage.removeItem('vocab_collected_reward_cards');
+                updateCollectionUI();
+                openCollectionModal();
+            }
+        }
 
         async function loadFromNumber() {
             const num = document.getElementById('lessonNumInput').value.trim();
@@ -1333,7 +1417,7 @@
             }
         }
 
-        // --- 🌟 純色卡背抽牌解鎖機制 (3選1，點擊圖片放大) ---
+        // --- 🌟 抽牌解鎖機制 (不重複抽卡，全部抽光則停止抽新卡) ---
         let currentPoolImagesForDraw = [];
         let hasPickedCard = false;
 
@@ -1351,12 +1435,30 @@
             const targetBtn = document.getElementById(btnMap[modeKey]);
             if (targetBtn) targetBtn.style.display = 'none';
 
-            currentPoolImagesForDraw = [];
             const sourcePool = rewardImagesArray.length > 0 ? rewardImagesArray : DEFAULT_POKEMON_IMAGES;
+            // 找出尚未被收集的圖片池
+            const uncollectedPool = sourcePool.filter(img => !collectedCardsSet.has(img));
 
+            if (uncollectedPool.length === 0) {
+                // 全部抽光了！
+                document.getElementById('drawModalSubtitle.textContent') = "🎉 太神啦！圖庫中的所有獎勵卡已經全部抽光收集完畢！";
+                document.getElementById('cardsTable').innerHTML = `
+                    <div class="col-span-3 py-8 text-center text-pink-400 font-bold">
+                        <i class="fa-solid fa-crown text-4xl mb-2 animate-bounce"></i><br>
+                        圖庫全數收集完畢，不再產生新卡！快打開「我的圖庫」欣賞收藏吧！
+                    </div>
+                `;
+                document.getElementById('cardDrawModal').showModal();
+                return;
+            }
+
+            // 從未收集的圖片中隨機挑選最多 3 張
+            const shuffledUncollected = [...uncollectedPool].sort(() => Math.random() - 0.5);
+            currentPoolImagesForDraw = [];
             for (let i = 0; i < 3; i++) {
-                const randomImg = sourcePool[Math.floor(Math.random() * sourcePool.length)];
-                currentPoolImagesForDraw.push(randomImg);
+                // 如果未收集的不足 3 張，允許用已收集的補滿，但優先抽未收集
+                const chosen = shuffledUncollected[i] || sourcePool[Math.floor(Math.random() * sourcePool.length)];
+                currentPoolImagesForDraw.push(chosen);
                 
                 const imgEl = document.getElementById(`drawnImg-${i}`);
                 imgEl.classList.add('hidden');
@@ -1375,6 +1477,11 @@
             hasPickedCard = true;
             playBuzzer('celebrate');
 
+            const wonImage = currentPoolImagesForDraw[selectedIndex];
+            collectedCardsSet.add(wonImage);
+            localStorage.setItem('vocab_collected_reward_cards', JSON.stringify(Array.from(collectedCardsSet)));
+            updateCollectionUI();
+
             for (let i = 0; i < 3; i++) {
                 const imgEl = document.getElementById(`drawnImg-${i}`);
                 imgEl.src = currentPoolImagesForDraw[i];
@@ -1387,14 +1494,18 @@
                 }
             }
 
-            document.getElementById('drawResultMessage').innerHTML = `🎉 翻牌成功！你抽中了第 #${selectedIndex + 1} 號獎勵卡！(點擊圖片可放大)`;
+            document.getElementById('drawResultMessage').innerHTML = `🎉 翻牌成功！抽中新卡並已自動存入「我的圖庫」！`;
             document.getElementById('drawResultArea').classList.remove('hidden');
         }
 
-        // 🔍 點擊卡片圖片後彈出放大檢視視窗
         function zoomRewardImage(cardIndex) {
             const imgSrc = currentPoolImagesForDraw[cardIndex];
             if (!imgSrc) return;
+            document.getElementById('zoomedImageElement').src = imgSrc;
+            document.getElementById('imageZoomModal').showModal();
+        }
+
+        function zoomSpecificImage(imgSrc) {
             document.getElementById('zoomedImageElement').src = imgSrc;
             document.getElementById('imageZoomModal').showModal();
         }
