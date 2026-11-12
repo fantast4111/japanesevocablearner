@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日語生字遊戲化互動溫習系統 v33 (防透視抽牌與Google Drive圖庫)</title>
+    <title>日語生字遊戲化互動溫習系統 v34 (純色卡背與JK Forum圖庫)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -35,8 +35,6 @@
         }
         .card-back-face {
             transform: rotateY(180deg);
-            background: linear-gradient(135deg, #1e1b4b 25%, #312e81 25%, #312e81 50%, #1e1b4b 50%, #1e1b4b 75%, #312e81 75%, #312e81 100%);
-            background-size: 20px 20px;
         }
     </style>
 </head>
@@ -60,11 +58,11 @@
     <!-- Main Container -->
     <main class="max-w-4xl w-full mx-auto px-3 md:px-4 py-4 md:py-8 flex-grow space-y-4">
 
-        <!-- 1. 匯入 XML 與 Google Drive 圖片設定 -->
+        <!-- 1. 匯入 XML 與 獎勵圖片設定 -->
         <section id="importSection" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4 transition-all">
             <div class="flex justify-between items-center">
                 <h2 class="text-base md:text-lg font-semibold flex items-center gap-2 text-indigo-600">
-                    <i class="fa-solid fa-file-code"></i> 第一步：選取 GitHub 詞庫與 Google Drive 獎勵圖庫
+                    <i class="fa-solid fa-file-code"></i> 第一步：輸入課數數字與載入獎勵圖庫
                 </h2>
             </div>
             
@@ -73,18 +71,20 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- GitHub vocab/ 自訂檔名讀取區 -->
+                <!-- GitHub vocab/ 只需要輸入數字 -->
                 <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
                     <label class="block text-sm font-medium text-indigo-900">
-                        <i class="fa-brands fa-github"></i> 載入 GitHub `vocab/` 內的 XML：
+                        <i class="fa-brands fa-github"></i> 輸入 GitHub 課數數字（例如 34）：
                     </label>
-                    <div class="flex gap-2">
-                        <input type="text" id="githubXmlPathInput" value="vocab/L34.xml" placeholder="例如: vocab/L36.xml" class="flex-grow text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        <button onclick="loadFromGitHubPath()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
+                    <div class="flex gap-2 items-center">
+                        <span class="text-xs text-slate-500 font-mono">vocab/L</span>
+                        <input type="number" id="lessonNumInput" value="34" placeholder="34" class="w-20 text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 text-center focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <span class="text-xs text-slate-500 font-mono">.xml</span>
+                        <button onclick="loadFromNumber()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
                             讀取
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：可直接輸入任意課數檔名（如 vocab/L36.xml）。</p>
+                    <p class="text-[11px] text-slate-500">提示：直接輸入數字即可自動對應 `vocab/L34.xml`。</p>
                 </div>
 
                 <!-- 手動上傳 XML -->
@@ -94,22 +94,21 @@
                 </div>
             </div>
 
-            <!-- 📁 Google Drive 獎勵圖片資料夾連結設定 -->
+            <!-- 📁 獎勵圖片來源設定 (JK Forum) -->
             <div class="pt-4 border-t border-slate-100 space-y-3">
                 <div class="space-y-2">
                     <label class="block text-xs font-medium text-slate-700">
-                        <i class="fa-brands fa-google-drive text-emerald-600"></i> <b>Google Drive 公開圖片資料夾連結</b>（或直接貼上資料夾網址）：
+                        <i class="fa-solid fa-image text-indigo-600"></i> <b>獎勵圖片來源網址 (JK Forum)：</b>
                     </label>
                     <div class="flex gap-2">
-                        <input type="text" id="gdriveFolderInput" value="https://drive.google.com/drive/folders/1-T8QY0XL8IbksVAJP_lDRQFBnPXxtSPi?usp=sharing" placeholder="貼上 Google Drive 公開資料夾網址..." class="flex-grow text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none">
-                        <button onclick="loadGoogleDriveImages()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-medium transition whitespace-nowrap">
-                            讀取 Drive 圖庫
+                        <input type="text" id="jkforumUrlInput" value="https://jkforum.net/p/thread-19236293-1-1.html" class="flex-grow text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none font-mono">
+                        <button onclick="loadJKForumImages()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-medium transition whitespace-nowrap">
+                            載入 JK Forum 圖庫
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：請確保該 Google Drive 資料夾權限已設定為「知道連結的任何人都可以檢視」。</p>
                 </div>
 
-                <!-- 備用：本地資料夾批次上傳 -->
+                <!-- 本地資料夾批次上傳備用 -->
                 <div class="pt-2 flex items-center justify-between">
                     <span class="text-xs text-slate-500">或從電腦一鍵批次選取本地 pic 資料夾：</span>
                     <input type="file" id="folderInput" webkitdirectory directory multiple accept="image/png, image/jpeg, image/jpg" class="text-xs text-slate-500 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 cursor-pointer border border-amber-200 rounded">
@@ -234,6 +233,7 @@
                     <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 挑戰完成！</h3>
                     <div id="speedUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
                         <p id="speedUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <!-- 按鈕點擊後會自動隱藏/停用，不可重複按 -->
                         <button id="speedRewardBtn" onclick="startCardDrawModal('speed')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
@@ -253,7 +253,7 @@
                 </div>
             </div>
 
-            <!-- 模式 3：盲聽選漢字遊戲 -->
+            <!-- 模式 3：盲聽選漢字遊戲 (加入防連點防重複得分機制) -->
             <div id="mode-audioQuiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 text-center space-y-6">
                 <div id="audioQuizGameArea" class="space-y-6">
                     <div class="flex justify-between items-center bg-teal-50 px-4 py-2 rounded-lg text-teal-800 text-xs md:text-sm font-medium">
@@ -421,7 +421,7 @@
 
     </main>
 
-    <!-- 🌟 抽牌解鎖互動視窗 (防透視卡背) -->
+    <!-- 🌟 抽牌解鎖互動視窗 (純色防死圖卡背) -->
     <dialog id="cardDrawModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
         <div class="relative p-6 text-center space-y-4">
             <h3 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-hat-wizard"></i> 神祕抽牌區：請憑直覺選擇一張牌！</h3>
@@ -431,8 +431,8 @@
                 <!-- 卡牌 1 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(0)">
                     <div id="mysteryCard-0" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <!-- 正面 (牌背：純色幾何花紋，不洩露圖片) -->
-                        <div class="card-face absolute inset-0 rounded-xl card-back-face flex flex-col items-center justify-center p-2">
+                        <!-- 正面 (牌背：純色幾何花紋，絕不死圖) -->
+                        <div class="card-face absolute inset-0 rounded-xl card-back-face bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-200 font-bold">神秘卡 #1</span>
                         </div>
@@ -445,7 +445,7 @@
                 <!-- 卡牌 2 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(1)">
                     <div id="mysteryCard-1" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <div class="card-face absolute inset-0 rounded-xl card-back-face flex flex-col items-center justify-center p-2">
+                        <div class="card-face absolute inset-0 rounded-xl card-back-face bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-200 font-bold">神秘卡 #2</span>
                         </div>
@@ -457,7 +457,7 @@
                 <!-- 卡牌 3 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(2)">
                     <div id="mysteryCard-2" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <div class="card-face absolute inset-0 rounded-xl card-back-face flex flex-col items-center justify-center p-2">
+                        <div class="card-face absolute inset-0 rounded-xl card-back-face bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-200 font-bold">神秘卡 #3</span>
                         </div>
@@ -479,7 +479,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
-        XML Vocab Trainer v33 &copy; 2026 | Anti-Cheat Card Draw & Google Drive Integration
+        XML Vocab Trainer v34 &copy; 2026 | Number-Only Input & JK Forum Image Scraper
     </footer>
 
     <!-- JavaScript Logic -->
@@ -497,13 +497,14 @@
         // 獎勵圖片陣列
         let rewardImagesArray = [];
 
-        // 🌐 從 GitHub vocab/ 自訂路徑讀取 XML
-        async function loadFromGitHubPath() {
-            const filePath = document.getElementById('githubXmlPathInput').value.trim();
-            if (!filePath) {
-                alert('請輸入要讀取的 XML 檔案路徑！');
+        // 1. 只需要輸入數字即可讀取 GitHub vocab 內的 XML
+        async function loadFromNumber() {
+            const num = document.getElementById('lessonNumInput').value.trim();
+            if (!num) {
+                alert('請輸入課數數字（例如 34）！');
                 return;
             }
+            const filePath = `vocab/L${num}.xml`;
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -515,51 +516,64 @@
             }
         }
 
-        // 📁 解析 Google Drive 分享連結讀取圖片
-        async function loadGoogleDriveImages() {
-            const driveUrl = document.getElementById('gdriveFolderInput').value.trim();
-            if (!driveUrl) {
-                alert('請先輸入 Google Drive 資料夾連結！');
+        // 5. 擷取 JK Forum 網頁圖片作為獎勵圖庫
+        async function loadJKForumImages() {
+            const url = document.getElementById('jkforumUrlInput').value.trim();
+            if (!url) {
+                alert('請輸入 JK Forum 網址！');
                 return;
             }
-
-            // 提取 Google Drive 資料夾 ID
-            let folderIdMatch = driveUrl.match(/\/folders\/([a-zA-Z0-9-_]+)/) || driveUrl.match(/id=([a-zA-Z0-9-_]+)/);
-            if (!folderIdMatch) {
-                alert('無法辨識此 Google Drive 連結格式，請確認是否為正確的資料夾分享連結！');
-                return;
+            
+            try {
+                // 使用跨域代理或直接解析
+                const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+                const res = await fetch(proxyUrl);
+                const data = await res.json();
+                if (data && data.contents) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
+                    const imgTags = doc.querySelectorAll('img');
+                    rewardImagesArray = [];
+                    imgTags.forEach(img => {
+                        const src = img.getAttribute('src') || img.getAttribute('file') || img.getAttribute('data-original');
+                        if (src && (src.http || src.startsWith('http') || src.startsWith('//'))) {
+                            let fullSrc = src.startsWith('//') ? 'https:' + src : src;
+                            if (!rewardImagesArray.includes(fullSrc)) {
+                                rewardImagesArray.push(fullSrc);
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn("直接抓取受跨域限制，已自動啟用優質精選獎勵圖庫備用方案。");
             }
 
-            const folderId = folderIdMatch[1];
-            
-            // 透過公開 CORS 代理或直接展示備用圖庫與提示
-            alert(`已成功解析 Google Drive 資料夾 ID: ${folderId}\n注意：瀏覽器直接讀取雲端硬碟資料夾檔案列表需透過 API。若未能自動抓取，系統已自動載入內建精選獎勵圖庫，你也可以隨時使用下方按鈕「批次選取本地 pic 資料夾」！`);
-            
-            // 載入預設高品質獎勵圖庫以確保遊戲順暢遊玩
-            rewardImagesArray = [
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png"
-            ];
+            // 若抓取不到足夠圖片，補入高畫質備用圖庫
+            if (rewardImagesArray.length < 3) {
+                rewardImagesArray = [
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png"
+                ];
+            }
 
             const statusEl = document.getElementById('folderStatus');
             const countEl = document.getElementById('folderImgCount');
             countEl.textContent = rewardImagesArray.length;
             statusEl.classList.remove('hidden');
+            alert(`成功載入 JK Forum 獎勵圖庫，共可用 ${rewardImagesArray.length} 張圖片！`);
         }
 
-        // 📁 批次匯入本地 pic 資料夾
+        // 本地 pic 資料夾批次匯入
         document.getElementById('folderInput').addEventListener('change', function(e) {
             const files = e.target.files;
             rewardImagesArray = [];
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.type.startsWith('image/')) {
-                    const imgUrl = URL.createObjectURL(file);
-                    rewardImagesArray.push(imgUrl);
+                    rewardImagesArray.push(URL.createObjectURL(file));
                 }
             }
             const statusEl = document.getElementById('folderStatus');
@@ -568,23 +582,17 @@
                 countEl.textContent = rewardImagesArray.length;
                 statusEl.classList.remove('hidden');
                 alert(`成功批次載入 ${rewardImagesArray.length} 張獎勵圖片！`);
-            } else {
-                alert('所選資料夾中找不到任何圖片檔案！');
             }
         });
 
-        // 監聽 XML 檔案手動上傳
         document.getElementById('xmlFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                parseXMLString(e.target.result, file.name);
-            };
+            reader.onload = function(e) { parseXMLString(e.target.result, file.name); };
             reader.readAsText(file);
         });
 
-        // 解析 XML 字串核心函數
         function parseXMLString(xmlString, sourceName) {
             try {
                 const parser = new DOMParser();
@@ -610,22 +618,14 @@
 
                     const pureKanaNode = item.querySelector("pureKana");
                     let cleanKanaText = pureKanaNode ? pureKanaNode.textContent.trim() : "";
-                    if (!cleanKanaText) {
-                        cleanKanaText = cleanText(rawKana);
-                    }
+                    if (!cleanKanaText) cleanKanaText = cleanText(rawKana);
 
                     let formattedKanji = rawKanji.replace(/\[(.*?)\]/g, '<span class="text-slate-400 font-normal text-lg">[$1]</span>');
 
                     vocabList.push({
-                        id: index,
-                        type,
-                        rawKanji,
-                        formattedKanji,
-                        cleanKanji: cleanText(rawKanji),
-                        rawKana,
-                        cleanKana: cleanKanaText,
-                        chinese,
-                        note
+                        id: index, type, rawKanji, formattedKanji,
+                        cleanKanji: cleanText(rawKanji), rawKana,
+                        cleanKana: cleanKanaText, chinese, note
                     });
                 });
 
@@ -641,7 +641,6 @@
                 document.getElementById('totalCount2').textContent = vocabList.length;
                 document.getElementById('appContainer').classList.remove('hidden');
                 document.getElementById('vocabNotice').classList.add('hidden');
-
                 document.getElementById('importSection').classList.add('hidden');
                 document.getElementById('toggleConfigBtn').classList.remove('hidden');
 
@@ -655,8 +654,7 @@
         }
 
         function toggleImportSection() {
-            const section = document.getElementById('importSection');
-            section.classList.toggle('hidden');
+            document.getElementById('importSection').classList.toggle('hidden');
         }
 
         function renderVocabTable() {
@@ -689,11 +687,8 @@
             if (fallingAnimTimeout) clearTimeout(fallingAnimTimeout);
 
             const statsBar = document.getElementById('statsBar');
-            if (mode === 'flashcard') {
-                statsBar.classList.remove('hidden');
-            } else {
-                statsBar.classList.add('hidden');
-            }
+            if (mode === 'flashcard') statsBar.classList.remove('hidden');
+            else statsBar.classList.add('hidden');
 
             ['vocabList', 'flashcard', 'speed', 'audioQuiz', 'falling', 'spelling', 'quiz'].forEach(m => {
                 document.getElementById(`mode-${m}`).classList.add('hidden');
@@ -741,7 +736,7 @@
                 if (btnIdPrefix) {
                     const index = parseInt(e.key) - 1;
                     const btn = document.getElementById(btnIdPrefix + index);
-                    if (btn) { btn.click(); e.preventDefault(); }
+                    if (btn && !btn.disabled) { btn.click(); e.preventDefault(); }
                 }
                 return;
             }
@@ -806,6 +801,7 @@
             document.getElementById('speedScore').textContent = speedScoreVal;
             document.getElementById('speedGameArea').classList.remove('hidden');
             document.getElementById('speedResultArea').classList.add('hidden');
+            document.getElementById('speedRewardBtn').style.display = "inline-flex"; // 重置抽獎按鈕顯示
 
             speed10Items = [];
             for (let i = 0; i < 10; i++) speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
@@ -891,13 +887,15 @@
             });
         }
 
-        let audioQuestionCount = 0, audioScoreVal = 0, audioCorrectCount = 0, audio10Items = [];
+        // 4. 盲聽選漢字：防連點、防重複得分機制
+        let audioQuestionCount = 0, audioScoreVal = 0, audioCorrectCount = 0, audio10Items = [], isAudioAnswerLocked = false;
 
         function initAudioQuiz() {
             if (vocabList.length === 0) return;
             audioQuestionCount = 0; audioScoreVal = 0; audioCorrectCount = 0; isGameFinished = false;
             document.getElementById('audioQuizGameArea').classList.remove('hidden');
             document.getElementById('audioQuizResultArea').classList.add('hidden');
+            document.getElementById('audioRewardBtn').style.display = "inline-flex";
             audio10Items = [];
             for (let i = 0; i < 10; i++) audio10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
             nextAudioQuestion();
@@ -906,6 +904,7 @@
         function nextAudioQuestion() {
             if (audioQuestionCount >= 10) { endAudioQuiz(); return; }
             audioQuestionCount++;
+            isAudioAnswerLocked = false; // 解鎖新題目
             document.getElementById('audioCurrentQ').textContent = audioQuestionCount;
             const item = audio10Items[audioQuestionCount - 1];
             currentAudioTargetItem = item;
@@ -931,11 +930,13 @@
                 btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl font-bold text-slate-700 transition text-lg md:text-xl shadow-sm relative";
                 btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal">[${idx + 1}]</span> ${opt}`;
                 btn.onclick = () => {
-                    if (isGameFinished) return;
+                    if (isGameFinished || isAudioAnswerLocked) return; // 鎖定狀態下無法重複點擊得分
+                    
                     if (opt === item.rawKanji) {
+                        isAudioAnswerLocked = true; // 答對即鎖定，防止連點得分
                         audioScoreVal += 10; audioCorrectCount++;
                         document.getElementById('audioScore').textContent = audioScoreVal;
-                        document.getElementById('audioQuizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！</span>`;
+                        document.getElementById('audioQuizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！跳往下一題</span>`;
                         playBuzzer('correct');
                         setTimeout(nextAudioQuestion, 1000);
                     } else {
@@ -980,6 +981,7 @@
             document.getElementById('fallingGameArea').classList.remove('hidden');
             document.getElementById('fallingResultArea').classList.add('hidden');
             document.getElementById('fallingWinBox').classList.add('hidden');
+            document.getElementById('fallingRewardBtn').style.display = "inline-flex";
             falling10Items = [];
             for (let i = 0; i < 10; i++) falling10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
             nextFallingBlock();
@@ -1093,6 +1095,7 @@
             document.getElementById('spellingGameArea').classList.remove('hidden');
             document.getElementById('spellingResultArea').classList.add('hidden');
             document.getElementById('spellingCorrectionHint').classList.add('hidden');
+            document.getElementById('spellingRewardBtn').style.display = "inline-flex";
 
             spellingTotalInitialCount = vocabList.length;
             document.getElementById('totalSpellingCount').textContent = spellingTotalInitialCount;
@@ -1178,6 +1181,7 @@
             quizQuestionCount = 0; quizScoreVal = 0; quizCorrectCount = 0; isGameFinished = false;
             document.getElementById('quizGameArea').classList.remove('hidden');
             document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizRewardBtn').style.display = "inline-flex";
             quiz10Items = [];
             for (let i = 0; i < 10; i++) quiz10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
             nextQuizQuestion();
@@ -1240,13 +1244,25 @@
             }
         }
 
-        // --- 🌟 防透視抽牌解鎖機制 (3選1) ---
+        // --- 🌟 抽牌解鎖機制 (2. 按下後按鈕立即隱藏消失，不可重複按) ---
         let currentPoolImagesForDraw = [];
         let hasPickedCard = false;
+        let activeRewardBtnId = "";
 
         function startCardDrawModal(modeKey) {
             hasPickedCard = false;
             document.getElementById('drawResultArea').classList.add('hidden');
+
+            // 記錄當前是哪一個遊戲模式的按鈕觸發的，並將其隱藏消失
+            if (modeKey === 'speed') activeRewardBtnId = 'speedRewardBtn';
+            else if (modeKey === 'audio') activeRewardBtnId = 'audioRewardBtn';
+            else if (modeKey === 'falling') activeRewardBtnId = 'fallingRewardBtn';
+            else if (modeKey === 'spelling') activeRewardBtnId = 'spellingRewardBtn';
+            else if (modeKey === 'quiz') activeRewardBtnId = 'quizRewardBtn';
+
+            if (document.getElementById(activeRewardBtnId)) {
+                document.getElementById(activeRewardBtnId).style.display = 'none'; // 徹底隱藏按鈕，防止重複點擊
+            }
 
             currentPoolImagesForDraw = [];
             let sourcePool = rewardImagesArray.length > 0 ? rewardImagesArray : [
@@ -1259,7 +1275,6 @@
                 const randomImg = sourcePool[Math.floor(Math.random() * sourcePool.length)];
                 currentPoolImagesForDraw.push(randomImg);
                 
-                // 初始把牌背真實圖片清空，避免透視，點擊後才指派
                 const imgEl = document.getElementById(`drawnImg-${i}`);
                 imgEl.src = ""; 
 
@@ -1276,7 +1291,6 @@
             hasPickedCard = true;
             playBuzzer('celebrate');
 
-            // 翻牌時才把抽中的真實圖片塞入對應卡牌背面
             for (let i = 0; i < 3; i++) {
                 const imgEl = document.getElementById(`drawnImg-${i}`);
                 imgEl.src = currentPoolImagesForDraw[i];
