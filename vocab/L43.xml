@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary_list>
+    <lesson_name>第43課：毎日 楽しそうです</lesson_name>
+    <item>
+        <id>1</id>
+        <type>自動詞</type>
+        <kanji>増えますⅡ [輸出が～]</kanji>
+        <kana>ふえますⅡ [ゆしゅつが～]</kana>
+        <pureKana>ふえます</pureKana>
+        <chinese>[出口] 增加</chinese>
+        <note>増えますⅡ</note>
+    </item>
+    <item>
+        <id>2</id>
+        <type>自動詞</type>
+        <kanji>減りますⅠ [輸出が～]</kanji>
+        <kana>へりますⅠ [ゆしゅつが～]</kana>
+        <pureKana>へります</pureKana>
+        <chinese>[出口] 減少</chinese>
+        <note>減りますⅠ</note>
+    </item>
+    <item>
+        <id>3</id>
+        <type>自動詞</type>
+        <kanji>上がりますⅠ [値段が～]</kanji>
+        <kana>あがりますⅠ [ねだんが～]</kana>
+        <pureKana>あがります</pureKana>
+        <chinese>[價格] 上漲</chinese>
+        <note>上がりますⅠ</note>
+    </item>
+    <item>
+        <id>4</id>
+        <type>自動詞</type>
+        <kanji>下がりますⅠ [値段が～]</kanji>
+        <kana>さがりますⅠ [ねだんが～]</kana>
+        <pureKana>さがります</pureKana>
+        <chinese>[價格] 下降</chinese>
+        <note>下がりますⅠ</note>
+    </item>
+    <item>
+        <id>5</id>
+        <type>自動詞</type>
+        <kanji>切れますⅡ [ひもが～]</kanji>
+        <kana>きれますⅡ [ひもが～]</kana>
+        <pureKana>きれます</pureKana>
+        <chinese>[繩子] 斷了</chinese>
+        <note>切れますⅡ</note>
+    </item>
+    <item>
+        <id>6</id>
+        <type>自動詞</type>
+        <kanji>とれますⅡ [ボタンが～]</kanji>
+        <kana>とれますⅡ [ボタンが～]</kana>
+        <pureKana>とれます</pureKana>
+        <chinese>[鈕扣] 脫落</chinese>
+        <note>とれますⅡ</note>
+    </item>
+    <item>
+        <id>7</id>
+        <type>自動詞</type>
+        <kanji>落ちますⅡ [荷物が～]</kanji>
+        <kana>おちますⅡ [にもつが～]</kana>
+        <pureKana>おちます</pureKana>
+        <chinese>[行李] 掉落</chinese>
+        <note>落ちますⅡ</note>
+    </item>
+    <item>
+        <id>8</id>
+        <type>自動詞</type>
+        <kanji>なくなりますⅠ [ガソリンが～]</kanji>
+        <kana>なくなりますⅠ [ガソリンが～]</kana>
+        <pureKana>なくなります</pureKana>
+        <chinese>[汽油] 用盡</chinese>
+        <note>なくなりますⅠ</note>
+    </item>
+    <item>
+        <id>9</id>
+        <type>な形容詞</type>
+        <kanji>変[な]</kanji>
+        <kana>へん[な]</kana>
+        <pureKana>へん</pureKana>
+        <chinese>奇怪、不尋常</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>10</id>
+        <type>な形容詞</type>
+        <kanji>幸せ[な]</kanji>
+        <kana>しあわせ[な]</kana>
+        <pureKana>しあわせ</pureKana>
+        <chinese>幸福</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>11</id>
+        <type>な形容詞</type>
+        <kanji>楽[な]</kanji>
+        <kana>らく[な]</kana>
+        <pureKana>らく</pureKana>
+        <chinese>輕鬆</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>12</id>
+        <type>い形容詞</type>
+        <kanji>うまい</kanji>
+        <kana>うまい</kana>
+        <pureKana>うまい</pureKana>
+        <chinese>好吃</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>13</id>
+        <type>い形容詞</type>
+        <kanji>まずい</kanji>
+        <kana>まずい</kana>
+        <pureKana>まずい</pureKana>
+        <chinese>不好吃</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>14</id>
+        <type>い形容詞</type>
+        <kanji>つまらない</kanji>
+        <kana>つまらない</kana>
+        <pureKana>つまらない</pureKana>
+        <chinese>無聊、微不足道</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>15</id>
+        <type>い形容詞</type>
+        <kanji>優しい</kanji>
+        <kana>やさしい</kana>
+        <pureKana>やさしい</pureKana>
+        <chinese>溫柔、親切</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>16</id>
+        <type>noun</type>
+        <kanji>ガソリン</kanji>
+        <kana>ガソリン</kana>
+        <pureKana>ガソリン</pureKana>
+        <chinese>汽油</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>17</id>
+        <type>noun</type>
+        <kanji>火</kanji>
+        <kana>ひ</kana>
+        <pureKana>ひ</pureKana>
+        <chinese>火</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>18</id>
+        <type>noun</type>
+        <kanji>パンフレット</kanji>
+        <kana>パンフレット</kana>
+        <pureKana>パンフレット</pureKana>
+        <chinese>簡介、小冊子</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>19</id>
+        <type>adverb</type>
+        <kanji>今にも</kanji>
+        <kana>いまにも</kana>
+        <pureKana>いまにも</pureKana>
+        <chinese>馬上、就要（用於描寫變化就要發生之前的狀況）</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>20</id>
+        <type>expression</type>
+        <kanji>わあ</kanji>
+        <kana>わあ</kana>
+        <pureKana>わあ</pureKana>
+        <chinese>哇</chinese>
+        <note></note>
+    </item>
+    <item>
+        <id>21</id>
+        <type>reading</type>
+        <kanji>ばら</kanji>
+        <kana>ばら</kana>
+        <pureKana>ばら</pureKana>
+        <chinese>玫瑰、薔薇</chinese>
+        <note>読物 1. ばら</note>
+    </item>
+    <item>
+        <id>22</id>
+        <type>reading</type>
+        <kanji>ドライブ</kanji>
+        <kana>ドライブ</kana>
+        <pureKana>ドライブ</pureKana>
+        <chinese>兜風</chinese>
+        <note>読物 2. ドライブ</note>
+    </item>
+    <item>
+        <id>23</id>
+        <type>reading</type>
+        <kanji>理由</kanji>
+        <kana>りゆう</kana>
+        <pureKana>りゆう</pureKana>
+        <chinese>理由</chinese>
+        <note>読物 3. 理由</note>
+    </item>
+    <item>
+        <id>24</id>
+        <type>reading</type>
+        <kanji>謝りますⅠ</kanji>
+        <kana>あやまりますⅠ</kana>
+        <pureKana>あやまります</pureKana>
+        <chinese>道歉</chinese>
+        <note>読物 4. 謝りますⅠ</note>
+    </item>
+    <item>
+        <id>25</id>
+        <type>reading</type>
+        <kanji>知り合いますⅠ</kanji>
+        <kana>しりあいますⅠ</kana>
+        <pureKana>しりあいます</pureKana>
+        <chinese>認識</chinese>
+        <note>読物 5. 知り合いますⅠ</note>
+    </item>
+</vocabulary_list>
