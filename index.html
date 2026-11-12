@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日語生字遊戲化互動溫習系統 v35 (純色卡背與Google Sheet D欄圖庫)</title>
+    <title>日語生字遊戲化互動溫習系統 v36 (抽牌卡片點擊放大)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -258,7 +258,7 @@
                 </div>
             </div>
 
-            <!-- 模式 3：盲聽選漢字遊戲 (答錯後補答不會加分) -->
+            <!-- 模式 3：盲聽選漢字遊戲 -->
             <div id="mode-audioQuiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 text-center space-y-6">
                 <div id="audioQuizGameArea" class="space-y-6">
                     <div class="flex justify-between items-center bg-teal-50 px-4 py-2 rounded-lg text-teal-800 text-xs md:text-sm font-medium">
@@ -426,59 +426,55 @@
 
     </main>
 
-    <!-- 🌟 抽牌解鎖互動視窗 (純色卡背，絕無死圖) -->
+    <!-- 🌟 抽牌解鎖互動視窗 (純色卡背 + 點擊卡片放大) -->
     <dialog id="cardDrawModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
         <div class="relative p-6 text-center space-y-4">
             <h3 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-hat-wizard"></i> 神祕抽牌區：請憑直覺選擇一張牌！</h3>
-            <p class="text-xs text-slate-400">桌面上有 3 張純色神祕獎勵卡，點擊其中一張來翻開它！</p>
+            <p class="text-xs text-slate-400">桌面上有 3 張純色神祕獎勵卡，點擊其中一張來翻開它！(翻開後點擊圖片可放大檢視)</p>
             
             <div id="cardsTable" class="flex justify-center gap-4 py-6">
                 <!-- 卡牌 1 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-pointer perspective-1000" onclick="pickCard(0)">
                     <div id="mysteryCard-0" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <!-- 未翻開的純色牌背 (無任何 img 標籤，絕不會死圖) -->
+                        <!-- 未翻開的純色牌背 -->
                         <div class="card-face absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-100 font-bold">神秘卡 #1</span>
                         </div>
-                        <!-- 翻開後的獎勵圖面 -->
-                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
-                            <img id="drawnImg-0" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg" onerror="handleRewardImgError(this)">
+                        <!-- 翻開後的獎勵圖面 (點擊可放大) -->
+                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center" onclick="event.stopPropagation(); zoomRewardImage(0)">
+                            <img id="drawnImg-0" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg cursor-zoom-in hover:scale-105 transition-transform" title="點擊放大圖片" onerror="handleRewardImgError(this)">
                         </div>
                     </div>
                 </div>
                 <!-- 卡牌 2 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-pointer perspective-1000" onclick="pickCard(1)">
                     <div id="mysteryCard-1" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <!-- 未翻開的純色牌背 -->
                         <div class="card-face absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-100 font-bold">神秘卡 #2</span>
                         </div>
-                        <!-- 翻開後的獎勵圖面 -->
-                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
-                            <img id="drawnImg-1" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg" onerror="handleRewardImgError(this)">
+                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center" onclick="event.stopPropagation(); zoomRewardImage(1)">
+                            <img id="drawnImg-1" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg cursor-zoom-in hover:scale-105 transition-transform" title="點擊放大圖片" onerror="handleRewardImgError(this)">
                         </div>
                     </div>
                 </div>
                 <!-- 卡牌 3 -->
                 <div class="w-28 h-40 md:w-32 md:h-44 cursor-pointer perspective-1000" onclick="pickCard(2)">
                     <div id="mysteryCard-2" class="card-flip relative w-full h-full rounded-xl shadow-lg border-2 border-indigo-400 select-none">
-                        <!-- 未翻開的純色牌背 -->
                         <div class="card-face absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-2">
                             <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
                             <span class="text-xs mt-2 text-indigo-100 font-bold">神秘卡 #3</span>
                         </div>
-                        <!-- 翻開後的獎勵圖面 -->
-                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
-                            <img id="drawnImg-2" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg" onerror="handleRewardImgError(this)">
+                        <div class="card-revealed-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center" onclick="event.stopPropagation(); zoomRewardImage(2)">
+                            <img id="drawnImg-2" src="" alt="獎勵圖" class="hidden w-full h-full object-contain rounded-lg cursor-zoom-in hover:scale-105 transition-transform" title="點擊放大圖片" onerror="handleRewardImgError(this)">
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="drawResultArea" class="hidden space-y-3">
-                <p id="drawResultMessage" class="text-sm font-bold text-emerald-400">🎉 恭喜翻出大獎！</p>
+                <p id="drawResultMessage" class="text-sm font-bold text-emerald-400">🎉 恭喜翻出大獎！(點擊卡片圖片可放大觀看)</p>
                 <button onclick="closeCardDrawModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs md:text-sm font-medium transition shadow-md">
                     收下獎勵並關閉
                 </button>
@@ -486,9 +482,27 @@
         </div>
     </dialog>
 
+    <!-- 🔍 圖片放大檢視彈窗 (Modal) -->
+    <dialog id="imageZoomModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/90 max-w-3xl w-[95vw] overflow-hidden border-0 bg-slate-950 text-white">
+        <div class="relative p-4 flex flex-col items-center space-y-3">
+            <div class="w-full flex justify-between items-center px-2">
+                <h4 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-magnifying-glass-plus"></i> 獎勵圖片放大檢視</h4>
+                <button onclick="closeZoomModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="w-full max-h-[75vh] flex items-center justify-center bg-black/50 rounded-xl p-2 overflow-hidden">
+                <img id="zoomedImageElement" src="" alt="放大獎勵圖" class="max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl">
+            </div>
+            <button onclick="closeZoomModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition">
+                關閉放大
+            </button>
+        </div>
+    </dialog>
+
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
-        XML Vocab Trainer v35 &copy; 2026 | Solid Card Back & Google Sheets Column D Integration
+        XML Vocab Trainer v36 &copy; 2026 | Zoomable Reward Cards & Sheet D Integration
     </footer>
 
     <!-- JavaScript Logic -->
@@ -520,19 +534,16 @@
 
         let rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
 
-        // 頁面載入時自動嘗試讀取 Google Sheet D 欄圖片
         window.addEventListener('DOMContentLoaded', () => {
             loadGoogleSheetColumnD(true);
         });
 
-        // 圖片載入失敗時的自動備援處理（絕不出現死圖）
         function handleRewardImgError(imgEl) {
             imgEl.onerror = null;
             const fallback = DEFAULT_POKEMON_IMAGES[Math.floor(Math.random() * DEFAULT_POKEMON_IMAGES.length)];
             imgEl.src = fallback;
         }
 
-        // 3. 讀取發佈到網絡的 Google Spreadsheet 中的 D 欄圖片連結
         async function loadGoogleSheetColumnD(isSilent = false) {
             try {
                 const response = await fetch(GOOGLE_SHEET_CSV_URL);
@@ -541,8 +552,7 @@
                 const rows = parseCSV(csvText);
                 
                 const sheetImages = [];
-                rows.forEach((cols, rowIdx) => {
-                    // D 欄為索引 3 (A=0, B=1, C=2, D=3)
+                rows.forEach((cols) => {
                     if (cols.length >= 4) {
                         const cellVal = cols[3].trim();
                         if (cellVal.startsWith('http://') || cellVal.startsWith('https://')) {
@@ -566,7 +576,6 @@
             }
         }
 
-        // 解析標準 CSV（支援引號內逗號）
         function parseCSV(text) {
             const rows = [];
             let currentRow = [];
@@ -613,7 +622,6 @@
             document.getElementById('folderImgCount').textContent = count;
         }
 
-        // 本地 pic 資料夾批次匯入
         document.getElementById('folderInput').addEventListener('change', function(e) {
             const files = e.target.files;
             const localImgs = [];
@@ -632,7 +640,6 @@
             }
         });
 
-        // 只需要輸入數字即可讀取 GitHub vocab 內的 XML
         async function loadFromNumber() {
             const num = document.getElementById('lessonNumInput').value.trim();
             if (!num) {
@@ -957,10 +964,9 @@
             });
         }
 
-        // 2. 盲聽選漢字：答錯後補答不會加分，防止亂撞
         let audioQuestionCount = 0, audioScoreVal = 0, audioCorrectCount = 0, audio10Items = [];
         let isAudioAnswerLocked = false;
-        let hasAudioQuestionFailed = false; // 記錄本題是否曾經答錯
+        let hasAudioQuestionFailed = false;
 
         function initAudioQuiz() {
             if (vocabList.length === 0) return;
@@ -978,7 +984,7 @@
             if (audioQuestionCount >= 10) { endAudioQuiz(); return; }
             audioQuestionCount++;
             isAudioAnswerLocked = false;
-            hasAudioQuestionFailed = false; // 重置本題答錯紀錄
+            hasAudioQuestionFailed = false;
             document.getElementById('audioCurrentQ').textContent = audioQuestionCount;
             const item = audio10Items[audioQuestionCount - 1];
             currentAudioTargetItem = item;
@@ -1007,21 +1013,19 @@
                     if (isGameFinished || isAudioAnswerLocked) return;
                     
                     if (opt === item.rawKanji) {
-                        isAudioAnswerLocked = true; // 鎖定選項直至進入下一題
+                        isAudioAnswerLocked = true;
                         if (!hasAudioQuestionFailed) {
-                            // 只有一次答對才加分
                             audioScoreVal += 10;
                             audioCorrectCount++;
                             document.getElementById('audioScore').textContent = audioScoreVal;
                             document.getElementById('audioQuizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 一次答對！+10 分</span>`;
                         } else {
-                            // 曾經答錯，補答只推進題目不加分
                             document.getElementById('audioQuizResult').innerHTML = `<span class="text-amber-600 font-bold"><i class="fa-solid fa-check"></i> 補答正確（本題曾答錯，不予計分）</span>`;
                         }
                         playBuzzer('correct');
                         setTimeout(nextAudioQuestion, 1000);
                     } else {
-                        hasAudioQuestionFailed = true; // 標記本題已答錯，後續補答不加分
+                        hasAudioQuestionFailed = true;
                         btn.disabled = true;
                         btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700', 'opacity-70');
                         document.getElementById('audioQuizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯囉（本題不計分），請找出正確答案以繼續！</span>`;
@@ -1328,7 +1332,7 @@
             }
         }
 
-        // --- 🌟 純色卡背抽牌解鎖機制 (3選1，絕不死圖) ---
+        // --- 🌟 純色卡背抽牌解鎖機制 (3選1，點擊圖片放大) ---
         let currentPoolImagesForDraw = [];
         let hasPickedCard = false;
 
@@ -1336,7 +1340,6 @@
             hasPickedCard = false;
             document.getElementById('drawResultArea').classList.add('hidden');
 
-            // 隱藏觸發按鈕，不可重複按
             const btnMap = {
                 speed: 'speedRewardBtn',
                 audio: 'audioRewardBtn',
@@ -1354,7 +1357,6 @@
                 const randomImg = sourcePool[Math.floor(Math.random() * sourcePool.length)];
                 currentPoolImagesForDraw.push(randomImg);
                 
-                // 未翻開前隱藏 img 並清空 src，避免死圖圖示
                 const imgEl = document.getElementById(`drawnImg-${i}`);
                 imgEl.classList.add('hidden');
                 imgEl.removeAttribute('src');
@@ -1384,8 +1386,20 @@
                 }
             }
 
-            document.getElementById('drawResultMessage').innerHTML = `🎉 翻牌成功！你抽中了第 #${selectedIndex + 1} 號獎勵卡！`;
+            document.getElementById('drawResultMessage').innerHTML = `🎉 翻牌成功！你抽中了第 #${selectedIndex + 1} 號獎勵卡！(點擊圖片可放大)`;
             document.getElementById('drawResultArea').classList.remove('hidden');
+        }
+
+        // 🔍 點擊卡片圖片後彈出放大檢視視窗
+        function zoomRewardImage(cardIndex) {
+            const imgSrc = currentPoolImagesForDraw[cardIndex];
+            if (!imgSrc) return;
+            document.getElementById('zoomedImageElement').src = imgSrc;
+            document.getElementById('imageZoomModal').showModal();
+        }
+
+        function closeZoomModal() {
+            document.getElementById('imageZoomModal').close();
         }
 
         function closeCardDrawModal() {
