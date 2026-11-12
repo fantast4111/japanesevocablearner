@@ -4,99 +4,99 @@
     <item>
         <id>1</id>
         <type>他動詞</type>
-        <kanji>かぞえます</kanji>
-        <kana>かぞえます</kana>
+        <kanji>数えますⅡ</kanji>
+        <kana>かぞえますⅡ</kana>
         <pureKana>かぞえます</pureKana>
         <chinese>數、點數</chinese>
-        <note>かぞえますⅡ</note>
+        <note>数えますⅡ</note>
     </item>
     <item>
         <id>2</id>
         <type>他動詞</type>
-        <kanji>はかります</kanji>
-        <kana>はかります</kana>
+        <kanji>測りますⅠ</kanji>
+        <kana>はかりますⅠ</kana>
         <pureKana>はかります</pureKana>
         <chinese>測量、稱重</chinese>
-        <note>はかりますⅠ</note>
+        <note>測りますⅠ</note>
     </item>
     <item>
         <id>3</id>
         <type>他動詞</type>
-        <kanji>たしかめます</kanji>
-        <kana>たしかめます</kana>
+        <kanji>確かめますⅡ</kanji>
+        <kana>たしかめますⅡ</kana>
         <pureKana>たしかめます</pureKana>
         <chinese>確認</chinese>
-        <note>たしかめますⅡ</note>
+        <note>確かめますⅡ</note>
     </item>
     <item>
         <id>4</id>
         <type>自動詞</type>
-        <kanji>あいます</kanji>
-        <kana>あいます</kana>
+        <kanji>合いますⅠ [サイズが～]</kanji>
+        <kana>あいますⅠ [サイズが～]</kana>
         <pureKana>あいます</pureKana>
         <chinese>適合、合適</chinese>
-        <note>あいますⅠ [サイズが～]</note>
+        <note>合いますⅠ</note>
     </item>
     <item>
         <id>5</id>
         <type>自動詞</type>
-        <kanji>しゅっぱつします</kanji>
-        <kana>しゅっぱつします</kana>
+        <kanji>出発しますⅢ</kanji>
+        <kana>しゅっぱつしますⅢ</kana>
         <pureKana>しゅっぱつします</pureKana>
         <chinese>出發</chinese>
-        <note>しゅっぱつします (Ⅲ)</note>
+        <note>出発しますⅢ</note>
     </item>
     <item>
         <id>6</id>
         <type>自動詞</type>
-        <kanji>とうちゃくします</kanji>
-        <kana>とうちゃくします</kana>
+        <kanji>到着しますⅢ</kanji>
+        <kana>とうちゃくしますⅢ</kana>
         <pureKana>とうちゃくします</pureKana>
         <chinese>到達、到達目的地</chinese>
-        <note>とうちゃくします (Ⅲ)</note>
+        <note>到着しますⅢ</note>
     </item>
     <item>
         <id>7</id>
         <type>自動詞</type>
-        <kanji>よります</kanji>
-        <kana>よります</kana>
+        <kanji>寄りますⅠ [道に～]</kanji>
+        <kana>よりますⅠ [みちに～]</kana>
         <pureKana>よります</pureKana>
         <chinese>順便去、順路到</chinese>
-        <note>よりますⅠ [道に～]</note>
+        <note>寄りますⅠ</note>
     </item>
     <item>
         <id>8</id>
         <type>自動詞</type>
-        <kanji>うまくいきます</kanji>
-        <kana>うまくいきます</kana>
+        <kanji>上手くいきますⅠ</kanji>
+        <kana>うまくいきますⅠ</kana>
         <pureKana>うまくいきます</pureKana>
         <chinese>順利進行</chinese>
-        <note>うまくいきますⅠ</note>
+        <note>上手くいきますⅠ</note>
     </item>
     <item>
         <id>9</id>
         <type>自動詞</type>
-        <kanji>でます</kanji>
-        <kana>でます</kana>
+        <kanji>出ますⅡ [問題が～]</kanji>
+        <kana>でますⅡ [もんだいが～]</kana>
         <pureKana>でます</pureKana>
         <chinese>出、出現</chinese>
-        <note>でますⅡ [問題が～]</note>
+        <note>出ますⅡ</note>
     </item>
     <item>
         <id>10</id>
         <type>他動詞</type>
-        <kanji>そうだんします</kanji>
-        <kana>そうだんします</kana>
+        <kanji>相談しますⅢ</kanji>
+        <kana>そうだんしますⅢ</kana>
         <pureKana>そうだんします</pureKana>
         <chinese>商量、商談</chinese>
-        <note>そうだんします (Ⅲ)</note>
+        <note>相談しますⅢ</note>
     </item>
     <item>
         <id>11</id>
         <type>な形容詞</type>
-        <kanji>必要な</kanji>
-        <kana>ひつような</kana>
-        <pureKana>ひつような</pureKana>
+        <kanji>必要[な]</kanji>
+        <kana>ひつよう[な]</kana>
+        <pureKana>ひつよう</pureKana>
         <chinese>必要、需要</chinese>
         <note>必要[な]</note>
     </item>
@@ -158,8 +158,8 @@
         <id>18</id>
         <type>noun</type>
         <kanji>マラソン</kanji>
-        <kana>まらそん</kana>
-        <pureKana>まらそん</pureKana>
+        <kana>マラソン</kana>
+        <pureKana>マラソン</pureKana>
         <chinese>馬拉松</chinese>
         <note>マラソン</note>
     </item>
@@ -203,8 +203,8 @@
         <id>23</id>
         <type>noun</type>
         <kanji>ズボン</kanji>
-        <kana>ずぼん</kana>
-        <pureKana>ずぼん</pureKana>
+        <kana>ズボン</kana>
+        <pureKana>ズボン</pureKana>
         <chinese>褲子</chinese>
         <note>ズボン</note>
     </item>
@@ -212,7 +212,7 @@
         <id>24</id>
         <type>noun</type>
         <kanji>[お]年寄り</kanji>
-        <kana>おとしより</kana>
+        <kana>[お]としより</kana>
         <pureKana>おとしより</pureKana>
         <chinese>老人</chinese>
         <note>[お]年寄り</note>
@@ -257,35 +257,35 @@
         <id>29</id>
         <type>noun</type>
         <kanji>～個</kanji>
-        <kana>こ</kana>
+        <kana>～こ</kana>
         <pureKana>こ</pureKana>
         <chinese>～個（數小物體的量詞）</chinese>
-        <note>…個</note>
+        <note>～個</note>
     </item>
     <item>
         <id>30</id>
         <type>noun</type>
         <kanji>～本</kanji>
-        <kana>ほん</kana>
+        <kana>～ほん</kana>
         <pureKana>ほん</pureKana>
         <chinese>～本（數細長物品等的量詞）</chinese>
-        <note>…本</note>
+        <note>～本</note>
     </item>
     <item>
         <id>31</id>
         <type>noun</type>
         <kanji>～杯</kanji>
-        <kana>はい</kana>
+        <kana>～はい</kana>
         <pureKana>はい</pureKana>
         <chinese>～杯（數玻璃杯或碗等的量詞）</chinese>
-        <note>…杯</note>
+        <note>～杯</note>
     </item>
     <item>
         <id>32</id>
         <type>noun</type>
         <kanji>センチ</kanji>
-        <kana>せんち</kana>
-        <pureKana>せんち</pureKana>
+        <kana>センチ</kana>
+        <pureKana>センチ</pureKana>
         <chinese>公分</chinese>
         <note>センチ</note>
     </item>
@@ -293,8 +293,8 @@
         <id>33</id>
         <type>noun</type>
         <kanji>ミリ</kanji>
-        <kana>みり</kana>
-        <pureKana>みり</pureKana>
+        <kana>ミリ</kana>
+        <pureKana>ミリ</pureKana>
         <chinese>毫米</chinese>
         <note>ミリ</note>
     </item>
@@ -302,8 +302,8 @@
         <id>34</id>
         <type>noun</type>
         <kanji>グラム</kanji>
-        <kana>ぐらむ</kana>
-        <pureKana>ぐらむ</pureKana>
+        <kana>グラム</kana>
+        <pureKana>グラム</pureKana>
         <chinese>公克</chinese>
         <note>グラム</note>
     </item>
@@ -311,7 +311,7 @@
         <id>35</id>
         <type>noun</type>
         <kanji>～以上</kanji>
-        <kana>いじょう</kana>
+        <kana>～いじょう</kana>
         <pureKana>いじょう</pureKana>
         <chinese>～以上、超過～</chinese>
         <note>～以上</note>
@@ -320,7 +320,7 @@
         <id>36</id>
         <type>noun</type>
         <kanji>～以下</kanji>
-        <kana>いか</kana>
+        <kana>～いか</kana>
         <pureKana>いか</pureKana>
         <chinese>～以下、低於～</chinese>
         <note>～以下</note>
@@ -346,11 +346,11 @@
     <item>
         <id>39</id>
         <type>noun</type>
-        <kanji>JL</kanji>
-        <kana>じぇーえる</kana>
-        <pureKana>じぇーえる</pureKana>
+        <kanji>JAL</kanji>
+        <kana>ジャル</kana>
+        <pureKana>ジャル</pureKana>
         <chinese>日本航空公司</chinese>
-        <note>JL</note>
+        <note>JAL</note>
     </item>
     <item>
         <id>40</id>
@@ -365,8 +365,8 @@
         <id>41</id>
         <type>noun</type>
         <kanji>ジェーエル</kanji>
-        <kana>じぇーえる</kana>
-        <pureKana>じぇーえる</pureKana>
+        <kana>ジェーエル</kana>
+        <pureKana>ジェーエル</pureKana>
         <chinese>日航（JAL）</chinese>
         <note>ジェーエル</note>
     </item>
@@ -383,7 +383,7 @@
         <id>43</id>
         <type>conversation</type>
         <kanji>どうでしょうか。</kanji>
-        <kana>どうでしょうか</kana>
+        <kana>どうでしょうか。</kana>
         <pureKana>どうでしょうか</pureKana>
         <chinese>怎麼樣？</chinese>
         <note>どうでしょうか。</note>
@@ -392,8 +392,8 @@
         <id>44</id>
         <type>noun</type>
         <kanji>テスト</kanji>
-        <kana>てすと</kana>
-        <pureKana>てすと</pureKana>
+        <kana>テスト</kana>
+        <pureKana>テスト</pureKana>
         <chinese>測驗、考試</chinese>
         <note>テスト</note>
     </item>
@@ -418,10 +418,10 @@
     <item>
         <id>47</id>
         <type>自動詞</type>
-        <kanji>いらっしゃいます</kanji>
-        <kana>いらっしゃいます</kana>
+        <kanji>いらっしゃいますⅠ</kanji>
+        <kana>いらっしゃいますⅠ</kana>
         <pureKana>いらっしゃいます</pureKana>
-        <chinese>來</chinese>
+        <chinese>來、去、在（「行きます」、「来ます」、「います」的尊敬語）</chinese>
         <note>いらっしゃいますⅠ</note>
     </item>
     <item>
@@ -446,8 +446,8 @@
         <id>50</id>
         <type>noun</type>
         <kanji>オートバイ</kanji>
-        <kana>おーとばい</kana>
-        <pureKana>おーとばい</pureKana>
+        <kana>オートバイ</kana>
+        <pureKana>オートバイ</pureKana>
         <chinese>摩托車</chinese>
         <note>オートバイ</note>
     </item>
@@ -463,8 +463,8 @@
     <item>
         <id>52</id>
         <type>他動詞</type>
-        <kanji>積みます</kanji>
-        <kana>つみます</kana>
+        <kanji>積みますⅠ</kanji>
+        <kana>つみますⅠ</kana>
         <pureKana>つみます</pureKana>
         <chinese>積載、裝載</chinese>
         <note>積みますⅠ</note>
@@ -499,8 +499,8 @@
     <item>
         <id>56</id>
         <type>他動詞</type>
-        <kanji>動かします</kanji>
-        <kana>うごかします</kana>
+        <kanji>動かしますⅠ</kanji>
+        <kana>うごかしますⅠ</kana>
         <pureKana>うごかします</pureKana>
         <chinese>移動、發動</chinese>
         <note>動かしますⅠ</note>
@@ -535,8 +535,8 @@
     <item>
         <id>60</id>
         <type>他動詞</type>
-        <kanji>手に入れます</kanji>
-        <kana>てにいれます</kana>
+        <kanji>手に入れますⅡ</kanji>
+        <kana>てにいれますⅡ</kana>
         <pureKana>てにいれます</pureKana>
         <chinese>得到、拿到</chinese>
         <note>手に入れますⅡ</note>
@@ -544,10 +544,10 @@
     <item>
         <id>61</id>
         <type>conversation</type>
-        <kanji>今までも</kanji>
+        <kanji>今でも</kanji>
         <kana>いまでも</kana>
         <pureKana>いまでも</pureKana>
         <chinese>現在也、至今也</chinese>
-        <note>今までも</note>
+        <note>今でも</note>
     </item>
 </vocabulary_list>
