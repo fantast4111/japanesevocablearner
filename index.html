@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日語生字遊戲化互動溫習系統 v31 (GitHub自動載入與介面收納)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fall {
+            from { transform: translateY(0px); }
+            to { transform: translateY(280px); }
+        }
+        .falling-box {
+            animation: fall linear forwards;
+        }
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-md">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-gamepad"></i> 日語生字遊戲化溫習系統
+            </h1>
+            <div class="flex items-center gap-2">
+                <span id="lessonTitleDisplay" class="text-xs md:text-sm bg-indigo-700 px-3 py-1 rounded-full text-indigo-100">尚未載入課程</span>
+                <!-- 重新顯示設定按鈕 (當上方框隱藏時可點此展開) -->
+                <button id="toggleConfigBtn" onclick="toggleImportSection()" class="hidden text-xs bg-indigo-500 hover:bg-indigo-400 text-white px-2.5 py-1 rounded-lg transition">
+                    <i class="fa-solid fa-gear"></i> 設定
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto px-3 md:px-4 py-4 md:py-8 flex-grow space-y-4">
+
+        <!-- 1. 匯入 XML 與 圖片設定 (載入後會自動隱藏) -->
+        <section id="importSection" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4 transition-all">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base md:text-lg font-semibold flex items-center gap-2 text-indigo-600">
+                    <i class="fa-solid fa-file-code"></i> 第一步：載入 GitHub 遠端生字與獎勵圖庫
+                </h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- GitHub vocab/ 自動載入區 -->
+                <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
+                    <label class="block text-sm font-medium text-indigo-900">
+                        <i class="fa-brands fa-github"></i> 從 GitHub `vocab/` 資料夾載入：
+                    </label>
+                    <div class="flex gap-2">
+                        <select id="githubXmlSelect" class="flex-grow text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="vocab/L34.xml">vocab/L34.xml (預設)</option>
+                            <!-- 可自行在此新增其他課數檔案 -->
+                            <option value="vocab/L35.xml">vocab/L35.xml</option>
+                        </select>
+                        <button onclick="loadFromGitHub()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
+                            讀取
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500">提示：系統將透過相對路徑直接抓取專案 `vocab/` 內的 XML。</p>
+                </div>
+
+                <!-- 手動上傳或貼上備用 -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700">或手動上傳 XML / 貼上內容：</label>
+                    <input type="file" id="xmlFileInput" accept=".xml" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-slate-300 rounded-lg">
+                    <button onclick="loadDefaultSample()" class="text-xs text-indigo-600 hover:underline">載入內建範例資料</button>
+                </div>
+            </div>
+
+            <!-- 📁 獎勵圖片來源設定 (pic/ 資料夾隨機 或 自訂上傳) -->
+            <div class="pt-4 border-t border-slate-100 space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <div>
+                        <div class="text-xs font-medium text-slate-700 mb-1">
+                            <i class="fa-solid fa-folder-open text-amber-500"></i> <b>GitHub `pic/` 獎勵圖片夾路徑：</b>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="picFolderPath" value="pic/" placeholder="例如: pic/" class="flex-grow text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none">
+                            <button onclick="loadGitHubPicFolder()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition">
+                                掃描 pic/ 圖庫
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1">或自訂上傳本地獎勵圖片 (可多選)：</label>
+                        <input type="file" id="folderInput" multiple accept="image/png, image/jpeg, image/jpg" class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer border border-amber-200 rounded-lg w-full">
+                    </div>
+                </div>
+                <div id="folderStatus" class="text-xs font-medium text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg hidden">
+                    📁 已成功載入圖片，共可用 <span id="folderImgCount">0</span> 張獎勵圖片。
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 溫習與遊戲模式導航 (初始隱藏) -->
+        <div id="appContainer" class="hidden space-y-4">
+            <!-- 模式切換按鈕 (支援手機左右滾動) -->
+            <div class="flex overflow-x-auto pb-2 gap-2 justify-start md:justify-center no-scrollbar">
+                <button onclick="switchMode('vocabList')" id="btn-vocabList" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-indigo-600 text-white shadow-sm transition whitespace-nowrap">
+                    <i class="fa-solid fa-list mr-1"></i> 生字列表
+                </button>
+                <button onclick="switchMode('flashcard')" id="btn-flashcard" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-clone mr-1"></i> 記憶閃卡
+                </button>
+                <button onclick="switchMode('speed')" id="btn-speed" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-bolt mr-1"></i> 限時挑戰 (10題)
+                </button>
+                <button onclick="switchMode('audioQuiz')" id="btn-audioQuiz" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-headphones mr-1"></i> 盲聽選漢字 (10題)
+                </button>
+                <button onclick="switchMode('falling')" id="btn-falling" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-cube mr-1"></i> 掉落方塊 (10題/3命)
+                </button>
+                <button onclick="switchMode('spelling')" id="btn-spelling" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-keyboard mr-1"></i> 聽寫特訓
+                </button>
+                <button onclick="switchMode('quiz')" id="btn-quiz" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
+                    <i class="fa-solid fa-gamepad mr-1"></i> 配對消除 (10題)
+                </button>
+            </div>
+
+            <!-- 鍵盤與手機操作提示列 -->
+            <div class="bg-indigo-50 border border-indigo-100 text-indigo-800 text-[11px] md:text-xs px-3 py-2 rounded-lg flex flex-wrap justify-center gap-3">
+                <span>💡 <b>提示：</b>點擊生字或按 [↑鍵] 可隨時聆聽發音</span>
+            </div>
+
+            <!-- 統計資訊列 (只在記憶閃卡模式顯示) -->
+            <div id="statsBar" class="bg-white rounded-lg p-3 shadow-sm border border-slate-200 flex justify-between items-center text-xs md:text-sm hidden">
+                <div>總生字數：<span id="totalCount" class="font-bold text-indigo-600">0</span></div>
+                <div>目前進度：<span id="currentIndex" class="font-bold text-indigo-600">0</span> / <span id="totalCount2">0</span></div>
+                <div>已掌握：<span id="masteredCount" class="font-bold text-emerald-600">0</span></div>
+            </div>
+
+            <!-- 模式 0：生字列表總覽 -->
+            <div id="mode-vocabList" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-base md:text-lg text-indigo-600 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> 課程完整生字清單
+                    </h3>
+                    <span class="text-xs text-slate-500">點擊任意行即可聽取發音</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider">
+                                <th class="p-2 md:p-3 rounded-l-lg">#</th>
+                                <th class="p-2 md:p-3">詞性</th>
+                                <th class="p-2 md:p-3">漢字 / 寫法</th>
+                                <th class="p-2 md:p-3">假名讀音</th>
+                                <th class="p-2 md:p-3">中文解釋</th>
+                                <th class="p-2 md:p-3 rounded-r-lg text-center">發音</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vocabTableBody" class="text-xs md:text-sm divide-y divide-slate-100">
+                            <!-- 動態插入 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 模式 1：記憶閃卡 -->
+            <div id="mode-flashcard" class="hidden space-y-4">
+                <div class="perspective-1000 w-full h-72 md:h-80 cursor-pointer" onclick="flipCard()">
+                    <div id="flashcardInner" class="relative w-full h-full duration-500 rounded-2xl shadow-md border border-slate-200 bg-white flex flex-col justify-between p-6 md:p-8 text-center select-none transition-all">
+                        <div id="cardFront" class="flex flex-col justify-center items-center h-full">
+                            <span id="fcType" class="text-xs uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-medium mb-3">詞性</span>
+                            <div id="fcKanji" class="text-3xl md:text-5xl font-bold text-slate-800 mb-2">--</div>
+                            <div id="fcKana" class="text-lg md:text-xl text-indigo-600 font-medium">--</div>
+                            <button onclick="event.stopPropagation(); playAudio(currentCleanKana);" class="mt-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-4 py-2.5 rounded-full transition text-xs md:text-sm inline-flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-volume-high"></i> 播放發音
+                            </button>
+                        </div>
+                        <div id="cardBack" class="hidden flex flex-col justify-center items-center h-full">
+                            <div class="text-xs text-slate-400 uppercase mb-2">中文意思</div>
+                            <div id="fcChinese" class="text-2xl md:text-3xl font-bold text-emerald-600 mb-3">--</div>
+                            <div id="fcNote" class="text-xs md:text-sm text-slate-500 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">--</div>
+                        </div>
+                        <div class="text-[11px] text-slate-400 absolute bottom-3 left-0 right-0 text-center">
+                            <i class="fa-solid fa-rotate mr-1"></i> 點擊卡片翻面
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2 md:gap-4 justify-center pt-2">
+                    <button onclick="prevCard()" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl font-medium text-xs md:text-sm text-slate-700 transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> 上一個
+                    </button>
+                    <button onclick="markMastered()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-xs md:text-sm shadow-sm transition">
+                        <i class="fa-solid fa-check mr-1"></i> 記住了！
+                    </button>
+                    <button onclick="nextCard()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition">
+                        下一個 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式 2：閃卡限時挑戰 (10題 + 80%解鎖門檻) -->
+            <div id="mode-speed" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+                <div class="flex justify-between items-center bg-amber-50 px-4 py-2 rounded-lg text-amber-800 text-xs md:text-sm font-medium">
+                    <span><i class="fa-solid fa-stopwatch mr-1"></i> 限時挑戰：第 <strong id="speedCurrentQ">1</strong> / 10 題</span>
+                    <span>得分：<strong id="speedScore" class="text-lg">0</strong> | 耗時：<strong id="speedTimeElapsed">0</strong>s</span>
+                </div>
+                <div id="speedGameArea" class="text-center space-y-6">
+                    <div class="py-2">
+                        <div id="speedKanji" class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">--</div>
+                        <div id="speedKana" class="text-base md:text-lg text-indigo-600 mb-4">--</div>
+                    </div>
+                    <div id="speedOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg mx-auto"></div>
+                </div>
+                <!-- 結算與排行榜區域 -->
+                <div id="speedResultArea" class="hidden text-center space-y-4">
+                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 挑戰完成！</h3>
+                    <div id="speedUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p id="speedUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
+                        <button id="speedRewardBtn" onclick="triggerWinModal('speed')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        </button>
+                    </div>
+                    <div id="speedFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片，再接再厲！
+                    </div>
+                    <div class="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
+                        <h4 id="speedLeaderboardTitle" class="font-bold text-slate-700 text-xs md:text-sm mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-trophy text-amber-500"></i> 限時挑戰排行榜 Top 5
+                        </h4>
+                        <ol id="speedLeaderboardList" class="text-xs md:text-sm space-y-1 text-slate-600 font-mono"></ol>
+                    </div>
+                    <button onclick="initSpeedChallenge()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        再玩一次
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式 3：盲聽選漢字遊戲 (10題 + 80%解鎖) -->
+            <div id="mode-audioQuiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 text-center space-y-6">
+                <div id="audioQuizGameArea" class="space-y-6">
+                    <div class="flex justify-between items-center bg-teal-50 px-4 py-2 rounded-lg text-teal-800 text-xs md:text-sm font-medium">
+                        <span><i class="fa-solid fa-headphones mr-1"></i> 盲聽選漢字：第 <strong id="audioCurrentQ">1</strong> / 10 題</span>
+                        <span>得分：<strong id="audioScore" class="text-lg">0</strong></span>
+                    </div>
+                    <div>
+                        <div class="text-xs md:text-sm text-slate-500 mb-2">請聆聽發音，並選出對應的正確漢字 / 寫法：</div>
+                        <button onclick="playAudio(currentAudioTargetItem.cleanKana)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-2xl shadow-md transition text-base md:text-lg inline-flex items-center gap-2">
+                            <i class="fa-solid fa-volume-high"></i> 點擊播放發音
+                        </button>
+                        <div class="mt-4">
+                            <button id="revealHintBtn" onclick="revealAudioHint()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg border border-slate-300 transition">
+                                💡 顯示中文提示
+                            </button>
+                            <div id="audioQuizMeaning" class="text-lg md:text-xl font-bold text-indigo-600 mt-2 hidden">--</div>
+                        </div>
+                    </div>
+                    <div id="audioQuizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg mx-auto"></div>
+                    <div id="audioQuizResult" class="text-base font-medium h-8"></div>
+                </div>
+                <!-- 盲聽選漢字結算 -->
+                <div id="audioQuizResultArea" class="hidden text-center space-y-4">
+                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 盲聽挑戰完成！</h3>
+                    <div id="audioUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p id="audioUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
+                        <button id="audioRewardBtn" onclick="triggerWinModal('audio')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        </button>
+                    </div>
+                    <div id="audioFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片。
+                    </div>
+                    <button onclick="initAudioQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        再次挑戰
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式 4：掉落方塊遊戲 (10題 + 3命 + 80%解鎖) -->
+            <div id="mode-falling" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4">
+                <div id="fallingGameArea" class="space-y-4">
+                    <div class="flex flex-wrap justify-between items-center bg-cyan-50 px-3 py-2 rounded-lg text-cyan-800 text-xs md:text-sm font-medium gap-2">
+                        <span><i class="fa-solid fa-cube mr-1"></i> 掉落方塊：第 <strong id="fallingCurrentQ">1</strong> / 10 題 | 生命：<strong id="fallingLives" class="text-rose-600">❤️❤️❤️</strong></span>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs text-slate-600">速度：</label>
+                            <select id="fallingSpeedSelect" class="text-xs bg-white border border-cyan-300 rounded px-2 py-1 focus:outline-none">
+                                <option value="slow">慢速</option>
+                                <option value="normal" selected>中速</option>
+                                <option value="fast">快速</option>
+                            </select>
+                        </div>
+                        <span>得分：<strong id="fallingScore" class="text-base text-cyan-600">0</strong></span>
+                    </div>
+                    <!-- 遊戲舞台 -->
+                    <div id="fallingStage" class="relative w-full h-64 md:h-72 bg-slate-900 rounded-2xl overflow-hidden border border-slate-700 flex items-start justify-center">
+                        <div id="fallingBlock" class="absolute top-0 bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-lg font-bold text-xl md:text-2xl transition-all">
+                            <div id="fallingChinese" class="text-xs md:text-sm text-indigo-200 font-normal">中文意思</div>
+                            <div id="fallingKanji">--</div>
+                        </div>
+                    </div>
+                    <div class="max-w-md mx-auto space-y-2 text-center">
+                        <input type="text" id="fallingInput" placeholder="輸入方塊對應的平假名..." class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                        <div id="fallingResult" class="text-xs md:text-sm font-medium h-6"></div>
+                    </div>
+                </div>
+                <!-- 掉落方塊結算與排行榜 -->
+                <div id="fallingResultArea" class="hidden text-center space-y-4">
+                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600" id="fallingResultTitle">遊戲結束</h3>
+                    <div id="fallingWinBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
+                        <button id="fallingRewardBtn" onclick="triggerWinModal('falling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        </button>
+                    </div>
+                    <div id="fallingFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
+                        ❌ 正確率未達 80% 或生命耗盡，無法解鎖獎勵圖片。
+                    </div>
+                    <div class="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
+                        <h4 id="fallingLeaderboardTitle" class="font-bold text-slate-700 text-xs md:text-sm mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-trophy text-amber-500"></i> 掉落方塊排行榜 Top 5
+                        </h4>
+                        <ol id="fallingLeaderboardList" class="text-xs md:text-sm space-y-1 text-slate-600 font-mono"></ol>
+                    </div>
+                    <button onclick="initFallingGame()" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        再挑戰一次
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式 5：聽寫與拼字特訓 -->
+            <div id="mode-spelling" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 text-center space-y-6">
+                <div class="flex justify-between items-center bg-amber-50 px-4 py-2 rounded-lg text-amber-800 text-xs font-medium">
+                    <span><i class="fa-solid fa-keyboard mr-1"></i> 聽寫特訓 (自動排除已精通字)</span>
+                    <span>已精通生字：<strong id="masteredSpellingCount" class="text-emerald-600">0</strong> / <span id="totalSpellingCount">0</span></span>
+                </div>
+                <div id="spellingGameArea" class="space-y-6">
+                    <div class="flex justify-center gap-4 md:gap-6 text-xs md:text-sm text-indigo-600 font-medium">
+                        <span id="spellingProgressText">本輪剩餘待通關生字：0</span>
+                        <span id="spellingStreakText" class="text-amber-600 font-bold">✨ 連續答對：0 / 2 次</span>
+                    </div>
+                    <div>
+                        <div class="text-xs md:text-sm text-slate-400 mb-1">請根據中文意思拼出平假名：</div>
+                        <div id="spellingChinese" class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">--</div>
+                        <button onclick="playAudio(currentSpellingItem.cleanKana)" class="inline-flex items-center gap-2 text-xs md:text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">
+                            <i class="fa-solid fa-volume-high"></i> 播放語音提示
+                        </button>
+                    </div>
+                    <div class="max-w-md mx-auto space-y-3">
+                        <input type="text" id="spellingInput" placeholder="輸入純平假名..." class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div id="spellingCorrectionHint" class="hidden bg-rose-50 border border-rose-200 p-3 rounded-xl text-rose-700 text-xs md:text-sm">
+                            ❌ 答錯了！正確答案是：<strong id="correctKanaTarget" class="text-base md:text-lg underline font-bold">--</strong>。請重新輸入一次！
+                        </div>
+                        <button onclick="checkSpelling()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition text-xs md:text-sm shadow-sm">
+                            提交答案 (Enter)
+                        </button>
+                    </div>
+                    <div id="spellingResult" class="text-base font-medium h-8"></div>
+                </div>
+                <!-- 聽寫通關結算 -->
+                <div id="spellingResultArea" class="hidden space-y-4">
+                    <h3 class="text-2xl md:text-3xl font-bold text-emerald-600" id="spellingResultTitle">🏆 本輪聽寫特訓完美通關！</h3>
+                    <p id="spellingResultDesc" class="text-xs md:text-sm text-slate-600">所有未精通的生字皆已達成連續答對 2 次的條件！</p>
+                    <div id="spellingWinBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 完美通關！解鎖獎勵圖片：</p>
+                        <button id="spellingRewardBtn" onclick="triggerWinModal('spelling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        </button>
+                    </div>
+                    <button onclick="initSpelling()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        進入下一輪特訓
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式 6：意思配對消除 (10題 + 80%解鎖) -->
+            <div id="mode-quiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+                <div id="quizGameArea" class="space-y-6">
+                    <div class="flex justify-between items-center bg-indigo-50 px-4 py-2 rounded-lg text-indigo-800 text-xs md:text-sm font-medium">
+                        <span><i class="fa-solid fa-gamepad mr-1"></i> 配對消除：第 <strong id="quizCurrentQ">1</strong> / 10 題</span>
+                        <span>得分：<strong id="quizScore" class="text-lg">0</strong></span>
+                    </div>
+                    <div class="text-center bg-indigo-50 p-5 md:p-6 rounded-2xl border border-indigo-100">
+                        <div class="text-xs text-indigo-700 uppercase tracking-wider mb-1">請選出以下日文生字正確的中文意思：</div>
+                        <div id="quizKanji" class="text-2xl md:text-4xl font-bold text-slate-800 mb-1">--</div>
+                        <div id="quizKana" class="text-base md:text-lg text-indigo-600 font-medium">--</div>
+                    </div>
+                    <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
+                    <div id="quizResult" class="text-center font-medium h-8"></div>
+                </div>
+                <!-- 配對消除結算 -->
+                <div id="quizResultArea" class="hidden text-center space-y-4">
+                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 配對挑戰完成！</h3>
+                    <div id="quizUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p id="quizUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
+                        <button id="quizRewardBtn" onclick="triggerWinModal('quiz')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
+                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        </button>
+                    </div>
+                    <div id="quizFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片。
+                    </div>
+                    <button onclick="initQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        再次挑戰
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 🌟 圖片彈跳視窗 (Lightbox Dialog) -->
+    <dialog id="imageModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-lg w-[90vw] overflow-hidden border-0 bg-white">
+        <div class="relative p-5 md:p-6 text-center">
+            <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center transition shadow-sm">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <h3 class="text-base md:text-lg font-bold text-indigo-600 mb-3"><i class="fa-solid fa-sparkles"></i> 恭喜解鎖獎勵圖片</h3>
+            <div class="flex justify-center bg-slate-900 rounded-xl overflow-hidden p-2 shadow-inner">
+                <img id="modalImg" src="" alt="獎勵圖片" class="max-h-[50vh] object-contain rounded-lg">
+            </div>
+            <p id="modalSourceText" class="text-[11px] md:text-xs text-slate-400 mt-3">來源：GitHub pic/ 圖庫或上傳圖片</p>
+        </div>
+    </dialog>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
+        XML Vocab Trainer v31 &copy; 2026 | Mobile & GitHub Optimized
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let vocabList = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let masteredSet = new Set();
+        let currentCleanKana = "";
+        let currentAudioTargetItem = null;
+        let currentMode = "vocabList";
+        let isGameFinished = false; 
+        let currentLessonKey = "default_lesson";
+
+        // 獎勵圖片陣列 (支援 GitHub pic/ 或自訂上傳)
+        let rewardImagesArray = [];
+
+        // 頁面載入時自動嘗試從 GitHub vocab/ 讀取預設 XML
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromGitHub();
+        });
+
+        // 🌐 從 GitHub 讀取 XML
+        async function loadFromGitHub() {
+            const selectEl = document.getElementById('githubXmlSelect');
+            const filePath = selectEl.value;
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const xmlString = await response.text();
+                parseXMLString(xmlString, filePath);
+            } catch (err) {
+                console.warn("無法自動載入 GitHub XML (可能正在本地端測試，請改用手動上傳或範例)：", err);
+                // 若載入失敗自動帶入內建範例以便測試
+                loadDefaultSample();
+            }
+        }
+
+        // 📁 從 GitHub pic/ 檔案夾加載圖片 (預設嘗試讀取常見檔名，或由手動上傳補充)
+        async function loadGitHubPicFolder() {
+            const picPath = document.getElementById('picFolderPath').value.trim() || "pic/";
+            rewardImagesArray = [];
+            
+            // 嘗試自動探測 pic 資料夾內的常見圖片檔案
+            const commonNames = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', 'reward1.jpg', 'reward2.jpg', 'poke1.png', 'poke2.png', 'img1.jpg', 'img2.jpg'];
+            
+            for (let name of commonNames) {
+                const fullUrl = picPath + name;
+                try {
+                    const res = await fetch(fullUrl, { method: 'HEAD' });
+                    if (res.ok) {
+                        rewardImagesArray.push(fullUrl);
+                    }
+                } catch (e) {}
+            }
+
+            const statusEl = document.getElementById('folderStatus');
+            const countEl = document.getElementById('folderImgCount');
+            if (rewardImagesArray.length > 0) {
+                countEl.textContent = rewardImagesArray.length;
+                statusEl.classList.remove('hidden');
+                alert(`成功從 GitHub ${picPath} 掃描到 ${rewardImagesArray.length} 張獎勵圖片！`);
+            } else {
+                alert(`在 ${picPath} 未自動檢測到圖片。您仍可使用右側按鈕手動上傳圖片！`);
+            }
+        }
+
+        // 監聽手動上傳獎勵圖片
+        document.getElementById('folderInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const imgUrl = URL.createObjectURL(file);
+                    rewardImagesArray.push(imgUrl);
+                }
+            }
+            const statusEl = document.getElementById('folderStatus');
+            const countEl = document.getElementById('folderImgCount');
+            if (rewardImagesArray.length > 0) {
+                countEl.textContent = rewardImagesArray.length;
+                statusEl.classList.remove('hidden');
+            }
+        });
+
+        // 監聽 XML 檔案手動上傳
+        document.getElementById('xmlFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                parseXMLString(e.target.result, file.name);
+            };
+            reader.readAsText(file);
+        });
+
+        // 載入內建範例資料
+        function loadDefaultSample() {
+            const sampleXML = `<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary_list>
+    <lesson_name>第34課：實用生字特訓</lesson_name>
+    <item>
+        <id>1</id>
+        <type>自動詞</type>
+        <kanji>増えますⅡ [輸出が～]</kanji>
+        <kana>ふえますⅡ [ゆしゅつが～]</kana>
+        <pureKana>ふえます</pureKana>
+        <chinese>增加、增產</chinese>
+        <note>増えます Ⅱ</note>
+    </item>
+    <item>
+        <id>2</id>
+        <type>noun</type>
+        <kanji>[お]見舞い</kanji>
+        <kana>おみまい</kana>
+        <pureKana>おみまい</pureKana>
+        <chinese>探病、慰問</chinese>
+        <note>名詞</note>
+    </item>
+    <item>
+        <id>3</id>
+        <type>自動詞</type>
+        <kanji>減りますⅠ [輸出が～]</kanji>
+        <kana>へりますⅠ [ゆしゅつが～]</kana>
+        <pureKana>へります</pureKana>
+        <chinese>減少、減產</chinese>
+        <note>減ります Ⅰ</note>
+    </item>
+    <item>
+        <id>4</id>
+        <type>noun</type>
+        <kanji>ガソリン</kanji>
+        <kana>がそりん</kana>
+        <pureKana>がそりん</pureKana>
+        <chinese>汽油</chinese>
+        <note>名詞</note>
+    </item>
+</vocabulary_list>`;
+            parseXMLString(sampleXML, "範例課程 L34");
+        }
+
+        // 解析 XML 字串核心函數
+        function parseXMLString(xmlString, sourceName) {
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+                if (xmlDoc.querySelector("parsererror")) {
+                    alert('XML 格式錯誤，請檢查標籤。');
+                    return;
+                }
+
+                const lessonNameNode = xmlDoc.querySelector("lesson_name");
+                const lessonName = lessonNameNode ? lessonNameNode.textContent.trim() : sourceName;
+                document.getElementById('lessonTitleDisplay').textContent = lessonName;
+                currentLessonKey = lessonName;
+
+                const items = xmlDoc.querySelectorAll("item");
+                vocabList = [];
+                items.forEach((item, index) => {
+                    const type = item.querySelector("type") ? item.querySelector("type").textContent : "";
+                    const rawKanji = item.querySelector("kanji") ? item.querySelector("kanji").textContent : "";
+                    const rawKana = item.querySelector("kana") ? item.querySelector("kana").textContent : "";
+                    const chinese = item.querySelector("chinese") ? item.querySelector("chinese").textContent : "";
+                    const note = item.querySelector("note") ? item.querySelector("note").textContent : "";
+
+                    const pureKanaNode = item.querySelector("pureKana");
+                    let cleanKanaText = pureKanaNode ? pureKanaNode.textContent.trim() : "";
+                    if (!cleanKanaText) {
+                        cleanKanaText = cleanText(rawKana);
+                    }
+
+                    let formattedKanji = rawKanji.replace(/\[(.*?)\]/g, '<span class="text-slate-400 font-normal text-lg">[$1]</span>');
+
+                    vocabList.push({
+                        id: index,
+                        type,
+                        rawKanji,
+                        formattedKanji,
+                        cleanKanji: cleanText(rawKanji),
+                        rawKana,
+                        cleanKana: cleanKanaText,
+                        chinese,
+                        note
+                    });
+                });
+
+                if (vocabList.length === 0) {
+                    alert('找不到任何 <item> 項目！');
+                    return;
+                }
+
+                currentIndex = 0;
+                masteredSet.clear();
+                masteredSpellingSet.clear(); 
+                document.getElementById('totalCount').textContent = vocabList.length;
+                document.getElementById('totalCount2').textContent = vocabList.length;
+                document.getElementById('appContainer').classList.remove('hidden');
+
+                // 🌟 載入成功後自動隱藏上方的匯入框，並顯示「設定」按鈕
+                document.getElementById('importSection').classList.add('hidden');
+                document.getElementById('toggleConfigBtn').classList.remove('hidden');
+
+                renderVocabTable();
+                switchMode('vocabList');
+                updateStats();
+            } catch (err) {
+                console.error(err);
+                alert('解析 XML 時發生錯誤。');
+            }
+        }
+
+        // 切換顯示/隱藏最上方的匯入設定框
+        function toggleImportSection() {
+            const section = document.getElementById('importSection');
+            section.classList.toggle('hidden');
+        }
+
+        // 📖 渲染生字列表表格
+        function renderVocabTable() {
+            const tbody = document.getElementById('vocabTableBody');
+            tbody.innerHTML = '';
+            vocabList.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition cursor-pointer";
+                tr.onclick = () => playAudio(item.cleanKana);
+                tr.innerHTML = `
+                    <td class="p-2 md:p-3 font-mono text-slate-400">${index + 1}</td>
+                    <td class="p-2 md:p-3"><span class="bg-indigo-50 text-indigo-700 text-[10px] md:text-xs px-2 py-0.5 rounded-full font-medium">${item.type || '單字'}</span></td>
+                    <td class="p-2 md:p-3 font-bold text-slate-800 text-sm md:text-base">${item.formattedKanji}</td>
+                    <td class="p-2 md:p-3 text-indigo-600 font-medium">${item.rawKana}</td>
+                    <td class="p-2 md:p-3 text-emerald-600 font-bold">${item.chinese}</td>
+                    <td class="p-2 md:p-3 text-center">
+                        <button onclick="event.stopPropagation(); playAudio('${item.cleanKana}');" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-2.5 py-1 rounded-lg transition text-xs shadow-sm inline-flex items-center gap-1">
+                            <i class="fa-solid fa-volume-high"></i> 讀音
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 切換模式
+        function switchMode(mode) {
+            currentMode = mode;
+            isGameFinished = false; 
+            if (speedTimerInterval) clearInterval(speedTimerInterval);
+            if (fallingAnimTimeout) clearTimeout(fallingAnimTimeout);
+
+            const statsBar = document.getElementById('statsBar');
+            if (mode === 'flashcard') {
+                statsBar.classList.remove('hidden');
+            } else {
+                statsBar.classList.add('hidden');
+            }
+
+            ['vocabList', 'flashcard', 'speed', 'audioQuiz', 'falling', 'spelling', 'quiz'].forEach(m => {
+                document.getElementById(`mode-${m}`).classList.add('hidden');
+                document.getElementById(`btn-${m}`).className = "mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap";
+            });
+            document.getElementById(`mode-${mode}`).classList.remove('hidden');
+            document.getElementById(`btn-${mode}`).className = "mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-indigo-600 text-white shadow-sm transition whitespace-nowrap";
+
+            if (mode === 'speed') initSpeedChallenge();
+            if (mode === 'audioQuiz') initAudioQuiz();
+            if (mode === 'falling') initFallingGame();
+            if (mode === 'spelling') initSpelling();
+            if (mode === 'quiz') initQuiz();
+        }
+
+        // --- 1. 記憶閃卡 ---
+        function updateFlashcard() {
+            if (vocabList.length === 0) return;
+            const item = vocabList[currentIndex];
+            isFlipped = false;
+            currentCleanKana = item.cleanKana;
+
+            document.getElementById('cardFront').classList.remove('hidden');
+            document.getElementById('cardBack').classList.add('hidden');
+
+            document.getElementById('fcType').textContent = item.type || '單字';
+            document.getElementById('fcKanji').innerHTML = item.formattedKanji;
+            document.getElementById('fcKana').textContent = item.rawKana;
+            document.getElementById('fcChinese').textContent = item.chinese;
+            document.getElementById('fcNote').textContent = item.note || '無備註';
+            document.getElementById('currentIndex').textContent = currentIndex + 1;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                document.getElementById('cardFront').classList.add('hidden');
+                document.getElementById('cardBack').classList.remove('hidden');
+            } else {
+                document.getElementById('cardFront').classList.remove('hidden');
+                document.getElementById('cardBack').classList.add('hidden');
+            }
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % vocabList.length;
+            updateFlashcard();
+        }
+
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + vocabList.length) % vocabList.length;
+            updateFlashcard();
+        }
+
+        function markMastered() {
+            masteredSet.add(currentIndex);
+            updateStats();
+            nextCard();
+        }
+
+        function updateStats() {
+            document.getElementById('masteredCount').textContent = masteredSet.size;
+        }
+
+        // 🔊 語音朗讀
+        function playAudio(textToSpeak) {
+            if (!textToSpeak) return;
+            const pureText = cleanText(textToSpeak);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(pureText);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- 2. 閃卡限時挑戰 ---
+        let speedCorrectCount = 0;
+        let speedScoreVal = 0;
+        let speedQuestionCount = 0;
+        let speedStartTime = 0;
+        let speedTimerInterval = null;
+        let currentSpeedItem = null;
+        let speed10Items = [];
+
+        function initSpeedChallenge() {
+            speedScoreVal = 0;
+            speedQuestionCount = 0;
+            speedCorrectCount = 0;
+            isGameFinished = false;
+            speedStartTime = Date.now();
+            document.getElementById('speedScore').textContent = speedScoreVal;
+            document.getElementById('speedGameArea').classList.remove('hidden');
+            document.getElementById('speedResultArea').classList.add('hidden');
+
+            const rewardBtn = document.getElementById('speedRewardBtn');
+            rewardBtn.dataset.claimed = "false";
+            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
+            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
+
+            speed10Items = [];
+            for (let i = 0; i < 10; i++) {
+                speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+            }
+
+            if (speedTimerInterval) clearInterval(speedTimerInterval);
+            speedTimerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - speedStartTime) / 1000);
+                document.getElementById('speedTimeElapsed').textContent = elapsed;
+            }, 1000);
+
+            nextSpeedQuestion();
+        }
+
+        function nextSpeedQuestion() {
+            if (speedQuestionCount >= 10) {
+                endSpeedChallenge();
+                return;
+            }
+            speedQuestionCount++;
+            document.getElementById('speedCurrentQ').textContent = speedQuestionCount;
+
+            currentSpeedItem = speed10Items[speedQuestionCount - 1];
+            document.getElementById('speedKanji').innerHTML = currentSpeedItem.formattedKanji;
+            document.getElementById('speedKana').textContent = currentSpeedItem.rawKana;
+
+            let options = [currentSpeedItem.chinese];
+            while (options.length < 4 && options.length < vocabList.length) {
+                const rand = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('speedOptions');
+            optContainer.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.id = "speed-opt-" + idx;
+                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl font-medium text-slate-700 transition shadow-sm text-center relative text-sm md:text-base";
+                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">[${idx + 1}]</span> ${opt}`;
+                btn.onclick = () => {
+                    if (isGameFinished) return;
+                    if (opt === currentSpeedItem.chinese) {
+                        speedScoreVal += 10;
+                        speedCorrectCount++;
+                        document.getElementById('speedScore').textContent = speedScoreVal;
+                        playBuzzer('correct');
+                    } else {
+                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
+                        playBuzzer('wrong');
+                    }
+                    setTimeout(nextSpeedQuestion, 400);
+                };
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function endSpeedChallenge() {
+            if (speedTimerInterval) clearInterval(speedTimerInterval);
+            isGameFinished = true; 
+            const totalTime = Math.floor((Date.now() - speedStartTime) / 1000);
+            const accuracy = (speedCorrectCount / 10) * 100;
+
+            document.getElementById('speedGameArea').classList.add('hidden');
+            document.getElementById('speedResultArea').classList.remove('hidden');
+
+            const unlockBox = document.getElementById('speedUnlockBox');
+            const failBox = document.getElementById('speedFailBox');
+
+            if (accuracy >= 80) {
+                playBuzzer('celebrate');
+                unlockBox.classList.remove('hidden');
+                failBox.classList.add('hidden');
+                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖獎勵圖片：`;
+                triggerWinModal('speed');
+            } else {
+                playBuzzer('wrong');
+                unlockBox.classList.add('hidden');
+                failBox.classList.remove('hidden');
+            }
+
+            document.getElementById('speedLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 限時挑戰 Top 5`;
+            const storageKey = `vocab_speed_leaderboard_${currentLessonKey}`;
+            let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            leaderboard.push({ score: speedScoreVal, time: totalTime, date: new Date().toLocaleDateString() });
+            leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
+            leaderboard = leaderboard.slice(0, 5);
+            localStorage.setItem(storageKey, JSON.stringify(leaderboard));
+
+            const listEl = document.getElementById('speedLeaderboardList');
+            listEl.innerHTML = '';
+            leaderboard.forEach((entry, idx) => {
+                const li = document.createElement('li');
+                li.textContent = `第 ${idx + 1} 名：得分 ${entry.score} 分，耗時 ${entry.time} 秒 (${entry.date})`;
+                listEl.appendChild(li);
+            });
+        }
+
+        // --- 3. 盲聽選漢字遊戲 ---
+        let audioQuestionCount = 0;
+        let audioScoreVal = 0;
+        let audioCorrectCount = 0;
+        let audio10Items = [];
+
+        function initAudioQuiz() {
+            if (vocabList.length === 0) return;
+            audioQuestionCount = 0;
+            audioScoreVal = 0;
+            audioCorrectCount = 0;
+            isGameFinished = false;
+
+            document.getElementById('audioQuizGameArea').classList.remove('hidden');
+            document.getElementById('audioQuizResultArea').classList.add('hidden');
+
+            const rewardBtn = document.getElementById('audioRewardBtn');
+            rewardBtn.dataset.claimed = "false";
+            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
+            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
+
+            audio10Items = [];
+            for (let i = 0; i < 10; i++) {
+                audio10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+            }
+
+            nextAudioQuestion();
+        }
+
+        function nextAudioQuestion() {
+            if (audioQuestionCount >= 10) {
+                endAudioQuiz();
+                return;
+            }
+            audioQuestionCount++;
+            document.getElementById('audioCurrentQ').textContent = audioQuestionCount;
+
+            const item = audio10Items[audioQuestionCount - 1];
+            currentAudioTargetItem = item;
+
+            document.getElementById('revealHintBtn').classList.remove('hidden');
+            const meaningDiv = document.getElementById('audioQuizMeaning');
+            meaningDiv.textContent = `中文提示：${item.chinese}`;
+            meaningDiv.classList.add('hidden');
+            document.getElementById('audioQuizResult').textContent = '';
+
+            playAudio(item.cleanKana);
+
+            let options = [item.rawKanji];
+            while (options.length < 4 && options.length < vocabList.length) {
+                const randItem = vocabList[Math.floor(Math.random() * vocabList.length)];
+                if (!options.includes(randItem.rawKanji)) {
+                    options.push(randItem.rawKanji);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('audioQuizOptions');
+            container.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.id = "audio-opt-" + idx;
+                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl font-bold text-slate-700 transition text-lg md:text-xl shadow-sm relative";
+                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal">[${idx + 1}]</span> ${opt}`;
+                btn.onclick = () => {
+                    if (isGameFinished) return;
+                    if (opt === item.rawKanji) {
+                        audioScoreVal += 10;
+                        audioCorrectCount++;
+                        document.getElementById('audioScore').textContent = audioScoreVal;
+                        document.getElementById('audioQuizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！</span>`;
+                        playBuzzer('correct');
+                        setTimeout(nextAudioQuestion, 1000);
+                    } else {
+                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
+                        document.getElementById('audioQuizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯囉，再聽一次！</span>`;
+                        playBuzzer('wrong');
+                        playAudio(item.cleanKana);
+                    }
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function endAudioQuiz() {
+            isGameFinished = true;
+            document.getElementById('audioQuizGameArea').classList.add('hidden');
+            document.getElementById('audioQuizResultArea').classList.remove('hidden');
+
+            const unlockBox = document.getElementById('audioUnlockBox');
+            const failBox = document.getElementById('audioFailBox');
+            const accuracy = (audioCorrectCount / 10) * 100;
+
+            if (accuracy >= 80) {
+                playBuzzer('celebrate');
+                unlockBox.classList.remove('hidden');
+                failBox.classList.add('hidden');
+                document.getElementById('audioUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖獎勵圖片：`;
+                triggerWinModal('audio');
+            } else {
+                playBuzzer('wrong');
+                unlockBox.classList.add('hidden');
+                failBox.classList.remove('hidden');
+            }
+        }
+
+        function revealAudioHint() {
+            document.getElementById('audioQuizMeaning').classList.remove('hidden');
+            document.getElementById('revealHintBtn').classList.add('hidden');
+        }
+
+        // --- 4. 掉落方塊遊戲 ---
+        let fallingScoreVal = 0;
+        let fallingLivesVal = 3;
+        let fallingQuestionCount = 0;
+        let currentFallingItem = null;
+        let fallingAnimTimeout = null;
+        let falling10Items = [];
+        let isFallingInputLocked = false;
+        let fallingCorrectCount = 0;
+
+        function initFallingGame() {
+            fallingScoreVal = 0;
+            fallingLivesVal = 3;
+            fallingQuestionCount = 0;
+            fallingCorrectCount = 0;
+            isGameFinished = false;
+            isFallingInputLocked = false;
+            document.getElementById('fallingScore').textContent = fallingScoreVal;
+            document.getElementById('fallingLives').textContent = "❤️❤️❤️";
+            document.getElementById('fallingGameArea').classList.remove('hidden');
+            document.getElementById('fallingResultArea').classList.add('hidden');
+            document.getElementById('fallingWinBox').classList.add('hidden');
+
+            const rewardBtn = document.getElementById('fallingRewardBtn');
+            rewardBtn.dataset.claimed = "false";
+            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
+            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
+
+            falling10Items = [];
+            for (let i = 0; i < 10; i++) {
+                falling10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+            }
+
+            nextFallingBlock();
+        }
+
+        function getFallingDuration() {
+            const speedSetting = document.getElementById('fallingSpeedSelect').value;
+            if (speedSetting === 'slow') return 12000;
+            if (speedSetting === 'normal') return 8000;
+            if (speedSetting === 'fast') return 5000;
+            return 8000;
+        }
+
+        function nextFallingBlock() {
+            if (currentMode !== 'falling') return;
+            if (fallingAnimTimeout) clearTimeout(fallingAnimTimeout);
+            isFallingInputLocked = false;
+
+            if (fallingQuestionCount >= 10 || fallingLivesVal <= 0) {
+                endFallingGame(fallingLivesVal > 0);
+                return;
+            }
+
+            fallingQuestionCount++;
+            document.getElementById('fallingCurrentQ').textContent = fallingQuestionCount;
+
+            currentFallingItem = falling10Items[fallingQuestionCount - 1];
+            document.getElementById('fallingChinese').textContent = `中文提示：${currentFallingItem.chinese}`;
+            document.getElementById('fallingKanji').innerHTML = currentFallingItem.formattedKanji;
+            document.getElementById('fallingInput').value = '';
+            document.getElementById('fallingResult').textContent = '';
+            document.getElementById('fallingInput').focus();
+
+            const block = document.getElementById('fallingBlock');
+            block.style.transition = 'none';
+            block.style.top = '0px';
+
+            playAudio(currentFallingItem.cleanKana);
+
+            let fallDuration = getFallingDuration();
+
+            setTimeout(() => {
+                block.style.transition = `top ${fallDuration}ms linear`;
+                block.style.top = '190px';
+            }, 50);
+
+            fallingAnimTimeout = setTimeout(() => {
+                if (isFallingInputLocked) return;
+                isFallingInputLocked = true;
+                fallingLivesVal--;
+                updateFallingLivesDisplay();
+                playBuzzer('wrong');
+                document.getElementById('fallingResult').innerHTML = `<span class="text-rose-500 font-bold">💥 方塊落地！扣 1 命</span>`;
+                if (fallingLivesVal <= 0) {
+                    endFallingGame(false);
+                } else {
+                    setTimeout(nextFallingBlock, 1200);
+                }
+            }, fallDuration + 50);
+        }
+
+        function updateFallingLivesDisplay() {
+            let hearts = "";
+            for (let i = 0; i < fallingLivesVal; i++) hearts += "❤️";
+            for (let i = fallingLivesVal; i < 3; i++) hearts += "🖤";
+            document.getElementById('fallingLives').textContent = hearts;
+        }
+
+        function checkFallingInput() {
+            if (!currentFallingItem || isFallingInputLocked) return;
+            const userAns = document.getElementById('fallingInput').value.trim();
+            const targetClean = cleanText(currentFallingItem.cleanKana);
+
+            if (userAns === targetClean) {
+                isFallingInputLocked = true; 
+                if (fallingAnimTimeout) clearTimeout(fallingAnimTimeout);
+                fallingScoreVal += 10;
+                fallingCorrectCount++;
+                document.getElementById('fallingScore').textContent = fallingScoreVal;
+                playBuzzer('correct');
+                document.getElementById('fallingResult').innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> 消滅方塊！</span>`;
+                setTimeout(nextFallingBlock, 600);
+            }
+        }
+
+        function endFallingGame(isWin) {
+            if (fallingAnimTimeout) clearTimeout(fallingAnimTimeout);
+            isGameFinished = true; 
+            document.getElementById('fallingGameArea').classList.add('hidden');
+            document.getElementById('fallingResultArea').classList.remove('hidden');
+
+            const titleEl = document.getElementById('fallingResultTitle');
+            const winBox = document.getElementById('fallingWinBox');
+            const failBox = document.getElementById('fallingFailBox');
+            const accuracy = (fallingCorrectCount / 10) * 100;
+
+            if (isWin && accuracy >= 80) {
+                titleEl.innerHTML = "🎉 掉落方塊挑戰成功！";
+                playBuzzer('celebrate');
+                winBox.classList.remove('hidden');
+                failBox.classList.add('hidden');
+                triggerWinModal('falling');
+            } else {
+                titleEl.innerHTML = "💥 遊戲結束";
+                playBuzzer('wrong');
+                winBox.classList.add('hidden');
+                failBox.classList.remove('hidden');
+            }
+
+            document.getElementById('fallingLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 掉落方塊 Top 5`;
+            const storageKey = `vocab_falling_leaderboard_${currentLessonKey}`;
+            let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            leaderboard.push({ score: fallingScoreVal, lives: fallingLivesVal, date: new Date().toLocaleDateString() });
+            leaderboard.sort((a, b) => b.score - a.score || b.lives - a.lives);
+            leaderboard = leaderboard.slice(0, 5);
+            localStorage.setItem(storageKey, JSON.stringify(leaderboard));
+
+            const listEl = document.getElementById('fallingLeaderboardList');
+            listEl.innerHTML = '';
+            leaderboard.forEach((entry, idx) => {
+                const li = document.createElement('li');
+                li.textContent = `第 ${idx + 1} 名：得分 ${entry.score} 分 (剩餘生命: ${entry.lives}) - ${entry.date}`;
+                listEl.appendChild(li);
+            });
+        }
+
+        // --- 5. 聽寫與拼字特訓 ---
+        let masteredSpellingSet = new Set();
+        let spellingPool = [];
+        let currentSpellingItem = null;
+        let isSpellingLocked = false;
+        let spellingTotalInitialCount = 0;
+
+        function initSpelling() {
+            if (vocabList.length === 0) return;
+            isGameFinished = false;
+            isSpellingLocked = false;
+
+            document.getElementById('spellingGameArea').classList.remove('hidden');
+            document.getElementById('spellingResultArea').classList.add('hidden');
+            document.getElementById('spellingCorrectionHint').classList.add('hidden');
+
+            const rewardBtn = document.getElementById('spellingRewardBtn');
+            rewardBtn.dataset.claimed = "false";
+            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
+            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
+
+            spellingTotalInitialCount = vocabList.length;
+            document.getElementById('totalSpellingCount').textContent = spellingTotalInitialCount;
+            document.getElementById('masteredSpellingCount').textContent = masteredSpellingSet.size;
+
+            const unmasteredList = vocabList.filter(item => !masteredSpellingSet.has(item.id));
+
+            if (unmasteredList.length === 0) {
+                document.getElementById('spellingGameArea').classList.add('hidden');
+                document.getElementById('spellingResultArea').classList.remove('hidden');
+                document.getElementById('spellingResultTitle').textContent = "🌟 所有生字全部已精通！";
+                document.getElementById('spellingResultDesc').textContent = "你已經完全掌握了此課程的所有生字！";
+                document.getElementById('spellingWinBox').classList.remove('hidden');
+                playBuzzer('celebrate');
+                triggerWinModal('spelling');
+                return;
+            }
+
+            spellingPool = [];
+            let sourcePool = [...unmasteredList].sort(() => Math.random() - 0.5).slice(0, 10);
+            sourcePool.forEach(item => {
+                spellingPool.push({ ...item, streak: 0 });
+            });
+
+            nextSpellingQuestion();
+        }
+
+        function nextSpellingQuestion() {
+            if (spellingPool.length === 0) {
+                isGameFinished = true; 
+                document.getElementById('spellingGameArea').classList.add('hidden');
+                document.getElementById('spellingResultArea').classList.remove('hidden');
+                document.getElementById('spellingResultTitle').textContent = "🏆 本輪聽寫特訓完美通關！";
+                document.getElementById('spellingResultDesc').textContent = "本輪未精通生字已全數達成連續答對 2 次！";
+                document.getElementById('spellingWinBox').classList.remove('hidden');
+                playBuzzer('celebrate');
+                triggerWinModal('spelling');
+                return;
+            }
+
+            document.getElementById('spellingCorrectionHint').classList.add('hidden');
+            document.getElementById('spellingProgressText').textContent = `剩餘待通關：${spellingPool.length}`;
+            currentSpellingItem = spellingPool[0];
+            document.getElementById('spellingStreakText').textContent = `✨ 連續答對：${currentSpellingItem.streak} / 2 次`;
+            document.getElementById('spellingChinese').textContent = currentSpellingItem.chinese;
+            document.getElementById('spellingInput').value = '';
+            document.getElementById('spellingResult').textContent = '';
+            document.getElementById('spellingInput').focus();
+            isSpellingLocked = false; 
+        }
+
+        function checkSpelling() {
+            if (isSpellingLocked) return; 
+            const inputEl = document.getElementById('spellingInput');
+            const userAns = inputEl.value.trim();
+            const resDiv = document.getElementById('spellingResult');
+            const targetClean = cleanText(currentSpellingItem.cleanKana);
+
+            if (userAns === targetClean) {
+                isSpellingLocked = true; 
+                playBuzzer('correct');
+                document.getElementById('spellingCorrectionHint').classList.add('hidden');
+                currentSpellingItem.streak++;
+                if (currentSpellingItem.streak >= 2) {
+                    masteredSpellingSet.add(currentSpellingItem.id);
+                    document.getElementById('masteredSpellingCount').textContent = masteredSpellingSet.size;
+
+                    resDiv.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對！此生字永久精通！</span>`;
+                    spellingPool.shift();
+                } else {
+                    resDiv.innerHTML = `<span class="text-indigo-600 font-bold"><i class="fa-solid fa-check"></i> 答對 1 次！還需 1 次</span>`;
+                    const item = spellingPool.shift();
+                    spellingPool.push(item);
+                }
+                setTimeout(nextSpellingQuestion, 1000); 
+            } else {
+                playBuzzer('wrong');
+                currentSpellingItem.streak = 0;
+                document.getElementById('correctKanaTarget').textContent = targetClean;
+                document.getElementById('spellingCorrectionHint').classList.remove('hidden');
+                inputEl.value = "";
+                inputEl.focus();
+                resDiv.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> 答錯了！請重新輸入！</span>`;
+            }
+        }
+
+        // --- 6. 意思配對消除 ---
+        let quizQuestionCount = 0;
+        let quizScoreVal = 0;
+        let quizCorrectCount = 0;
+        let quiz10Items = [];
+
+        function initQuiz() {
+            if (vocabList.length === 0) return;
+            quizQuestionCount = 0;
+            quizScoreVal = 0;
+            quizCorrectCount = 0;
+            isGameFinished = false;
+
+            document.getElementById('quizGameArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+
+            const rewardBtn = document.getElementById('quizRewardBtn');
+            rewardBtn.dataset.claimed = "false";
+            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
+            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
+
+            quiz10Items = [];
+            for (let i = 0; i < 10; i++) {
+                quiz10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+            }
+
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            if (quizQuestionCount >= 10) {
+                endQuiz();
+                return;
+            }
+            quizQuestionCount++;
+            document.getElementById('quizCurrentQ').textContent = quizQuestionCount;
+
+            const currentItem = quiz10Items[quizQuestionCount - 1];
+            document.getElementById('quizKanji').innerHTML = currentItem.formattedKanji;
+            document.getElementById('quizKana').textContent = currentItem.rawKana;
+            document.getElementById('quizResult').textContent = '';
+
+            let options = [currentItem.chinese];
+            while (options.length < 4 && options.length < vocabList.length) {
+                const rand = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('quizOptions');
+            container.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.id = "quiz-opt-" + idx;
+                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl font-medium text-slate-700 transition text-left shadow-sm text-sm md:text-base relative";
+                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal">[${idx + 1}]</span> <span class="ml-6">${opt}</span>`;
+                btn.onclick = () => {
+                    if (isGameFinished) return;
+                    if (opt === currentItem.chinese) {
+                        quizScoreVal += 10;
+                        quizCorrectCount++;
+                        document.getElementById('quizScore').textContent = quizScoreVal;
+                        document.getElementById('quizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！</span>`;
+                        playBuzzer('correct');
+                        setTimeout(nextQuizQuestion, 1000);
+                    } else {
+                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
+                        document.getElementById('quizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯了！</span>`;
+                        playBuzzer('wrong');
+                    }
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function endQuiz() {
+            isGameFinished = true;
+            document.getElementById('quizGameArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+
+            const unlockBox = document.getElementById('quizUnlockBox');
+            const failBox = document.getElementById('quizFailBox');
+            const accuracy = (quizCorrectCount / 10) * 100;
+
+            if (accuracy >= 80) {
+                playBuzzer('celebrate');
+                unlockBox.classList.remove('hidden');
+                failBox.classList.add('hidden');
+                triggerWinModal('quiz');
+            } else {
+                playBuzzer('wrong');
+                unlockBox.classList.add('hidden');
+                failBox.classList.remove('hidden');
+            }
+        }
+
+        // --- 獎勵圖片彈窗與音效 ---
+        function triggerWinModal(modeKey) {
+            const btn = document.getElementById(`${modeKey}RewardBtn`);
+            if (btn.dataset.claimed === "true") return;
+
+            btn.dataset.claimed = "true";
+            btn.classList.remove('bg-pink-600', 'hover:bg-pink-700', 'shadow-md');
+            btn.classList.add('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> 獎勵已領取`;
+
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const sourceText = document.getElementById('modalSourceText');
+
+            if (rewardImagesArray.length > 0) {
+                const randomIndex = Math.floor(Math.random() * rewardImagesArray.length);
+                modalImg.src = rewardImagesArray[randomIndex];
+                sourceText.innerHTML = `來源：pic/ 資料夾或自訂上傳 (${rewardImagesArray.length}張中隨機)`;
+            } else {
+                // 備用 Pokemon 圖片
+                const pokemonFallbacks = [
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+                ];
+                const randomIndex = Math.floor(Math.random() * pokemonFallbacks.length);
+                modalImg.src = pokemonFallbacks[randomIndex];
+                sourceText.innerHTML = `來源：備用精選圖片 (請在 pic/ 放置圖片以使用自訂圖庫)`;
+            }
+            modal.showModal();
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').close();
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBuzzer(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.setValueAtTime(880, now + 0.1);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.setValueAtTime(100, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else if (type === 'celebrate') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    g.gain.setValueAtTime(0.15, now + idx * 0.1);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.4);
+                    o.start(now + idx * 0.1); o.stop(now + idx * 0.1 + 0.4);
+                });
+            }
+        }
+
+        function cleanText(text) {
+            if (!text) return "";
+            return text.replace(/\[.*?\]/g, '').replace(/[ⅠⅡⅢivxIVXⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+/g, '').replace(/\b[1-3]\b/g, '').replace(/\s+/g, '').trim();
+        }
+    </script>
+</body>
+</html>
