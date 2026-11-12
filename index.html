@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日語生字遊戲化互動溫習系統 v31 (GitHub自動載入與介面收納)</title>
+    <title>日語生字遊戲化互動溫習系統 v32 (抽牌解鎖與動態掃描)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -20,6 +20,22 @@
             background-color: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(4px);
         }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .card-flip {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .card-flip.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            backface-visibility: hidden;
+        }
+        .card-back-face {
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -31,9 +47,8 @@
                 <i class="fa-solid fa-gamepad"></i> 日語生字遊戲化溫習系統
             </h1>
             <div class="flex items-center gap-2">
-                <span id="lessonTitleDisplay" class="text-xs md:text-sm bg-indigo-700 px-3 py-1 rounded-full text-indigo-100">尚未載入課程</span>
-                <!-- 重新顯示設定按鈕 (當上方框隱藏時可點此展開) -->
-                <button id="toggleConfigBtn" onclick="toggleImportSection()" class="hidden text-xs bg-indigo-500 hover:bg-indigo-400 text-white px-2.5 py-1 rounded-lg transition">
+                <span id="lessonTitleDisplay" class="text-xs md:text-sm bg-indigo-700 px-3 py-1 rounded-full text-indigo-100">請先選取詞庫</span>
+                <button id="toggleConfigBtn" onclick="toggleImportSection()" class="text-xs bg-indigo-500 hover:bg-indigo-400 text-white px-2.5 py-1 rounded-lg transition">
                     <i class="fa-solid fa-gear"></i> 設定
                 </button>
             </div>
@@ -43,42 +58,46 @@
     <!-- Main Container -->
     <main class="max-w-4xl w-full mx-auto px-3 md:px-4 py-4 md:py-8 flex-grow space-y-4">
 
-        <!-- 1. 匯入 XML 與 圖片設定 (載入後會自動隱藏) -->
+        <!-- 1. 匯入 XML 與 圖片設定 -->
         <section id="importSection" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4 transition-all">
             <div class="flex justify-between items-center">
                 <h2 class="text-base md:text-lg font-semibold flex items-center gap-2 text-indigo-600">
-                    <i class="fa-solid fa-file-code"></i> 第一步：載入 GitHub 遠端生字與獎勵圖庫
+                    <i class="fa-solid fa-file-code"></i> 第一步：選取 GitHub `vocab/` 詞庫與獎勵圖庫
                 </h2>
             </div>
             
+            <!-- 提示訊息 -->
+            <div id="vocabNotice" class="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-3 py-2 rounded-lg">
+                ⚠️ <strong>提示：</strong>請先從下方選取或上傳詞庫 XML 檔案，系統才會解鎖遊戲與溫習功能！
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- GitHub vocab/ 自動載入區 -->
+                <!-- GitHub vocab/ 動態掃描載入區 -->
                 <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
                     <label class="block text-sm font-medium text-indigo-900">
-                        <i class="fa-brands fa-github"></i> 從 GitHub `vocab/` 資料夾載入：
+                        <i class="fa-brands fa-github"></i> 從 GitHub `vocab/` 資料夾選取：
                     </label>
                     <div class="flex gap-2">
                         <select id="githubXmlSelect" class="flex-grow text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <option value="vocab/L34.xml">vocab/L34.xml (預設)</option>
-                            <!-- 可自行在此新增其他課數檔案 -->
+                            <option value="">-- 請選擇 vocab 內的 XML --</option>
+                            <option value="vocab/L34.xml">vocab/L34.xml</option>
                             <option value="vocab/L35.xml">vocab/L35.xml</option>
                         </select>
                         <button onclick="loadFromGitHub()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
                             讀取
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：系統將透過相對路徑直接抓取專案 `vocab/` 內的 XML。</p>
+                    <p class="text-[11px] text-slate-500">提示：若新增了其他課數 XML，可直接在此選擇或手動上傳。</p>
                 </div>
 
-                <!-- 手動上傳或貼上備用 -->
+                <!-- 手動上傳 XML -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-slate-700">或手動上傳 XML / 貼上內容：</label>
+                    <label class="block text-sm font-medium text-slate-700">或手動上傳自訂 XML 檔案：</label>
                     <input type="file" id="xmlFileInput" accept=".xml" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-slate-300 rounded-lg">
-                    <button onclick="loadDefaultSample()" class="text-xs text-indigo-600 hover:underline">載入內建範例資料</button>
                 </div>
             </div>
 
-            <!-- 📁 獎勵圖片來源設定 (pic/ 資料夾隨機 或 自訂上傳) -->
+            <!-- 📁 獎勵圖片資料夾批次匯入設定 (pic/) -->
             <div class="pt-4 border-t border-slate-100 space-y-3">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <div>
@@ -93,8 +112,8 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">或自訂上傳本地獎勵圖片 (可多選)：</label>
-                        <input type="file" id="folderInput" multiple accept="image/png, image/jpeg, image/jpg" class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer border border-amber-200 rounded-lg w-full">
+                        <label class="block text-xs font-medium text-slate-700 mb-1">或一鍵批次選取本地 `pic` 資料夾：</label>
+                        <input type="file" id="folderInput" webkitdirectory directory multiple accept="image/png, image/jpeg, image/jpg" class="text-xs text-slate-500 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer border border-amber-200 rounded-lg w-full">
                     </div>
                 </div>
                 <div id="folderStatus" class="text-xs font-medium text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg hidden">
@@ -105,7 +124,7 @@
 
         <!-- 2. 溫習與遊戲模式導航 (初始隱藏) -->
         <div id="appContainer" class="hidden space-y-4">
-            <!-- 模式切換按鈕 (支援手機左右滾動) -->
+            <!-- 模式切換按鈕 (標題無括號) -->
             <div class="flex overflow-x-auto pb-2 gap-2 justify-start md:justify-center no-scrollbar">
                 <button onclick="switchMode('vocabList')" id="btn-vocabList" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-indigo-600 text-white shadow-sm transition whitespace-nowrap">
                     <i class="fa-solid fa-list mr-1"></i> 生字列表
@@ -114,25 +133,25 @@
                     <i class="fa-solid fa-clone mr-1"></i> 記憶閃卡
                 </button>
                 <button onclick="switchMode('speed')" id="btn-speed" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
-                    <i class="fa-solid fa-bolt mr-1"></i> 限時挑戰 (10題)
+                    <i class="fa-solid fa-bolt mr-1"></i> 限時挑戰
                 </button>
                 <button onclick="switchMode('audioQuiz')" id="btn-audioQuiz" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
-                    <i class="fa-solid fa-headphones mr-1"></i> 盲聽選漢字 (10題)
+                    <i class="fa-solid fa-headphones mr-1"></i> 盲聽選漢字
                 </button>
                 <button onclick="switchMode('falling')" id="btn-falling" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
-                    <i class="fa-solid fa-cube mr-1"></i> 掉落方塊 (10題/3命)
+                    <i class="fa-solid fa-cube mr-1"></i> 掉落方塊
                 </button>
                 <button onclick="switchMode('spelling')" id="btn-spelling" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
                     <i class="fa-solid fa-keyboard mr-1"></i> 聽寫特訓
                 </button>
                 <button onclick="switchMode('quiz')" id="btn-quiz" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
-                    <i class="fa-solid fa-gamepad mr-1"></i> 配對消除 (10題)
+                    <i class="fa-solid fa-gamepad mr-1"></i> 配對消除
                 </button>
             </div>
 
-            <!-- 鍵盤與手機操作提示列 -->
+            <!-- 操作提示列 -->
             <div class="bg-indigo-50 border border-indigo-100 text-indigo-800 text-[11px] md:text-xs px-3 py-2 rounded-lg flex flex-wrap justify-center gap-3">
-                <span>💡 <b>提示：</b>點擊生字或按 [↑鍵] 可隨時聆聽發音</span>
+                <span>⌨️ <b>快捷鍵：</b> [←/→] 切換閃卡 | [空白鍵] 翻面 | [↑鍵] 播放讀音 | [1-4] 選擇選項 | [Enter] 提交</span>
             </div>
 
             <!-- 統計資訊列 (只在記憶閃卡模式顯示) -->
@@ -178,7 +197,7 @@
                             <div id="fcKanji" class="text-3xl md:text-5xl font-bold text-slate-800 mb-2">--</div>
                             <div id="fcKana" class="text-lg md:text-xl text-indigo-600 font-medium">--</div>
                             <button onclick="event.stopPropagation(); playAudio(currentCleanKana);" class="mt-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-4 py-2.5 rounded-full transition text-xs md:text-sm inline-flex items-center gap-2 shadow-sm">
-                                <i class="fa-solid fa-volume-high"></i> 播放發音
+                                <i class="fa-solid fa-volume-high"></i> 播放發音 (↑鍵)
                             </button>
                         </div>
                         <div id="cardBack" class="hidden flex flex-col justify-center items-center h-full">
@@ -187,19 +206,19 @@
                             <div id="fcNote" class="text-xs md:text-sm text-slate-500 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">--</div>
                         </div>
                         <div class="text-[11px] text-slate-400 absolute bottom-3 left-0 right-0 text-center">
-                            <i class="fa-solid fa-rotate mr-1"></i> 點擊卡片翻面
+                            <i class="fa-solid fa-rotate mr-1"></i> 點擊卡片或按「空白鍵」翻面
                         </div>
                     </div>
                 </div>
                 <div class="flex gap-2 md:gap-4 justify-center pt-2">
                     <button onclick="prevCard()" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl font-medium text-xs md:text-sm text-slate-700 transition">
-                        <i class="fa-solid fa-arrow-left mr-1"></i> 上一個
+                        <i class="fa-solid fa-arrow-left mr-1"></i> 上一個 (←)
                     </button>
                     <button onclick="markMastered()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-xs md:text-sm shadow-sm transition">
-                        <i class="fa-solid fa-check mr-1"></i> 記住了！
+                        <i class="fa-solid fa-check mr-1"></i> 記住了！ (Enter)
                     </button>
                     <button onclick="nextCard()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition">
-                        下一個 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        下一個 (→) <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
                 </div>
             </div>
@@ -221,13 +240,13 @@
                 <div id="speedResultArea" class="hidden text-center space-y-4">
                     <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 挑戰完成！</h3>
                     <div id="speedUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p id="speedUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
-                        <button id="speedRewardBtn" onclick="triggerWinModal('speed')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        <p id="speedUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <button id="speedRewardBtn" onclick="startCardDrawModal('speed')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
                     <div id="speedFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
-                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片，再接再厲！
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖抽牌，再接再厲！
                     </div>
                     <div class="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
                         <h4 id="speedLeaderboardTitle" class="font-bold text-slate-700 text-xs md:text-sm mb-2 flex items-center gap-1">
@@ -249,9 +268,9 @@
                         <span>得分：<strong id="audioScore" class="text-lg">0</strong></span>
                     </div>
                     <div>
-                        <div class="text-xs md:text-sm text-slate-500 mb-2">請聆聽發音，並選出對應的正確漢字 / 寫法：</div>
+                        <div class="text-xs md:text-sm text-slate-500 mb-2">請聆聽發音（按 ↑ 鍵重播），並選出對應的正確漢字 / 寫法：</div>
                         <button onclick="playAudio(currentAudioTargetItem.cleanKana)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-2xl shadow-md transition text-base md:text-lg inline-flex items-center gap-2">
-                            <i class="fa-solid fa-volume-high"></i> 點擊播放發音
+                            <i class="fa-solid fa-volume-high"></i> 點擊播放發音 (↑鍵)
                         </button>
                         <div class="mt-4">
                             <button id="revealHintBtn" onclick="revealAudioHint()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg border border-slate-300 transition">
@@ -267,13 +286,13 @@
                 <div id="audioQuizResultArea" class="hidden text-center space-y-4">
                     <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 盲聽挑戰完成！</h3>
                     <div id="audioUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p id="audioUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
-                        <button id="audioRewardBtn" onclick="triggerWinModal('audio')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        <p id="audioUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <button id="audioRewardBtn" onclick="startCardDrawModal('audio')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
                     <div id="audioFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
-                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片。
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖抽牌。
                     </div>
                     <button onclick="initAudioQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
                         再次挑戰
@@ -304,7 +323,7 @@
                         </div>
                     </div>
                     <div class="max-w-md mx-auto space-y-2 text-center">
-                        <input type="text" id="fallingInput" placeholder="輸入方塊對應的平假名..." class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                        <input type="text" id="fallingInput" placeholder="輸入方塊對應的平假名... (Enter 提交)" class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
                         <div id="fallingResult" class="text-xs md:text-sm font-medium h-6"></div>
                     </div>
                 </div>
@@ -312,13 +331,13 @@
                 <div id="fallingResultArea" class="hidden text-center space-y-4">
                     <h3 class="text-xl md:text-2xl font-bold text-indigo-600" id="fallingResultTitle">遊戲結束</h3>
                     <div id="fallingWinBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
-                        <button id="fallingRewardBtn" onclick="triggerWinModal('falling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <button id="fallingRewardBtn" onclick="startCardDrawModal('falling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
                     <div id="fallingFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
-                        ❌ 正確率未達 80% 或生命耗盡，無法解鎖獎勵圖片。
+                        ❌ 正確率未達 80% 或生命耗盡，無法解鎖抽牌。
                     </div>
                     <div class="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
                         <h4 id="fallingLeaderboardTitle" class="font-bold text-slate-700 text-xs md:text-sm mb-2 flex items-center gap-1">
@@ -347,11 +366,11 @@
                         <div class="text-xs md:text-sm text-slate-400 mb-1">請根據中文意思拼出平假名：</div>
                         <div id="spellingChinese" class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">--</div>
                         <button onclick="playAudio(currentSpellingItem.cleanKana)" class="inline-flex items-center gap-2 text-xs md:text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">
-                            <i class="fa-solid fa-volume-high"></i> 播放語音提示
+                            <i class="fa-solid fa-volume-high"></i> 播放語音提示 (↑鍵)
                         </button>
                     </div>
                     <div class="max-w-md mx-auto space-y-3">
-                        <input type="text" id="spellingInput" placeholder="輸入純平假名..." class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <input type="text" id="spellingInput" placeholder="輸入純平假名... (Enter 提交)" class="w-full text-center text-lg md:text-xl p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         <div id="spellingCorrectionHint" class="hidden bg-rose-50 border border-rose-200 p-3 rounded-xl text-rose-700 text-xs md:text-sm">
                             ❌ 答錯了！正確答案是：<strong id="correctKanaTarget" class="text-base md:text-lg underline font-bold">--</strong>。請重新輸入一次！
                         </div>
@@ -366,9 +385,9 @@
                     <h3 class="text-2xl md:text-3xl font-bold text-emerald-600" id="spellingResultTitle">🏆 本輪聽寫特訓完美通關！</h3>
                     <p id="spellingResultDesc" class="text-xs md:text-sm text-slate-600">所有未精通的生字皆已達成連續答對 2 次的條件！</p>
                     <div id="spellingWinBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 完美通關！解鎖獎勵圖片：</p>
-                        <button id="spellingRewardBtn" onclick="triggerWinModal('spelling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        <p class="text-xs md:text-sm font-bold text-pink-600">✨ 完美通關！解鎖抽牌機會：</p>
+                        <button id="spellingRewardBtn" onclick="startCardDrawModal('spelling')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
                     <button onclick="initSpelling()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
@@ -377,7 +396,7 @@
                 </div>
             </div>
 
-            <!-- 模式 6：意思配對消除 (10題 + 80%解鎖) -->
+            <!-- 模式 6：意思配對消除 -->
             <div id="mode-quiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
                 <div id="quizGameArea" class="space-y-6">
                     <div class="flex justify-between items-center bg-indigo-50 px-4 py-2 rounded-lg text-indigo-800 text-xs md:text-sm font-medium">
@@ -396,13 +415,13 @@
                 <div id="quizResultArea" class="hidden text-center space-y-4">
                     <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 配對挑戰完成！</h3>
                     <div id="quizUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p id="quizUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖獎勵圖片：</p>
-                        <button id="quizRewardBtn" onclick="triggerWinModal('quiz')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto">
-                            <i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖
+                        <p id="quizUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <button id="quizRewardBtn" onclick="startCardDrawModal('quiz')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
                     <div id="quizFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
-                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖獎勵圖片。
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖抽牌。
                     </div>
                     <button onclick="initQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
                         再次挑戰
@@ -414,23 +433,64 @@
 
     </main>
 
-    <!-- 🌟 圖片彈跳視窗 (Lightbox Dialog) -->
-    <dialog id="imageModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-lg w-[90vw] overflow-hidden border-0 bg-white">
-        <div class="relative p-5 md:p-6 text-center">
-            <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 w-8 h-8 rounded-full font-bold flex items-center justify-center transition shadow-sm">
-                <i class="fa-solid fa-xmark text-base"></i>
-            </button>
-            <h3 class="text-base md:text-lg font-bold text-indigo-600 mb-3"><i class="fa-solid fa-sparkles"></i> 恭喜解鎖獎勵圖片</h3>
-            <div class="flex justify-center bg-slate-900 rounded-xl overflow-hidden p-2 shadow-inner">
-                <img id="modalImg" src="" alt="獎勵圖片" class="max-h-[50vh] object-contain rounded-lg">
+    <!-- 🌟 抽牌解鎖互動視窗 (Card Draw Modal) -->
+    <dialog id="cardDrawModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
+        <div class="relative p-6 text-center space-y-4">
+            <h3 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-hat-wizard"></i> 神祕抽牌區：請憑直覺選擇一張牌！</h3>
+            <p class="text-xs text-slate-400">桌面上有 3 張背面朝下的神祕獎勵卡，點擊其中一張來翻開它！</p>
+            
+            <!-- 三張牌容器 -->
+            <div id="cardsTable" class="flex justify-center gap-4 py-6">
+                <!-- 卡牌 1 -->
+                <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(0)">
+                    <div id="mysteryCard-0" class="card-flip relative w-full h-full rounded-xl shadow-lg bg-indigo-700 border-2 border-indigo-400 flex items-center justify-center text-center p-2 font-bold select-none">
+                        <div class="card-face absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-800 rounded-xl">
+                            <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
+                            <span class="text-xs mt-2 text-indigo-200">神秘獎勵卡 #1</span>
+                        </div>
+                        <div class="card-back-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
+                            <img id="drawnImg-0" src="" alt="獎勵圖" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡牌 2 -->
+                <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(1)">
+                    <div id="mysteryCard-1" class="card-flip relative w-full h-full rounded-xl shadow-lg bg-indigo-700 border-2 border-indigo-400 flex items-center justify-center text-center p-2 font-bold select-none">
+                        <div class="card-face absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-800 rounded-xl">
+                            <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
+                            <span class="text-xs mt-2 text-indigo-200">神秘獎勵卡 #2</span>
+                        </div>
+                        <div class="card-back-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
+                            <img id="drawnImg-1" src="" alt="獎勵圖" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡牌 3 -->
+                <div class="w-28 h-40 md:w-32 md:h-44 cursor-perspective perspective-1000" onclick="pickCard(2)">
+                    <div id="mysteryCard-2" class="card-flip relative w-full h-full rounded-xl shadow-lg bg-indigo-700 border-2 border-indigo-400 flex items-center justify-center text-center p-2 font-bold select-none">
+                        <div class="card-face absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-800 rounded-xl">
+                            <i class="fa-solid fa-star text-3xl text-amber-300 animate-pulse"></i>
+                            <span class="text-xs mt-2 text-indigo-200">神秘獎勵卡 #3</span>
+                        </div>
+                        <div class="card-back-face absolute inset-0 bg-white rounded-xl overflow-hidden p-1 flex items-center justify-center">
+                            <img id="drawnImg-2" src="" alt="獎勵圖" class="w-full h-full object-contain rounded-lg">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p id="modalSourceText" class="text-[11px] md:text-xs text-slate-400 mt-3">來源：GitHub pic/ 圖庫或上傳圖片</p>
+
+            <div id="drawResultArea" class="hidden space-y-3">
+                <p id="drawResultMessage" class="text-sm font-bold text-emerald-400">🎉 恭喜翻出大獎！</p>
+                <button onclick="closeCardDrawModal()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs md:text-sm font-medium transition shadow-md">
+                    收下獎勵並關閉
+                </button>
+            </div>
         </div>
     </dialog>
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
-        XML Vocab Trainer v31 &copy; 2026 | Mobile & GitHub Optimized
+        XML Vocab Trainer v32 &copy; 2026 | Card Draw & Dynamic Scan
     </footer>
 
     <!-- JavaScript Logic -->
@@ -445,37 +505,60 @@
         let isGameFinished = false; 
         let currentLessonKey = "default_lesson";
 
-        // 獎勵圖片陣列 (支援 GitHub pic/ 或自訂上傳)
+        // 獎勵圖片陣列
         let rewardImagesArray = [];
 
-        // 頁面載入時自動嘗試從 GitHub vocab/ 讀取預設 XML
+        // 頁面載入時：不載入任何預設詞庫，提示用家選取
         window.addEventListener('DOMContentLoaded', () => {
-            loadFromGitHub();
+            // 保持初始未載入狀態，等待用家選取
         });
 
-        // 🌐 從 GitHub 讀取 XML
+        // 🌐 從 GitHub vocab/ 讀取選定的 XML
         async function loadFromGitHub() {
             const selectEl = document.getElementById('githubXmlSelect');
             const filePath = selectEl.value;
+            if (!filePath) {
+                alert('請先在下拉選單中選擇一個課數 XML！');
+                return;
+            }
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const xmlString = await response.text();
                 parseXMLString(xmlString, filePath);
             } catch (err) {
-                console.warn("無法自動載入 GitHub XML (可能正在本地端測試，請改用手動上傳或範例)：", err);
-                // 若載入失敗自動帶入內建範例以便測試
-                loadDefaultSample();
+                console.warn("無法自動載入 GitHub XML：", err);
+                alert(`無法讀取 ${filePath}，請確認該檔案已存在於專案 vocab/ 資料夾中，或是使用手動上傳。`);
             }
         }
 
-        // 📁 從 GitHub pic/ 檔案夾加載圖片 (預設嘗試讀取常見檔名，或由手動上傳補充)
+        // 📁 批次匯入整個 pic 檔案夾 (webkitdirectory)
+        document.getElementById('folderInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            rewardImagesArray = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const imgUrl = URL.createObjectURL(file);
+                    rewardImagesArray.push(imgUrl);
+                }
+            }
+            const statusEl = document.getElementById('folderStatus');
+            const countEl = document.getElementById('folderImgCount');
+            if (rewardImagesArray.length > 0) {
+                countEl.textContent = rewardImagesArray.length;
+                statusEl.classList.remove('hidden');
+                alert(`成功批次載入 ${rewardImagesArray.length} 張獎勵圖片！`);
+            } else {
+                alert('所選資料夾中找不到任何圖片檔案！');
+            }
+        });
+
+        // 📁 從 GitHub pic/ 檔案夾自動掃描
         async function loadGitHubPicFolder() {
             const picPath = document.getElementById('picFolderPath').value.trim() || "pic/";
             rewardImagesArray = [];
-            
-            // 嘗試自動探測 pic 資料夾內的常見圖片檔案
-            const commonNames = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', 'reward1.jpg', 'reward2.jpg', 'poke1.png', 'poke2.png', 'img1.jpg', 'img2.jpg'];
+            const commonNames = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', 'reward1.jpg', 'reward2.jpg', 'poke1.png', 'poke2.png', 'img1.jpg', 'img2.jpg', '1.png', '2.png', '3.png'];
             
             for (let name of commonNames) {
                 const fullUrl = picPath + name;
@@ -494,27 +577,9 @@
                 statusEl.classList.remove('hidden');
                 alert(`成功從 GitHub ${picPath} 掃描到 ${rewardImagesArray.length} 張獎勵圖片！`);
             } else {
-                alert(`在 ${picPath} 未自動檢測到圖片。您仍可使用右側按鈕手動上傳圖片！`);
+                alert(`在 ${picPath} 未自動檢測到圖片。建議使用右側按鈕「一鍵批次選取本地 pic 資料夾」！`);
             }
         }
-
-        // 監聽手動上傳獎勵圖片
-        document.getElementById('folderInput').addEventListener('change', function(e) {
-            const files = e.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type.startsWith('image/')) {
-                    const imgUrl = URL.createObjectURL(file);
-                    rewardImagesArray.push(imgUrl);
-                }
-            }
-            const statusEl = document.getElementById('folderStatus');
-            const countEl = document.getElementById('folderImgCount');
-            if (rewardImagesArray.length > 0) {
-                countEl.textContent = rewardImagesArray.length;
-                statusEl.classList.remove('hidden');
-            }
-        });
 
         // 監聽 XML 檔案手動上傳
         document.getElementById('xmlFileInput').addEventListener('change', function(e) {
@@ -526,51 +591,6 @@
             };
             reader.readAsText(file);
         });
-
-        // 載入內建範例資料
-        function loadDefaultSample() {
-            const sampleXML = `<?xml version="1.0" encoding="UTF-8"?>
-<vocabulary_list>
-    <lesson_name>第34課：實用生字特訓</lesson_name>
-    <item>
-        <id>1</id>
-        <type>自動詞</type>
-        <kanji>増えますⅡ [輸出が～]</kanji>
-        <kana>ふえますⅡ [ゆしゅつが～]</kana>
-        <pureKana>ふえます</pureKana>
-        <chinese>增加、增產</chinese>
-        <note>増えます Ⅱ</note>
-    </item>
-    <item>
-        <id>2</id>
-        <type>noun</type>
-        <kanji>[お]見舞い</kanji>
-        <kana>おみまい</kana>
-        <pureKana>おみまい</pureKana>
-        <chinese>探病、慰問</chinese>
-        <note>名詞</note>
-    </item>
-    <item>
-        <id>3</id>
-        <type>自動詞</type>
-        <kanji>減りますⅠ [輸出が～]</kanji>
-        <kana>へりますⅠ [ゆしゅつが～]</kana>
-        <pureKana>へります</pureKana>
-        <chinese>減少、減產</chinese>
-        <note>減ります Ⅰ</note>
-    </item>
-    <item>
-        <id>4</id>
-        <type>noun</type>
-        <kanji>ガソリン</kanji>
-        <kana>がそりん</kana>
-        <pureKana>がそりん</pureKana>
-        <chinese>汽油</chinese>
-        <note>名詞</note>
-    </item>
-</vocabulary_list>`;
-            parseXMLString(sampleXML, "範例課程 L34");
-        }
 
         // 解析 XML 字串核心函數
         function parseXMLString(xmlString, sourceName) {
@@ -628,8 +648,9 @@
                 document.getElementById('totalCount').textContent = vocabList.length;
                 document.getElementById('totalCount2').textContent = vocabList.length;
                 document.getElementById('appContainer').classList.remove('hidden');
+                document.getElementById('vocabNotice').classList.add('hidden');
 
-                // 🌟 載入成功後自動隱藏上方的匯入框，並顯示「設定」按鈕
+                // 成功載入後自動隱藏匯入框
                 document.getElementById('importSection').classList.add('hidden');
                 document.getElementById('toggleConfigBtn').classList.remove('hidden');
 
@@ -642,7 +663,6 @@
             }
         }
 
-        // 切換顯示/隱藏最上方的匯入設定框
         function toggleImportSection() {
             const section = document.getElementById('importSection');
             section.classList.toggle('hidden');
@@ -699,6 +719,62 @@
             if (mode === 'spelling') initSpelling();
             if (mode === 'quiz') initQuiz();
         }
+
+        // ⌨️ 全局鍵盤快捷鍵修復與監聽
+        document.addEventListener('keydown', function(e) {
+            const activeTag = document.activeElement.tagName.toLowerCase();
+            const isTyping = activeTag === 'input' || activeTag === 'textarea';
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentMode === 'flashcard') playAudio(currentCleanKana);
+                else if (currentMode === 'audioQuiz' && currentAudioTargetItem) playAudio(currentAudioTargetItem.cleanKana);
+                else if (currentMode === 'spelling' && currentSpellingItem) playAudio(currentSpellingItem.cleanKana);
+                else if (currentMode === 'falling' && currentFallingItem) playAudio(currentFallingItem.cleanKana);
+                return;
+            }
+
+            if (isTyping) {
+                if (e.key === 'Enter') {
+                    if (currentMode === 'spelling') {
+                        checkSpelling();
+                    } else if (currentMode === 'falling') {
+                        checkFallingInput();
+                    }
+                }
+                return; 
+            }
+
+            if (vocabList.length === 0) return;
+            if (isGameFinished) return;
+
+            // 數字選擇選項
+            if (['1', '2', '3', '4'].includes(e.key)) {
+                let btnIdPrefix = "";
+                if (currentMode === 'speed') btnIdPrefix = "speed-opt-";
+                else if (currentMode === 'audioQuiz') btnIdPrefix = "audio-opt-";
+                else if (currentMode === 'quiz') btnIdPrefix = "quiz-opt-";
+
+                if (btnIdPrefix) {
+                    const index = parseInt(e.key) - 1;
+                    const btn = document.getElementById(btnIdPrefix + index);
+                    if (btn) {
+                        btn.click();
+                        e.preventDefault();
+                    }
+                }
+                return;
+            }
+
+            if (currentMode === 'flashcard') {
+                if (e.key === 'ArrowLeft') prevCard();
+                else if (e.key === 'ArrowRight') nextCard();
+                else if (e.key === ' ') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.key === 'Enter') markMastered();
+            }
+        });
 
         // --- 1. 記憶閃卡 ---
         function updateFlashcard() {
@@ -781,11 +857,6 @@
             document.getElementById('speedGameArea').classList.remove('hidden');
             document.getElementById('speedResultArea').classList.add('hidden');
 
-            const rewardBtn = document.getElementById('speedRewardBtn');
-            rewardBtn.dataset.claimed = "false";
-            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
-            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
-
             speed10Items = [];
             for (let i = 0; i < 10; i++) {
                 speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
@@ -859,8 +930,7 @@
                 playBuzzer('celebrate');
                 unlockBox.classList.remove('hidden');
                 failBox.classList.add('hidden');
-                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖獎勵圖片：`;
-                triggerWinModal('speed');
+                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
             } else {
                 playBuzzer('wrong');
                 unlockBox.classList.add('hidden');
@@ -899,11 +969,6 @@
 
             document.getElementById('audioQuizGameArea').classList.remove('hidden');
             document.getElementById('audioQuizResultArea').classList.add('hidden');
-
-            const rewardBtn = document.getElementById('audioRewardBtn');
-            rewardBtn.dataset.claimed = "false";
-            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
-            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
 
             audio10Items = [];
             for (let i = 0; i < 10; i++) {
@@ -981,8 +1046,7 @@
                 playBuzzer('celebrate');
                 unlockBox.classList.remove('hidden');
                 failBox.classList.add('hidden');
-                document.getElementById('audioUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖獎勵圖片：`;
-                triggerWinModal('audio');
+                document.getElementById('audioUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
             } else {
                 playBuzzer('wrong');
                 unlockBox.classList.add('hidden');
@@ -1017,11 +1081,6 @@
             document.getElementById('fallingGameArea').classList.remove('hidden');
             document.getElementById('fallingResultArea').classList.add('hidden');
             document.getElementById('fallingWinBox').classList.add('hidden');
-
-            const rewardBtn = document.getElementById('fallingRewardBtn');
-            rewardBtn.dataset.claimed = "false";
-            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
-            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
 
             falling10Items = [];
             for (let i = 0; i < 10; i++) {
@@ -1127,7 +1186,6 @@
                 playBuzzer('celebrate');
                 winBox.classList.remove('hidden');
                 failBox.classList.add('hidden');
-                triggerWinModal('falling');
             } else {
                 titleEl.innerHTML = "💥 遊戲結束";
                 playBuzzer('wrong');
@@ -1168,11 +1226,6 @@
             document.getElementById('spellingResultArea').classList.add('hidden');
             document.getElementById('spellingCorrectionHint').classList.add('hidden');
 
-            const rewardBtn = document.getElementById('spellingRewardBtn');
-            rewardBtn.dataset.claimed = "false";
-            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
-            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
-
             spellingTotalInitialCount = vocabList.length;
             document.getElementById('totalSpellingCount').textContent = spellingTotalInitialCount;
             document.getElementById('masteredSpellingCount').textContent = masteredSpellingSet.size;
@@ -1186,7 +1239,6 @@
                 document.getElementById('spellingResultDesc').textContent = "你已經完全掌握了此課程的所有生字！";
                 document.getElementById('spellingWinBox').classList.remove('hidden');
                 playBuzzer('celebrate');
-                triggerWinModal('spelling');
                 return;
             }
 
@@ -1208,7 +1260,6 @@
                 document.getElementById('spellingResultDesc').textContent = "本輪未精通生字已全數達成連續答對 2 次！";
                 document.getElementById('spellingWinBox').classList.remove('hidden');
                 playBuzzer('celebrate');
-                triggerWinModal('spelling');
                 return;
             }
 
@@ -1273,11 +1324,6 @@
 
             document.getElementById('quizGameArea').classList.remove('hidden');
             document.getElementById('quizResultArea').classList.add('hidden');
-
-            const rewardBtn = document.getElementById('quizRewardBtn');
-            rewardBtn.dataset.claimed = "false";
-            rewardBtn.className = "px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto";
-            rewardBtn.innerHTML = `<i class="fa-solid fa-image"></i> 點擊彈出獎勵大圖`;
 
             quiz10Items = [];
             for (let i = 0; i < 10; i++) {
@@ -1346,7 +1392,6 @@
                 playBuzzer('celebrate');
                 unlockBox.classList.remove('hidden');
                 failBox.classList.add('hidden');
-                triggerWinModal('quiz');
             } else {
                 playBuzzer('wrong');
                 unlockBox.classList.add('hidden');
@@ -1354,40 +1399,58 @@
             }
         }
 
-        // --- 獎勵圖片彈窗與音效 ---
-        function triggerWinModal(modeKey) {
-            const btn = document.getElementById(`${modeKey}RewardBtn`);
-            if (btn.dataset.claimed === "true") return;
+        // --- 🌟 抽牌解鎖機制 (3選1) ---
+        let currentPoolImagesForDraw = [];
+        let hasPickedCard = false;
 
-            btn.dataset.claimed = "true";
-            btn.classList.remove('bg-pink-600', 'hover:bg-pink-700', 'shadow-md');
-            btn.classList.add('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
-            btn.innerHTML = `<i class="fa-solid fa-check"></i> 獎勵已領取`;
+        function startCardDrawModal(modeKey) {
+            hasPickedCard = false;
+            document.getElementById('drawResultArea').classList.add('hidden');
 
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const sourceText = document.getElementById('modalSourceText');
+            // 準備 3 張牌的圖片（若圖庫不夠則隨機選取）
+            currentPoolImagesForDraw = [];
+            let sourcePool = rewardImagesArray.length > 0 ? rewardImagesArray : [
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png"
+            ];
 
-            if (rewardImagesArray.length > 0) {
-                const randomIndex = Math.floor(Math.random() * rewardImagesArray.length);
-                modalImg.src = rewardImagesArray[randomIndex];
-                sourceText.innerHTML = `來源：pic/ 資料夾或自訂上傳 (${rewardImagesArray.length}張中隨機)`;
-            } else {
-                // 備用 Pokemon 圖片
-                const pokemonFallbacks = [
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
-                ];
-                const randomIndex = Math.floor(Math.random() * pokemonFallbacks.length);
-                modalImg.src = pokemonFallbacks[randomIndex];
-                sourceText.innerHTML = `來源：備用精選圖片 (請在 pic/ 放置圖片以使用自訂圖庫)`;
+            for (let i = 0; i < 3; i++) {
+                const randomImg = sourcePool[Math.floor(Math.random() * sourcePool.length)];
+                currentPoolImagesForDraw.push(randomImg);
+                const imgEl = document.getElementById(`drawnImg-${i}`);
+                imgEl.src = randomImg;
+
+                const cardFlip = document.getElementById(`mysteryCard-${i}`);
+                cardFlip.classList.remove('flipped');
             }
-            modal.showModal();
+
+            document.getElementById('cardDrawModal').showModal();
         }
 
-        function closeImageModal() {
-            document.getElementById('imageModal').close();
+        function pickCard(selectedIndex) {
+            if (hasPickedCard) return;
+            hasPickedCard = true;
+            playBuzzer('celebrate');
+
+            // 翻開所有卡片，並特別放大顯示點選的那張
+            for (let i = 0; i < 3; i++) {
+                const cardFlip = document.getElementById(`mysteryCard-${i}`);
+                cardFlip.classList.add('flipped');
+                if (i !== selectedIndex) {
+                    cardFlip.style.opacity = '0.6';
+                }
+            }
+
+            const chosenImg = currentPoolImagesForDraw[selectedIndex];
+            document.getElementById('drawResultMessage').innerHTML = `🎉 翻牌成功！你抽中了精美獎勵圖！<br><span class="text-xs text-slate-300">（圖片來源：${rewardImagesArray.length > 0 ? '本地 pic 圖庫' : '備用官方精選圖'}）</span>`;
+            document.getElementById('drawResultArea').classList.remove('hidden');
+        }
+
+        function closeCardDrawModal() {
+            document.getElementById('cardDrawModal').close();
         }
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
