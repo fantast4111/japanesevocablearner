@@ -6,20 +6,21 @@
   <title>日文聽力填空測驗 & 寶可夢獎勵卡收集</title>
   <style>
     :root {
-      --primary-color: #4f46e5;
-      --primary-hover: #4338ca;
-      --bg-color: #f8fafc;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --text-color: #1e293b;
-      --border-color: #e2e8f0;
-      --success-color: #10b981;
-      --error-color: #ef4444;
+      --text: #1e293b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --error: #ef4444;
+      --shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
     }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+      color: var(--text);
       margin: 0;
       padding: 20px;
       display: flex;
@@ -30,162 +31,187 @@
 
     .container {
       width: 100%;
-      max-width: 800px;
+      max-width: 820px;
       background: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      padding: 24px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 30px;
       box-sizing: border-box;
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 18px;
       margin-bottom: 24px;
       flex-wrap: wrap;
       gap: 12px;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       margin: 0;
-      color: var(--primary-color);
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     .toolbar {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    button:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-secondary {
-      background-color: #64748b;
-    }
-    .btn-secondary:hover {
-      background-color: #475569;
-    }
-
-    /* 題庫載入面板 */
-    .control-panel {
-      background: #f1f5f9;
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
       display: flex;
       gap: 10px;
       align-items: center;
       flex-wrap: wrap;
     }
 
-    /* 測驗區域 */
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: #64748b;
+      box-shadow: 0 2px 4px rgba(100, 116, 139, 0.2);
+    }
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+
+    /* 題庫控制面板 */
+    .control-panel {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* 測驗卡片置中對齊 */
     .quiz-card {
       background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
       margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+      text-align: center;
     }
 
     .progress-bar {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: #64748b;
-      margin-bottom: 8px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
+      font-weight: 600;
     }
 
     .question-box {
-      font-size: 1.25rem;
-      margin-bottom: 20px;
-      line-height: 1.6;
+      font-size: 1.4rem;
+      margin: 24px 0 32px 0;
+      line-height: 1.8;
+      font-weight: 700;
     }
 
     .hidden-text {
       color: #94a3b8;
       background: #f1f5f9;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 4px 12px;
+      border-radius: 6px;
       cursor: pointer;
       user-select: none;
+      transition: all 0.2s;
+      border: 1px dashed #cbd5e1;
+      display: inline-block;
+    }
+    .hidden-text:hover {
+      background: #e2e8f0;
     }
     .hidden-text.revealed {
-      color: var(--text-color);
-      background: #e0e7ff;
+      color: var(--text);
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
     }
 
     .options-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 24px;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .option-btn {
       background: #ffffff;
-      border: 2px solid var(--border-color);
-      color: var(--text-color);
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 1rem;
-      text-align: left;
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      text-align: center;
       cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      font-weight: 600;
       transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
     }
 
     .option-btn:hover:not(:disabled) {
-      border-color: var(--primary-color);
-      background: #eef2ff;
+      border-color: var(--primary);
+      background: #f5f3ff;
+      transform: translateY(-2px);
     }
 
     .option-btn.correct {
       background-color: #d1fae5 !important;
-      border-color: var(--success-color) !important;
+      border-color: var(--success) !important;
       color: #065f46;
     }
 
     .option-btn.incorrect {
       background-color: #fee2e2 !important;
-      border-color: var(--error-color) !important;
+      border-color: var(--error) !important;
       color: #991b1b;
     }
 
     .feedback-box {
       background: #f8fafc;
-      border-left: 4px solid var(--primary-color);
-      padding: 12px;
-      margin-top: 16px;
-      border-radius: 0 8px 8px 0;
+      border-left: 5px solid var(--primary);
+      padding: 16px;
+      margin-top: 20px;
+      border-radius: 0 12px 12px 0;
+      text-align: left;
       display: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    /* Modal 通用樣式 */
+    /* Modal 視窗 */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -195,73 +221,82 @@
 
     .modal-content {
       background: white;
-      padding: 24px;
-      border-radius: 16px;
+      padding: 30px;
+      border-radius: 20px;
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
       box-sizing: border-box;
       text-align: center;
       max-height: 90vh;
       overflow-y: auto;
-      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
     /* 放大圖片 3/4 高度視窗 */
     .zoom-modal-content {
-      background: rgba(0,0,0,0.9);
-      padding: 10px;
-      max-width: 90vw;
-      max-height: 90vh;
+      background: rgba(0,0,0,0.95);
+      padding: 20px;
+      max-width: 95vw;
+      max-height: 95vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      border-radius: 16px;
     }
     .zoom-modal-content img {
       max-height: 75vh;
       max-width: 100%;
       object-fit: contain;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     /* 收藏藝廊格線 */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
       max-height: 50vh;
       overflow-y: auto;
-      padding: 4px;
+      padding: 6px;
     }
 
     .gallery-item {
-      background: #f1f5f9;
-      border-radius: 8px;
-      padding: 8px;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 10px;
       text-align: center;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border);
+      transition: transform 0.2s;
+    }
+    .gallery-item:hover:not(.locked) {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     .gallery-item img {
       width: 100%;
-      height: 80px;
+      height: 90px;
       object-fit: contain;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 8px;
     }
     .gallery-item.locked {
-      opacity: 0.4;
+      opacity: 0.35;
       filter: grayscale(100%);
     }
 
-    /* 抽卡結果圖片 */
     #gacha-result-image {
       max-width: 100%;
-      height: 200px;
+      height: 220px;
       object-fit: contain;
-      margin: 16px 0;
+      margin: 20px 0;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 12px;
       display: none;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 10px;
     }
   </style>
 </head>
@@ -271,29 +306,29 @@
   <header>
     <h1>🎧 日文聽力填空測驗</h1>
     <div class="toolbar">
-      <span id="gacha-tickets-badge" style="font-weight:bold; color:#d97706; background:#fef3c7; padding:4px 10px; border-radius:20px;">抽卡機會: 0 🎴</span>
+      <span id="gacha-tickets-badge" style="font-weight:700; color:#d97706; background:#fef3c7; padding:6px 14px; border-radius:20px; border:1px solid #fde68a;">抽卡機會: 0 🎴</span>
       <button onclick="openGalleryModal()" class="btn-secondary">🖼️ 收藏藝廊</button>
       <button onclick="openGachaModal()" id="header-gacha-btn" style="display:none;">抽卡 🎴</button>
     </div>
   </header>
 
-  <!-- 題庫控制與載入面板 -->
+  <!-- 控制與題庫載入面板 -->
   <div class="control-panel">
     <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
-    <button onclick="document.getElementById('json-file-input').click()">📁 上傳 JSON 題庫</button>
+    <button onclick="document.getElementById('json-file-input').click()">📁 上傳 JSON</button>
 
-    <div style="display: flex; align-items: center; gap: 6px;">
-      <span>L</span>
-      <input type="number" id="lesson-num-input" value="34" min="1" max="99" style="width: 50px; padding: 4px; text-align: center; font-weight: bold;">
-      <button onclick="loadLessonJsonFromFolder()">📥 讀取 Lxx.json</button>
+    <div style="display: flex; align-items: center; gap: 6px; background: white; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);">
+      <span style="font-weight:600; color:#64748b;">json/L</span>
+      <input type="number" id="lesson-num-input" value="34" min="1" max="99" style="width: 45px; padding: 4px; text-align: center; font-weight: bold; border:1px solid var(--border); border-radius:4px;">
+      <span style="font-weight:600; color:#64748b;">.json</span>
+      <button onclick="loadLessonJsonFromFolder()">📥 讀取 GitHub</button>
     </div>
 
-    <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCsvUpload(event)">
-    <button onclick="document.getElementById('csv-file-input').click()" class="btn-secondary">📊 匯入獎勵卡 CSV (D欄)</button>
-    <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 載入預設寶可夢卡池</button>
+    <button onclick="openCsvLinkModal()" class="btn-secondary">🔗 貼上 Google CSV 網址</button>
+    <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 預設寶可夢卡池</button>
   </div>
 
-  <!-- 測驗進行主畫面 -->
+  <!-- 測驗主畫面 (置中優化) -->
   <div id="quiz-area">
     <div class="quiz-card">
       <div class="progress-bar">
@@ -302,45 +337,47 @@
       </div>
       
       <div class="question-box">
-        <span id="question-text" class="hidden-text" onclick="toggleQuestionText()">點擊此處顯示題目文字 (音訊播放中)</span>
+        <div id="question-text" class="hidden-text" onclick="toggleQuestionText()">點擊此處顯示題目文字 (音訊播放中)</div>
       </div>
 
       <div class="options-grid" id="options-container">
-        <!-- 選項動態生成 -->
+        <!-- 選項動態生成 (固定 4 個) -->
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
         <button onclick="playCurrentQuestionAudio()" class="btn-secondary">🔊 重播語音</button>
-        <button id="next-btn" onclick="nextQuestion()" style="display:none;">下一題 ➡️</button>
+        <button id="next-btn" onclick="nextQuestion()" style="display:none; padding: 10px 24px; font-size:1.05rem;">下一題 ➡️</button>
       </div>
 
       <div id="feedback-box" class="feedback-box">
-        <div id="feedback-result" style="font-weight: bold; margin-bottom: 4px;"></div>
-        <div id="feedback-translation" style="margin-bottom: 4px;"></div>
-        <div id="feedback-explanation" style="font-size: 0.9rem; color: #475569;"></div>
+        <div id="feedback-result" style="font-weight: bold; margin-bottom: 6px; font-size: 1.1rem;"></div>
+        <div id="feedback-translation" style="margin-bottom: 6px; font-weight: 500;"></div>
+        <div id="feedback-explanation" style="font-size: 0.95rem; color: #475569; line-height: 1.5;"></div>
       </div>
     </div>
   </div>
 
-  <!-- 測驗結束結算畫面 -->
-  <div id="result-area" style="display:none; text-align: center; padding: 40px 20px;">
-    <h2>🎉 測驗完成！</h2>
-    <p id="final-score-text" style="font-size: 1.2rem; margin: 20px 0;"></p>
-    <div id="reward-notice" style="font-weight: bold; color: #d97706; margin-bottom: 20px;"></div>
-    <button onclick="restartQuiz()">🔄 重新測驗</button>
+  <!-- 測驗結算畫面 -->
+  <div id="result-area" style="display:none; text-align: center; padding: 50px 20px;">
+    <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">🎉 測驗完成！</h2>
+    <p id="final-score-text" style="font-size: 1.3rem; margin: 20px 0; font-weight: 600;"></p>
+    <div id="reward-notice" style="font-weight: 700; color: #d97706; margin-bottom: 30px; font-size: 1.1rem; background: #fef3c7; padding: 12px; border-radius: 10px; display:inline-block;"></div>
+    <div>
+      <button onclick="restartQuiz()" style="padding: 12px 28px; font-size: 1.1rem;">🔄 重新測驗</button>
+    </div>
   </div>
 </div>
 
 <!-- 抽卡 Modal -->
 <div id="gacha-modal" class="modal">
   <div class="modal-content">
-    <h2>🎴 寶可夢/獎勵卡抽卡</h2>
-    <p id="gacha-prize-info">剩餘抽卡次數: <span id="modal-tickets-count">0</span></p>
+    <h2 style="margin-top:0; color:var(--primary);">🎴 獎勵卡抽卡</h2>
+    <p id="gacha-prize-info" style="font-weight:600; color:#64748b;">剩餘抽卡次數: <span id="modal-tickets-count">0</span></p>
     
     <img id="gacha-result-image" alt="獎勵卡圖片" title="點擊放大圖片">
     
-    <div id="gacha-actions" style="margin-top: 16px; display: flex; gap: 10px; justify-content: center;">
-      <button id="draw-one-btn" onclick="executeGachaDraw()">抽一張！</button>
+    <div id="gacha-actions" style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
+      <button id="draw-one-btn" onclick="executeGachaDraw()" style="padding: 10px 24px; font-size: 1.05rem;">抽一張！</button>
       <button onclick="closeGachaModal()" class="btn-secondary">關閉</button>
     </div>
   </div>
@@ -348,15 +385,15 @@
 
 <!-- 收藏藝廊 Modal -->
 <div id="gallery-modal" class="modal">
-  <div class="modal-content" style="max-width: 600px;">
-    <h2>🖼️ 獎勵卡收藏藝廊</h2>
-    <p style="font-size: 0.9rem; color: #64748b;">點擊已解鎖的卡片圖片可以放大觀看</p>
+  <div class="modal-content" style="max-width: 650px;">
+    <h2 style="margin-top:0; color:var(--primary);">🖼️ 獎勵卡收藏藝廊</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-top:0;">點擊已解鎖的卡片圖片可以放大觀看</p>
     <div class="gallery-grid" id="gallery-grid-container">
       <!-- 藝廊卡片動態載入 -->
     </div>
-    <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-      <span id="gallery-stats" style="font-weight: bold;">已收集: 0 / 0</span>
-      <div style="display: flex; gap: 8px;">
+    <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); pt: 16px;">
+      <span id="gallery-stats" style="font-weight: 700; font-size: 1.05rem;">已收集: 0 / 0</span>
+      <div style="display: flex; gap: 10px;">
         <button onclick="openGachaModal()" id="gallery-draw-btn" style="display:none;">抽卡 🎴</button>
         <button onclick="closeGalleryModal()" class="btn-secondary">關閉</button>
       </div>
@@ -364,7 +401,20 @@
   </div>
 </div>
 
-<!-- 圖片放大 Zoom Modal -->
+<!-- Google CSV 連結貼上 Modal -->
+<div id="csv-link-modal" class="modal">
+  <div class="modal-content">
+    <h2 style="margin-top:0; color:var(--primary);">🔗 載入 Google 試算表 CSV</h2>
+    <p style="font-size: 0.9rem; color: #64748b;">請貼上發布的 CSV 網址 (確保 D欄/第4欄 為圖片網址)：</p>
+    <input type="text" id="csv-url-input" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid var(--border); border-radius:8px; margin-bottom:16px; font-size:0.95rem;">
+    <div style="display: flex; gap: 10px; justify-content: center;">
+      <button onclick="fetchCsvFromUrl()">確認載入</button>
+      <button onclick="closeCsvLinkModal()" class="btn-secondary">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 圖片放大 Zoom Modal (佔視窗高度 75%) -->
 <div id="zoom-modal" class="modal" onclick="closeZoomModal()">
   <div class="zoom-modal-content" onclick="event.stopPropagation()">
     <img id="zoomed-image-elem" src="" alt="放大卡片">
@@ -372,7 +422,6 @@
 </div>
 
 <script>
-  // 預設寶可夢卡池 (作為預設或未載入CSV時的備用)
   let defaultPokemonCards = [
     { id: 1, name: "皮卡丘", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
     { id: 2, name: "妙蛙種子", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" },
@@ -393,10 +442,8 @@
   let score = 0;
   let isAnswered = false;
 
-  // 初始化載入預設寶可夢
   window.onload = function() {
     updateTicketsDisplay();
-    // 預設載入示範題目以便直接測驗
     loadDefaultQuiz();
   };
 
@@ -438,12 +485,22 @@
     qTextElem.innerText = "點擊此處顯示題目文字 (音訊播放中)";
     qTextElem.classList.remove('revealed');
 
-    // 隨機排列 4 個選項
-    let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+    // **選項智慧處理：確保只挑選 4 個選項，且其中一定包含正確答案**
+    let optionsPool = [...q.options];
+    if (!optionsPool.includes(q.answer)) {
+      optionsPool.push(q.answer);
+    }
+    // 排除正確答案後隨機挑選其他錯誤選項湊滿 4 個
+    let incorrects = optionsPool.filter(opt => opt !== q.answer);
+    incorrects.sort(() => Math.random() - 0.5);
+    
+    let finalOptions = [q.answer, ...incorrects.slice(0, 3)];
+    finalOptions.sort(() => Math.random() - 0.5); // 再次打亂順序
+
     const container = document.getElementById('options-container');
     container.innerHTML = '';
     
-    shuffledOptions.forEach(opt => {
+    finalOptions.forEach(opt => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.innerText = opt;
@@ -486,18 +543,16 @@
       btnElem.classList.add('correct');
     } else {
       btnElem.classList.add('incorrect');
-      // 標出正確答案
       const allBtns = document.querySelectorAll('.option-btn');
       allBtns.forEach(b => {
         if (b.innerText === q.answer) b.classList.add('correct');
       });
     }
 
-    // 顯示解析
     document.getElementById('feedback-result').innerText = isCorrect ? "✅ 答對了！" : "❌ 答錯了！";
-    document.getElementById('feedback-result').style.color = isCorrect ? "var(--success-color)" : "var(--error-color)";
-    document.getElementById('feedback-translation').innerText = "翻譯：" + q.translation;
-    document.getElementById('feedback-explanation').innerText = "解析：" + q.explanation;
+    document.getElementById('feedback-result').style.color = isCorrect ? "var(--success)" : "var(--error)";
+    document.getElementById('feedback-translation').innerText = "翻譯：" + (q.translation || "（無）");
+    document.getElementById('feedback-explanation').innerText = "解析：" + (q.explanation || "（無）");
     document.getElementById('feedback-box').style.display = 'block';
 
     document.getElementById('next-btn').style.display = 'inline-block';
@@ -519,15 +574,11 @@
     const accuracy = (score / quizData.length) * 100;
     document.getElementById('final-score-text').innerText = `您的得分: ${score} / ${quizData.length} (${accuracy.toFixed(1)}%)`;
 
-    // 根據準確率給予抽獎機會：100%=+3, 80-99%=+2, 50-79%=+1
+    // 抽獎機會獎勵機制：100%=+3, 80-99%=+2, 50-79%=+1
     let addedTickets = 0;
-    if (accuracy === 100) {
-      addedTickets = 3;
-    } else if (accuracy >= 80) {
-      addedTickets = 2;
-    } else if (accuracy >= 50) {
-      addedTickets = 1;
-    }
+    if (accuracy === 100) addedTickets = 3;
+    else if (accuracy >= 80) addedTickets = 2;
+    else if (accuracy >= 50) addedTickets = 1;
 
     if (addedTickets > 0) {
       gachaTickets += addedTickets;
@@ -543,7 +594,7 @@
     initQuiz();
   }
 
-  // === 讀取 Lxx.json 檔案 ===
+  // === 從 GitHub json/Lxx.json 讀取 ===
   async function loadLessonJsonFromFolder() {
     const num = document.getElementById('lesson-num-input').value.trim();
     if (!num) {
@@ -555,16 +606,20 @@
       const response = await fetch(filePath);
       if (!response.ok) throw new Error(`找不到檔案：${filePath}`);
       const data = await response.json();
-      quizData = data;
-      initQuiz();
-      alert(`成功載入 ${filePath}！`);
+      if (Array.isArray(data) && data.length > 0) {
+        quizData = data;
+        initQuiz();
+        alert(`成功從 GitHub 載入 ${filePath}！`);
+      } else {
+        alert("JSON 格式不正確。");
+      }
     } catch (error) {
       console.error(error);
-      alert(`讀取失敗：無法載入 ${filePath}\n請確認 json 資料夾中是否有此檔案，或透過上傳按鈕上傳。`);
+      alert(`讀取失敗：無法載入 ${filePath}\n請確認您的專案中是否有 json 資料夾以及 L${num}.json 檔案。`);
     }
   }
 
-  // === 處理 JSON 上傳 ===
+  // === 處理本地 JSON 上傳 ===
   function handleJsonUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -586,20 +641,35 @@
     reader.readAsText(file);
   }
 
-  // === 處理 CSV 獎勵卡（讀取 D 欄 / 第 4 欄圖片） ===
-  function handleCsvUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      parseCsvData(e.target.result);
-    };
-    reader.readAsText(file);
+  // === Google CSV 網址讀取 ===
+  function openCsvLinkModal() {
+    document.getElementById('csv-link-modal').style.display = 'flex';
+  }
+  function closeCsvLinkModal() {
+    document.getElementById('csv-link-modal').style.display = 'none';
+  }
+
+  async function fetchCsvFromUrl() {
+    let url = document.getElementById('csv-url-input').value.trim();
+    if (!url) {
+      alert("請輸入有效的 CSV 網址！");
+      return;
+    }
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("網路請求失敗");
+      const text = await response.text();
+      parseCsvData(text);
+      closeCsvLinkModal();
+    } catch (err) {
+      console.error(err);
+      alert("無法讀取該網址的 CSV，可能是 CORS 限制，建議直接下載 CSV 檔案或檢查網址是否正確公開發布。");
+    }
   }
 
   function loadDefaultCsvCards() {
     rewardCardPool = [...defaultPokemonCards];
-    alert("已載入預設寶可夢卡片庫（共 8 張）！");
+    alert("已載入預設寶可夢卡池（共 8 張）！");
   }
 
   function parseCsvData(text) {
@@ -609,7 +679,6 @@
 
     for (let i = 0; i < lines.length; i++) {
       if (!lines[i].trim()) continue;
-      // 簡單 CSV 解析（支援引號包覆）
       const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       if (cols.length >= 4) {
         let name = cols[1] ? cols[1].replace(/["']/g, "").trim() : `獎勵卡 ${idCounter}`;
@@ -627,13 +696,13 @@
 
     if (newCards.length > 0) {
       rewardCardPool = newCards;
-      alert(`成功從 CSV 第 4 欄 (D欄) 讀取 ${newCards.length} 張獎勵卡！`);
+      alert(`成功讀取 ${newCards.length} 張獎勵卡！`);
     } else {
-      alert("未能從 CSV 中解析出有效的 D 欄圖片網址，請確認格式。");
+      alert("未能從中解析出有效的 D 欄（第4欄）圖片網址。");
     }
   }
 
-  // === 抽卡與收藏庫系統 ===
+  // === 抽卡與收藏系統 ===
   function updateTicketsDisplay() {
     document.getElementById('gacha-tickets-badge').innerText = `抽卡機會: ${gachaTickets} 🎴`;
     document.getElementById('modal-tickets-count').innerText = gachaTickets;
@@ -650,9 +719,12 @@
     localStorage.setItem('gacha_tickets', gachaTickets);
   }
 
+  function saveTickets() {
+    localStorage.setItem('gacha_tickets', gachaTickets);
+  }
+
   function openGachaModal() {
     document.getElementById('gacha-modal').style.display = 'flex';
-    // 抽卡前清空/隱藏上一次抽中的圖片，視窗維持標準大小
     const imgElem = document.getElementById('gacha-result-image');
     imgElem.src = "";
     imgElem.style.display = 'none';
@@ -668,32 +740,28 @@
   function executeGachaDraw() {
     if (gachaTickets <= 0) return;
 
-    // 計算尚未擁有的卡片（防重複機制）
     let availableCards = rewardCardPool.filter(card => !userInventory.includes(card.id));
-    
     if (availableCards.length === 0) {
       alert("恭喜你！已經收集完全部卡片了！");
       return;
     }
 
     gachaTickets--;
+    saveTickets();
     updateTicketsDisplay();
 
-    // 隨機抽一張
     let randomIndex = Math.floor(Math.random() * availableCards.length);
     let wonCard = availableCards[randomIndex];
 
-    // 加入收藏庫
     userInventory.push(wonCard.id);
     localStorage.setItem('user_inventory', JSON.stringify(userInventory));
 
-    // 顯示抽中結果（抽完後顯示圖片，點擊可放大）
     const imgElem = document.getElementById('gacha-result-image');
     imgElem.src = wonCard.image;
     imgElem.style.display = 'block';
     imgElem.onclick = () => showZoomedModal(wonCard.image);
 
-    document.getElementById('gacha-prize-info').innerText = `🎉 恭喜抽中：${wonCard.name}！`;
+    document.getElementById('gacha-prize-info').innerText = `🎉 恭喜抽中：${wonCard.name}！ (點擊圖片可放大)`;
     document.getElementById('draw-one-btn').disabled = (gachaTickets <= 0);
   }
 
@@ -712,12 +780,12 @@
       if (isUnlocked) {
         item.innerHTML = `
           <img src="${card.image}" alt="${card.name}" onclick="showZoomedModal('${card.image}')" title="點擊放大">
-          <div style="font-size:0.75rem; margin-top:4px; font-weight:bold;">${card.name}</div>
+          <div style="font-size:0.75rem; margin-top:6px; font-weight:700;">${card.name}</div>
         `;
       } else {
         item.innerHTML = `
-          <div style="height:80px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:1.5rem;">🔒</div>
-          <div style="font-size:0.75rem; margin-top:4px; color:#94a3b8;">未解鎖</div>
+          <div style="height:90px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:1.8rem;">🔒</div>
+          <div style="font-size:0.75rem; margin-top:6px; color:#94a3b8; font-weight:600;">未解鎖</div>
         `;
       }
       container.appendChild(item);
