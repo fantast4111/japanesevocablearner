@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary_list>
+    <lesson_name>第32課：無理を しない ほうが いいですよ</lesson_name>
+    <item>
+        <id>1</id>
+        <type>他動詞</type>
+        <kanji>運動しますⅢ</kanji>
+        <kana>うんどうしますⅢ</kana>
+        <pureKana>うんどうします</pureKana>
+        <chinese>運動</chinese>
+        <note>運動します</note>
+    </item>
+    <item>
+        <id>2</id>
+        <type>他動詞</type>
+        <kanji>成功しますⅢ</kanji>
+        <kana>せいこうしますⅢ</kana>
+        <pureKana>せいこうします</pureKana>
+        <chinese>成功</chinese>
+        <note>成功します</note>
+    </item>
+    <item>
+        <id>3</id>
+        <type>他動詞</type>
+        <kanji>失敗しますⅢ [試験に～]</kanji>
+        <kana>しっぱいしますⅢ [しけんに～]</kana>
+        <pureKana>しっぱいします</pureKana>
+        <chinese>失敗 [考試]</chinese>
+        <note>失敗します</note>
+    </item>
+    <item>
+        <id>4</id>
+        <type>他動詞</type>
+        <kanji>合格しますⅢ [試験に～]</kanji>
+        <kana>ごうかくしますⅢ [しけんに～]</kana>
+        <pureKana>ごうかくします</pureKana>
+        <chinese>及格、考上 [考試]</chinese>
+        <note>合格します</note>
+    </item>
+    <item>
+        <id>5</id>
+        <type>自動詞</type>
+        <kanji>止みますⅠ [雨が～]</kanji>
+        <kana>やみますⅠ [あめが～]</kana>
+        <pureKana>やみます</pureKana>
+        <chinese>[雨] 停</chinese>
+        <note>止みます</note>
+    </item>
+    <item>
+        <id>6</id>
+        <type>自動詞</type>
+        <kanji>晴れますⅡ</kanji>
+        <kana>はれますⅡ</kana>
+        <pureKana>はれます</pureKana>
+        <chinese>晴朗</chinese>
+        <note>晴れます</note>
+    </item>
+    <item>
+        <id>7</id>
+        <type>自動詞</type>
+        <kanji>曇りますⅠ</kanji>
+        <kana>くもりますⅠ</kana>
+        <pureKana>くもります</pureKana>
+        <chinese>陰天</chinese>
+        <note>曇ります</note>
+    </item>
+    <item>
+        <id>8</id>
+        <type>自動詞</type>
+        <kanji>続けますⅠ [熱が～]</kanji>
+        <kana>つづけますⅠ [ねつが～]</kana>
+        <pureKana>つづけます</pureKana>
+        <chinese>持續 [發燒]</chinese>
+        <note>続けます</note>
+    </item>
+    <item>
+        <id>9</id>
+        <type>他動詞</type>
+        <kanji>ひきますⅠ [かぜを～]</kanji>
+        <kana>ひきますⅠ [かぜを～]</kana>
+        <pureKana>ひきます</pureKana>
+        <chinese>患 [感冒]</chinese>
+        <note>ひきます</note>
+    </item>
+    <item>
+        <id>10</id>
+        <type>他動詞</type>
+        <kanji>冷やしますⅠ</kanji>
+        <kana>ひやしますⅠ</kana>
+        <pureKana>ひやします</pureKana>
+        <chinese>使涼快、冰鎮</chinese>
+        <note>冷やします</note>
+    </item>
+    <item>
+        <id>11</id>
+        <type>自動詞</type>
+        <kanji>混みますⅠ [道が～]</kanji>
+        <kana>こみますⅠ [みちが～]</kana>
+        <pureKana>こみます</pureKana>
+        <chinese>[道路] 擁擠</chinese>
+        <note>混みます</note>
+    </item>
+    <item>
+        <id>12</id>
+        <type>自動詞</type>
+        <kanji>空きますⅠ [道が～]</kanji>
+        <kana>すきますⅠ [みちが～]</kana>
+        <pureKana>すきます</pureKana>
+        <chinese>[道路] 空、順暢</chinese>
+        <note>空きます</note>
+    </item>
+    <item>
+        <id>13</id>
+        <type>自動詞</type>
+        <kanji>出ますⅡ [試合に～ / パーティーに～]</kanji>
+        <kana>でますⅡ [しあいに～ / パーティーに～]</kana>
+        <pureKana>でます</pureKana>
+        <chinese>參加 [比賽 / 派對]</chinese>
+        <note>出ます</note>
+    </item>
+    <item>
+        <id>14</id>
+        <type>他動詞</type>
+        <kanji>無理を しますⅢ</kanji>
+        <kana>むりを しますⅢ</kana>
+        <pureKana>むりをします</pureKana>
+        <chinese>勉強</chinese>
+        <note>無理を します</note>
+    </item>
+    <item>
+        <id>15</id>
+        <type>な形容詞</type>
+        <kanji>十分[な]</kanji>
+        <kana>じゅうぶん[な]</kana>
+        <pureKana>じゅうぶん</pureKana>
+        <chinese>充分、足夠</chinese>
+        <note>十分[な]</note>
+    </item>
+    <item>
+        <id>16</id>
+        <type>な形容詞</type>
+        <kanji>おかしい</kanji>
+        <kana>おかしい</kana>
+        <pureKana>おかしい</pureKana>
+        <chinese>奇怪、可疑</chinese>
+        <note>おかしい</note>
+    </item>
+    <item>
+        <id>17</id>
+        <type>い形容詞</type>
+        <kanji>うるさい</kanji>
+        <kana>うるさい</kana>
+        <pureKana>うるさい</pureKana>
+        <chinese>吵鬧、煩人</chinese>
+        <note>うるさい</note>
+    </item>
+    <item>
+        <id>18</id>
+        <type>noun</type>
+        <kanji>先生</kanji>
+        <kana>せんせい</kana>
+        <pureKana>せんせい</pureKana>
+        <chinese>醫生（尊稱）</chinese>
+        <note>先生</note>
+    </item>
+    <item>
+        <id>19</id>
+        <type>noun</type>
+        <kanji>やけどを しますⅢ</kanji>
+        <kana>やけどを しますⅢ</kana>
+        <pureKana>やけどをします</pureKana>
+        <chinese>燙傷、燒傷</chinese>
+        <note>やけどを します</note>
+    </item>
+    <item>
+        <id>20</id>
+        <type>noun</type>
+        <kanji>けがを しますⅢ</kanji>
+        <kana>けがを しますⅢ</kana>
+        <pureKana>けがをします</pureKana>
+        <chinese>受傷</chinese>
+        <note>けがを します</note>
+    </item>
+    <item>
+        <id>21</id>
+        <type>noun</type>
+        <kanji>せきが でますⅡ</kanji>
+        <kana>せきが でますⅡ</kana>
+        <pureKana>せきがでます</pureKana>
+        <chinese>咳嗽</chinese>
+        <note>せきが でます</note>
+    </item>
+    <item>
+        <id>22</id>
+        <type>noun</type>
+        <kanji>インフルエンザ</kanji>
+        <kana>インフルエンザ</kana>
+        <pureKana>インフルエンザ</pureKana>
+        <chinese>流行性感冒</chinese>
+        <note>インフルエンザ</note>
+    </item>
+    <item>
+        <id>23</id>
+        <type>noun</type>
+        <kanji>空</kanji>
+        <kana>そら</kana>
+        <pureKana>そら</pureKana>
+        <chinese>天空</chinese>
+        <note>空</note>
+    </item>
+    <item>
+        <id>24</id>
+        <type>noun</type>
+        <kanji>太陽</kanji>
+        <kana>たいよう</kana>
+        <pureKana>たいよう</pureKana>
+        <chinese>太陽</chinese>
+        <note>太陽</note>
+    </item>
+    <item>
+        <id>25</id>
+        <type>noun</type>
+        <kanji>星</kanji>
+        <kana>ほし</kana>
+        <pureKana>ほし</pureKana>
+        <chinese>星星</chinese>
+        <note>星</note>
+    </item>
+    <item>
+        <id>26</id>
+        <type>noun</type>
+        <kanji>風</kanji>
+        <kana>かぜ</kana>
+        <pureKana>かぜ</pureKana>
+        <chinese>風</chinese>
+        <note>風</note>
+    </item>
+    <item>
+        <id>27</id>
+        <type>noun</type>
+        <kanji>東</kanji>
+        <kana>ひがし</kana>
+        <pureKana>ひがし</pureKana>
+        <chinese>東</chinese>
+        <note>東</note>
+    </item>
+    <item>
+        <id>28</id>
+        <type>noun</type>
+        <kanji>西</kanji>
+        <kana>にし</kana>
+        <pureKana>にし</pureKana>
+        <chinese>西</chinese>
+        <note>西</note>
+    </item>
+    <item>
+        <id>29</id>
+        <type>noun</type>
+        <kanji>南</kanji>
+        <kana>みなみ</kana>
+        <pureKana>みなみ</pureKana>
+        <chinese>南</chinese>
+        <note>南</note>
+    </item>
+    <item>
+        <id>30</id>
+        <type>noun</type>
+        <kanji>北</kanji>
+        <kana>きた</kana>
+        <pureKana>きた</pureKana>
+        <chinese>北</chinese>
+        <note>北</note>
+    </item>
+    <item>
+        <id>31</id>
+        <type>noun</type>
+        <kanji>国際～</kanji>
+        <kana>こくさい～</kana>
+        <pureKana>こくさい</pureKana>
+        <chinese>國際～</chinese>
+        <note>国際～</note>
+    </item>
+    <item>
+        <id>32</id>
+        <type>noun</type>
+        <kanji>水道</kanji>
+        <kana>すいどう</kana>
+        <pureKana>すいどう</pureKana>
+        <chinese>自來水、自來水管</chinese>
+        <note>水道</note>
+    </item>
+    <item>
+        <id>33</id>
+        <type>noun</type>
+        <kanji>エンジン</kanji>
+        <kana>エンジン</kana>
+        <pureKana>エンジン</pureKana>
+        <chinese>引擎</chinese>
+        <note>エンジン</note>
+    </item>
+    <item>
+        <id>34</id>
+        <type>noun</type>
+        <kanji>チーム</kanji>
+        <kana>チーム</kana>
+        <pureKana>チーム</pureKana>
+        <chinese>隊、團隊</chinese>
+        <note>團隊</note>
+    </item>
+    <item>
+        <id>35</id>
+        <type>noun</type>
+        <kanji>今夜</kanji>
+        <kana>こんや</kana>
+        <pureKana>こんや</pureKana>
+        <chinese>今天晚上、今晚</chinese>
+        <note>今夜</note>
+    </item>
+    <item>
+        <id>36</id>
+        <type>noun</type>
+        <kanji>夕方</kanji>
+        <kana>ゆうがた</kana>
+        <pureKana>ゆうがた</pureKana>
+        <chinese>黃昏、傍晚</chinese>
+        <note>夕方</note>
+    </item>
+    <item>
+        <id>37</id>
+        <type>noun</type>
+        <kanji>前</kanji>
+        <kana>まえ</kana>
+        <pureKana>まえ</pureKana>
+        <chinese>以前、之前</chinese>
+        <note>前</note>
+    </item>
+    <item>
+        <id>38</id>
+        <type>adverb</type>
+        <kanji>遅く</kanji>
+        <kana>おそく</kana>
+        <pureKana>おそく</pureKana>
+        <chinese>晚（時間）</chinese>
+        <note>遅く</note>
+    </item>
+    <item>
+        <id>39</id>
+        <type>adverb</type>
+        <kanji>こんなに</kanji>
+        <kana>こんなに</kana>
+        <pureKana>こんなに</pureKana>
+        <chinese>這麼、相當傷害</chinese>
+        <note>こんなに</note>
+    </item>
+    <item>
+        <id>40</id>
+        <type>adverb</type>
+        <kanji>そんなに</kanji>
+        <kana>そんなに</kana>
+        <pureKana>そんなに</pureKana>
+        <chinese>那麼（與聽者有關的事、程度相當高）</chinese>
+        <note>そんなに</note>
+    </item>
+    <item>
+        <id>41</id>
+        <type>adverb</type>
+        <kanji>あんなに</kanji>
+        <kana>あんなに</kana>
+        <pureKana>あんなに</pureKana>
+        <chinese>那樣（與說話者、聽者都無關的事、程度相當高）</chinese>
+        <note>あんなに</note>
+    </item>
+    <item>
+        <id>42</id>
+        <type>noun</type>
+        <kanji>ヨーロッパ</kanji>
+        <kana>ヨーロッパ</kana>
+        <pureKana>ヨーロッパ</pureKana>
+        <chinese>歐洲</chinese>
+        <note>ヨーロッパ</note>
+    </item>
+    <item>
+        <id>43</id>
+        <type>noun</type>
+        <kanji>元気</kanji>
+        <kana>げんき</kana>
+        <pureKana>げんき</pureKana>
+        <chinese>精神、健康</chinese>
+        <note>会話 元気</note>
+    </item>
+    <item>
+        <id>44</id>
+        <type>noun</type>
+        <kanji>胃</kanji>
+        <kana>い</kana>
+        <pureKana>い</pureKana>
+        <chinese>胃</chinese>
+        <note>会話 胃</note>
+    </item>
+    <item>
+        <id>45</id>
+        <type>noun</type>
+        <kanji>ストレス</kanji>
+        <kana>ストレス</kana>
+        <pureKana>ストレス</pureKana>
+        <chinese>壓力</chinese>
+        <note>会話 ストレス</note>
+    </item>
+    <item>
+        <id>46</id>
+        <type>expression</type>
+        <kanji>それは いけませんね。</kanji>
+        <kana>それは いけませんね。</kana>
+        <pureKana>それはいけませんね</pureKana>
+        <chinese>那可不好。</chinese>
+        <note>会話 それは いけませんね。</note>
+    </item>
+    <item>
+        <id>47</id>
+        <type>noun</type>
+        <kanji>星占い</kanji>
+        <kana>ほしいらない</kana>
+        <pureKana>ほしいらない</pureKana>
+        <chinese>占星術、星相</chinese>
+        <note>読物 星占い</note>
+    </item>
+    <item>
+        <id>48</id>
+        <type>noun</type>
+        <kanji>牡牛座</kanji>
+        <kana>おうしざ</kana>
+        <pureKana>おうしざ</pureKana>
+        <chinese>金牛座</chinese>
+        <note>読物 牡牛座</note>
+    </item>
+    <item>
+        <id>49</id>
+        <type>noun</type>
+        <kanji>働きすぎ</kanji>
+        <kana>はたらきすぎ</kana>
+        <pureKana>はたらきすぎ</pureKana>
+        <chinese>工作過度</chinese>
+        <note>読物 働きすぎ</note>
+    </item>
+    <item>
+        <id>50</id>
+        <type>他動詞</type>
+        <kanji>困りますⅡ</kanji>
+        <kana>こまりますⅡ</kana>
+        <pureKana>こまります</pureKana>
+        <chinese>為難、困擾</chinese>
+        <note>読物 困ります</note>
+    </item>
+    <item>
+        <id>51</id>
+        <type>noun</type>
+        <kanji>宝くじ</kanji>
+        <kana>たからくじ</kana>
+        <pureKana>たからくじ</pureKana>
+        <chinese>彩券</chinese>
+        <note>読物 宝くじ</note>
+    </item>
+    <item>
+        <id>52</id>
+        <type>他動詞</type>
+        <kanji>当たりますⅠ [宝くじが～]</kanji>
+        <kana>あたりますⅠ [たからくじが～]</kana>
+        <pureKana>あたります</pureKana>
+        <chinese>中 [彩券]</chinese>
+        <note>読物 当たります</note>
+    </item>
+    <item>
+        <id>53</id>
+        <type>noun</type>
+        <kanji>健康</kanji>
+        <kana>けんこう</kana>
+        <pureKana>けんこう</pureKana>
+        <chinese>健康</chinese>
+        <note>読物 健康</note>
+    </item>
+    <item>
+        <id>54</id>
+        <type>noun</type>
+        <kanji>恋愛</kanji>
+        <kana>れんあい</kana>
+        <pureKana>れんあい</pureKana>
+        <chinese>戀愛</chinese>
+        <note>読物 戀愛</note>
+    </item>
+    <item>
+        <id>55</id>
+        <type>noun</type>
+        <kanji>恋人</kanji>
+        <kana>こいびと</kana>
+        <pureKana>こいびと</pureKana>
+        <chinese>戀人</chinese>
+        <note>読物 恋人</note>
+    </item>
+    <item>
+        <id>56</id>
+        <type>noun</type>
+        <kanji>ラッキーアイテム</kanji>
+        <kana>ラッキーアイテム</kana>
+        <pureKana>ラッキーアイテム</pureKana>
+        <chinese>吉祥物（lucky item）</chinese>
+        <note>読物 ラッキーアイテム</note>
+    </item>
+    <item>
+        <id>57</id>
+        <type>noun</type>
+        <kanji>石</kanji>
+        <kana>いし</kana>
+        <pureKana>いし</pureKana>
+        <chinese>石頭</chinese>
+        <note>読物 石</note>
+    </item>
+</vocabulary_list>

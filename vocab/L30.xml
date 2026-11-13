@@ -1,140 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vocabulary_list>
-    <lesson_name>第30課：非常袋を準備しておかないと</lesson_name>
+    <lesson_name>第30課：非常袋を 準備して おかないと</lesson_name>
     <item>
         <id>1</id>
         <type>他動詞</type>
-        <kanji>貼ります</kanji>
-        <kana>はります</kana>
+        <kanji>貼りますⅠ [シールを～]</kanji>
+        <kana>はりますⅠ [シールを～]</kana>
         <pureKana>はります</pureKana>
-        <chinese>貼，張掛</chinese>
-        <note>貼ります (Ⅰ)</note>
+        <chinese>貼、張掛</chinese>
+        <note>貼ります</note>
     </item>
     <item>
         <id>2</id>
         <type>他動詞</type>
-        <kanji>掛けます</kanji>
-        <kana>かけます</kana>
+        <kanji>掛けますⅡ [絵を～]</kanji>
+        <kana>かけますⅡ [えを～]</kana>
         <pureKana>かけます</pureKana>
-        <chinese>掛，懸掛</chinese>
-        <note>掛けます (Ⅱ)</note>
+        <chinese>掛、懸掛</chinese>
+        <note>掛けます</note>
     </item>
     <item>
         <id>3</id>
         <type>他動詞</type>
-        <kanji>飾ります</kanji>
-        <kana>かざります</kana>
+        <kanji>飾りますⅠ [花を～]</kanji>
+        <kana>かざりますⅠ [はなを～]</kana>
         <pureKana>かざります</pureKana>
         <chinese>裝飾</chinese>
-        <note>飾ります (Ⅰ)</note>
+        <note>飾ります</note>
     </item>
     <item>
         <id>4</id>
         <type>他動詞</type>
-        <kanji>並べます</kanji>
-        <kana>ならべます</kana>
+        <kanji>並べますⅡ [本を～]</kanji>
+        <kana>ならべますⅡ [ほんを～]</kana>
         <pureKana>ならべます</pureKana>
         <chinese>排列</chinese>
-        <note>並べます (Ⅱ)</note>
+        <note>並べます</note>
     </item>
     <item>
         <id>5</id>
         <type>他動詞</type>
-        <kanji>植えます</kanji>
-        <kana>うえます</kana>
+        <kanji>植えますⅡ [木を～]</kanji>
+        <kana>うえますⅡ [きを～]</kana>
         <pureKana>うえます</pureKana>
         <chinese>種植</chinese>
-        <note>植えます (Ⅱ)</note>
+        <note>植えます</note>
     </item>
     <item>
         <id>6</id>
         <type>他動詞</type>
-        <kanji>戻します</kanji>
-        <kana>もどします</kana>
+        <kanji>戻しますⅠ [本を～]</kanji>
+        <kana>もどしますⅠ [ほんを～]</kana>
         <pureKana>もどします</pureKana>
-        <chinese>還，歸還，送回</chinese>
-        <note>戻します (Ⅰ)</note>
+        <chinese>還、歸還、送回</chinese>
+        <note>戻します</note>
     </item>
     <item>
         <id>7</id>
         <type>他動詞</type>
-        <kanji>まとめます</kanji>
-        <kana>まとめます</kana>
+        <kanji>まとめますⅡ</kanji>
+        <kana>まとめますⅡ</kana>
         <pureKana>まとめます</pureKana>
-        <chinese>（整理）歸納好</chinese>
-        <note>まとめます (Ⅱ)</note>
+        <chinese>歸納好、整理</chinese>
+        <note>まとめます</note>
     </item>
     <item>
         <id>8</id>
         <type>他動詞</type>
-        <kanji>片づけます</kanji>
-        <kana>かたづけます</kana>
+        <kanji>片づけますⅡ [部屋を～]</kanji>
+        <kana>かたづけますⅡ [へやを～]</kana>
         <pureKana>かたづけます</pureKana>
-        <chinese>（整理）收拾好</chinese>
-        <note>片づけます (Ⅱ)</note>
+        <chinese>收拾好、整理</chinese>
+        <note>片づけます</note>
     </item>
     <item>
         <id>9</id>
         <type>他動詞</type>
-        <kanji>しまいます</kanji>
-        <kana>しまいます</kana>
+        <kanji>しまいますⅡ [道具を～]</kanji>
+        <kana>しまいますⅡ [どうぐを～]</kana>
         <pureKana>しまいます</pureKana>
-        <chinese>（整理）收回工具，裝回抽屜</chinese>
-        <note>しまいます (Ⅰ)</note>
+        <chinese>收回工具、裝回抽屜</chinese>
+        <note>しまいます</note>
     </item>
     <item>
         <id>10</id>
         <type>他動詞</type>
-        <kanji>決めます</kanji>
-        <kana>きめます</kana>
+        <kanji>決めますⅡ [予定を～]</kanji>
+        <kana>きめますⅡ [よていを～]</kana>
         <pureKana>きめます</pureKana>
         <chinese>決定</chinese>
-        <note>決めます (Ⅱ)</note>
+        <note>決めます</note>
     </item>
     <item>
         <id>11</id>
         <type>他動詞</type>
-        <kanji>知らせます</kanji>
-        <kana>しらせます</kana>
+        <kanji>知らせますⅡ [予定を～]</kanji>
+        <kana>しらせますⅡ [よていを～]</kana>
         <pureKana>しらせます</pureKana>
         <chinese>通知</chinese>
-        <note>知らせます (Ⅱ)</note>
+        <note>知らせます</note>
     </item>
     <item>
         <id>12</id>
         <type>他動詞</type>
-        <kanji>相談します</kanji>
-        <kana>そうだんします</kana>
+        <kanji>相談しますⅢ</kanji>
+        <kana>そうだんしますⅢ</kana>
         <pureKana>そうだんします</pureKana>
-        <chinese>商量，討論</chinese>
-        <note>相談します (Ⅲ)</note>
+        <chinese>商量、討論</chinese>
+        <note>相談します</note>
     </item>
     <item>
         <id>13</id>
         <type>他動詞</type>
-        <kanji>予習します</kanji>
-        <kana>よしゅうします</kana>
+        <kanji>予習しますⅢ</kanji>
+        <kana>よしゅうしますⅢ</kana>
         <pureKana>よしゅうします</pureKana>
         <chinese>預習</chinese>
-        <note>予習します (Ⅲ)</note>
+        <note>予習します</note>
     </item>
     <item>
         <id>14</id>
         <type>他動詞</type>
-        <kanji>復習します</kanji>
-        <kana>ふくしゅうします</kana>
+        <kanji>復習しますⅢ</kanji>
+        <kana>ふくしゅうしますⅢ</kana>
         <pureKana>ふくしゅうします</pureKana>
         <chinese>復習</chinese>
-        <note>復習します (Ⅲ)</note>
+        <note>復習します</note>
     </item>
     <item>
         <id>15</id>
-        <type>他動詞</type>
+        <type>expression</type>
         <kanji>そのままにします</kanji>
         <kana>そのままにします</kana>
         <pureKana>そのままにします</pureKana>
         <chinese>保持原狀</chinese>
-        <note>そのままにします (Ⅲ)</note>
+        <note>そのままにします</note>
     </item>
     <item>
         <id>16</id>
@@ -142,8 +142,8 @@
         <kanji>お子さん</kanji>
         <kana>おこさん</kana>
         <pureKana>おこさん</pureKana>
-        <chinese>（別人的）孩子</chinese>
-        <note></note>
+        <chinese>[別人的] 孩子</chinese>
+        <note>お子さん</note>
     </item>
     <item>
         <id>17</id>
@@ -151,8 +151,8 @@
         <kanji>授業</kanji>
         <kana>じゅぎょう</kana>
         <pureKana>じゅぎょう</pureKana>
-        <chinese>課，課程</chinese>
-        <note></note>
+        <chinese>課、課程</chinese>
+        <note>授業</note>
     </item>
     <item>
         <id>18</id>
@@ -160,8 +160,8 @@
         <kanji>講義</kanji>
         <kana>こうぎ</kana>
         <pureKana>こうぎ</pureKana>
-        <chinese>授課</chinese>
-        <note></note>
+        <chinese>授課、講義</chinese>
+        <note>講義</note>
     </item>
     <item>
         <id>19</id>
@@ -169,8 +169,8 @@
         <kanji>予定</kanji>
         <kana>よてい</kana>
         <pureKana>よてい</pureKana>
-        <chinese>計劃，預定</chinese>
-        <note></note>
+        <chinese>計劃、預定</chinese>
+        <note>予定</note>
     </item>
     <item>
         <id>20</id>
@@ -179,7 +179,7 @@
         <kana>おしらせ</kana>
         <pureKana>おしらせ</pureKana>
         <chinese>通知</chinese>
-        <note></note>
+        <note>お知らせ</note>
     </item>
     <item>
         <id>21</id>
@@ -187,8 +187,8 @@
         <kanji>案内書</kanji>
         <kana>あんないしょ</kana>
         <pureKana>あんないしょ</pureKana>
-        <chinese>（旅行）指南</chinese>
-        <note></note>
+        <chinese>[旅行] 指南、簡介</chinese>
+        <note>案内書</note>
     </item>
     <item>
         <id>22</id>
@@ -197,7 +197,7 @@
         <kana>カレンダー</kana>
         <pureKana>カレンダー</pureKana>
         <chinese>月曆</chinese>
-        <note></note>
+        <note>カレンダー</note>
     </item>
     <item>
         <id>23</id>
@@ -206,7 +206,7 @@
         <kana>ポスター</kana>
         <pureKana>ポスター</pureKana>
         <chinese>海報</chinese>
-        <note></note>
+        <note>ポスター</note>
     </item>
     <item>
         <id>24</id>
@@ -215,7 +215,7 @@
         <kana>ごみばこ</kana>
         <pureKana>ごみばこ</pureKana>
         <chinese>垃圾箱</chinese>
-        <note></note>
+        <note>ごみ箱</note>
     </item>
     <item>
         <id>25</id>
@@ -223,8 +223,8 @@
         <kanji>人形</kanji>
         <kana>にんぎょう</kana>
         <pureKana>にんぎょう</pureKana>
-        <chinese>人偶</chinese>
-        <note></note>
+        <chinese>人偶、娃娃</chinese>
+        <note>人形</note>
     </item>
     <item>
         <id>26</id>
@@ -233,7 +233,7 @@
         <kana>かびん</kana>
         <pureKana>かびん</pureKana>
         <chinese>花瓶</chinese>
-        <note></note>
+        <note>花瓶</note>
     </item>
     <item>
         <id>27</id>
@@ -242,7 +242,7 @@
         <kana>かがみ</kana>
         <pureKana>かがみ</pureKana>
         <chinese>鏡子</chinese>
-        <note></note>
+        <note>鏡</note>
     </item>
     <item>
         <id>28</id>
@@ -251,7 +251,7 @@
         <kana>ひきだし</kana>
         <pureKana>ひきだし</pureKana>
         <chinese>抽屜</chinese>
-        <note></note>
+        <note>引き出し</note>
     </item>
     <item>
         <id>29</id>
@@ -260,7 +260,7 @@
         <kana>げんかん</kana>
         <pureKana>げんかん</pureKana>
         <chinese>玄關</chinese>
-        <note></note>
+        <note>玄関</note>
     </item>
     <item>
         <id>30</id>
@@ -269,7 +269,7 @@
         <kana>ろうか</kana>
         <pureKana>ろうか</pureKana>
         <chinese>走廊</chinese>
-        <note></note>
+        <note>廊下</note>
     </item>
     <item>
         <id>31</id>
@@ -278,7 +278,7 @@
         <kana>かべ</kana>
         <pureKana>かべ</pureKana>
         <chinese>牆壁</chinese>
-        <note></note>
+        <note>壁</note>
     </item>
     <item>
         <id>32</id>
@@ -286,8 +286,8 @@
         <kanji>池</kanji>
         <kana>いけ</kana>
         <pureKana>いけ</pureKana>
-        <chinese>水池，池塘</chinese>
-        <note></note>
+        <chinese>水池、池塘</chinese>
+        <note>池</note>
     </item>
     <item>
         <id>33</id>
@@ -296,7 +296,7 @@
         <kana>こうばん</kana>
         <pureKana>こうばん</pureKana>
         <chinese>派出所</chinese>
-        <note></note>
+        <note>交番</note>
     </item>
     <item>
         <id>34</id>
@@ -305,7 +305,7 @@
         <kana>もとのところ</kana>
         <pureKana>もとのところ</pureKana>
         <chinese>原來的地方</chinese>
-        <note></note>
+        <note>元の所</note>
     </item>
     <item>
         <id>35</id>
@@ -313,8 +313,8 @@
         <kanji>周り</kanji>
         <kana>まわり</kana>
         <pureKana>まわり</pureKana>
-        <chinese>周圍，附近</chinese>
-        <note></note>
+        <chinese>周圍、附近</chinese>
+        <note>周り</note>
     </item>
     <item>
         <id>36</id>
@@ -323,7 +323,7 @@
         <kana>まんなか</kana>
         <pureKana>まんなか</pureKana>
         <chinese>正中間</chinese>
-        <note></note>
+        <note>真ん中</note>
     </item>
     <item>
         <id>37</id>
@@ -332,25 +332,25 @@
         <kana>すみ</kana>
         <pureKana>すみ</pureKana>
         <chinese>角落</chinese>
-        <note></note>
+        <note>隅</note>
     </item>
     <item>
         <id>38</id>
-        <type>副詞</type>
+        <type>adverb</type>
         <kanji>まだ</kanji>
         <kana>まだ</kana>
         <pureKana>まだ</pureKana>
         <chinese>還</chinese>
-        <note></note>
+        <note>まだ</note>
     </item>
     <item>
         <id>39</id>
-        <type>助詞</type>
+        <type>noun</type>
         <kanji>～ほど</kanji>
         <kana>～ほど</kana>
         <pureKana>ほど</pureKana>
-        <chinese>～大約，大概</chinese>
-        <note>接在數量詞後面</note>
+        <chinese>～大約、大概</chinese>
+        <note>～ほど</note>
     </item>
     <item>
         <id>40</id>
@@ -358,17 +358,17 @@
         <kanji>予定表</kanji>
         <kana>よていひょう</kana>
         <pureKana>よていひょう</pureKana>
-        <chinese>日程，時間表</chinese>
-        <note></note>
+        <chinese>日程、時間表</chinese>
+        <note>予定表</note>
     </item>
     <item>
         <id>41</id>
-        <type>conversation</type>
+        <type>expression</type>
         <kanji>ご苦労さま</kanji>
         <kana>ごくろうさま</kana>
         <pureKana>ごくろうさま</pureKana>
-        <chinese>您辛苦了。（用於上司或年長者對手下人的工作表示感謝時）</chinese>
-        <note>會話用語</note>
+        <chinese>您辛苦了（用於上司或年長者對手下人的工作表示感謝時）</chinese>
+        <note>ご苦労さま</note>
     </item>
     <item>
         <id>42</id>
@@ -376,34 +376,151 @@
         <kanji>希望</kanji>
         <kana>きぼう</kana>
         <pureKana>きぼう</pureKana>
-        <chinese>要求，希望</chinese>
-        <note></note>
+        <chinese>要求、希望</chinese>
+        <note>希望</note>
     </item>
     <item>
         <id>43</id>
-        <type>conversation</type>
+        <type>expression</type>
         <kanji>何かご希望がありますか</kanji>
         <kana>なにかごきぼうがありますか</kana>
         <pureKana>なにかごきぼうがありますか</pureKana>
         <chinese>您有什麼要求嗎？</chinese>
-        <note>會話用語</note>
+        <note>何かご希望がありますか</note>
     </item>
     <item>
         <id>44</id>
-        <type>conversation</type>
+        <type>expression</type>
         <kanji>それはいいですね</kanji>
         <kana>それはいいですね</kana>
         <pureKana>それはいいですね</pureKana>
         <chinese>那太好了。</chinese>
-        <note>會話用語</note>
+        <note>それはいいですね</note>
     </item>
     <item>
         <id>45</id>
         <type>他動詞</type>
-        <kanji>冷やします</kanji>
-        <kana>ひやします</kana>
+        <kanji>冷やしますⅠ</kanji>
+        <kana>ひやしますⅠ</kana>
         <pureKana>ひやします</pureKana>
-        <chinese>冷藏</chinese>
-        <note>冷やします (Ⅰ)</note>
+        <chinese>冷藏、冰鎮</chinese>
+        <note>会話 冷やします</note>
+    </item>
+    <item>
+        <id>46</id>
+        <type>noun</type>
+        <kanji>リュック</kanji>
+        <kana>リュック</kana>
+        <pureKana>リュック</pureKana>
+        <chinese>帆布背包</chinese>
+        <note>会話 リュック</note>
+    </item>
+    <item>
+        <id>47</id>
+        <type>noun</type>
+        <kanji>非常袋</kanji>
+        <kana>ひじょうぶくろ</kana>
+        <pureKana>ひじょうぶくろ</pureKana>
+        <chinese>緊急避難包</chinese>
+        <note>会話 非常袋</note>
+    </item>
+    <item>
+        <id>48</id>
+        <type>noun</type>
+        <kanji>非常時</kanji>
+        <kana>ひじょうじ</kana>
+        <pureKana>ひじょうじ</pureKana>
+        <chinese>緊急情況</chinese>
+        <note>会話 非常時</note>
+    </item>
+    <item>
+        <id>49</id>
+        <type>自動詞</type>
+        <kanji>生活しますⅢ</kanji>
+        <kana>せいかつしますⅢ</kana>
+        <pureKana>せいかつします</pureKana>
+        <chinese>生活</chinese>
+        <note>会話 生活します</note>
+    </item>
+    <item>
+        <id>50</id>
+        <type>noun</type>
+        <kanji>懐中電灯</kanji>
+        <kana>かいちゅうでんとう</kana>
+        <pureKana>かいちゅうでんとう</pureKana>
+        <chinese>手電筒</chinese>
+        <note>会話 懐中電灯</note>
+    </item>
+    <item>
+        <id>51</id>
+        <type>expression</type>
+        <kanji>～とか、～とか</kanji>
+        <kana>～とか、～とか</kana>
+        <pureKana>とか</pureKana>
+        <chinese>～啦～啦（表示列舉）</chinese>
+        <note>会話 ～とか、～とか</note>
+    </item>
+    <item>
+        <id>52</id>
+        <type>い形容詞</type>
+        <kanji>丸い</kanji>
+        <kana>まるい</kana>
+        <pureKana>まるい</pureKana>
+        <chinese>圓的</chinese>
+        <note>読物 丸い</note>
+    </item>
+    <item>
+        <id>53</id>
+        <type>noun</type>
+        <kanji>ある～</kanji>
+        <kana>ある～</kana>
+        <pureKana>ある</pureKana>
+        <chinese>某～、某個～</chinese>
+        <note>読物 ある～</note>
+    </item>
+    <item>
+        <id>54</id>
+        <type>expression</type>
+        <kanji>夢を 見ますⅡ</kanji>
+        <kana>ゆめを みますⅡ</kana>
+        <pureKana>ゆめをみます</pureKana>
+        <chinese>做夢</chinese>
+        <note>読物 夢を 見ます</note>
+    </item>
+    <item>
+        <id>55</id>
+        <type>い形容詞</type>
+        <kanji>嬉しい</kanji>
+        <kana>うれしい</kana>
+        <pureKana>うれしい</pureKana>
+        <chinese>高興</chinese>
+        <note>読物 嬉しい</note>
+    </item>
+    <item>
+        <id>56</id>
+        <type>な形容詞</type>
+        <kanji>嫌[な]</kanji>
+        <kana>いや[な]</kana>
+        <pureKana>いや</pureKana>
+        <chinese>討厭、不喜歡</chinese>
+        <note>読物 嫌[な]</note>
+    </item>
+    <item>
+        <id>57</id>
+        <type>adverb</type>
+        <kanji>すると</kanji>
+        <kana>すると</kana>
+        <pureKana>すると</pureKana>
+        <chinese>於是</chinese>
+        <note>読物 すると</note>
+    </item>
+    <item>
+        <id>58</id>
+        <type>自動詞</type>
+        <kanji>目が 覚めますⅡ</kanji>
+        <kana>めが さめますⅡ</kana>
+        <pureKana>めがさめます</pureKana>
+        <chinese>醒來</chinese>
+        <note>読物 目が 覚めます</note>
     </item>
 </vocabulary_list>

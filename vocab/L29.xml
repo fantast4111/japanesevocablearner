@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary_list>
+    <lesson_name>第29課：忘れ物を して しまったんです</lesson_name>
+    <item>
+        <id>1</id>
+        <type>自動詞</type>
+        <kanji>開きますⅠ [ドアが～]</kanji>
+        <kana>あきますⅠ [ドアが～]</kana>
+        <pureKana>あきます</pureKana>
+        <chinese>[門] 開著</chinese>
+        <note>開きますⅠ（開けます [他]）</note>
+    </item>
+    <item>
+        <id>2</id>
+        <type>自動詞</type>
+        <kanji>閉まりますⅠ [ドアが～]</kanji>
+        <kana>しまりますⅠ [ドアが～]</kana>
+        <pureKana>しまります</pureKana>
+        <chinese>[門] 關著</chinese>
+        <note>閉まりますⅠ（閉めます [他]）</note>
+    </item>
+    <item>
+        <id>3</id>
+        <type>自動詞</type>
+        <kanji>つきますⅠ [電気が～]</kanji>
+        <kana>つきますⅠ [でんきが～]</kana>
+        <pureKana>つきます</pureKana>
+        <chinese>[燈] 亮著</chinese>
+        <note>付きますⅠ（つけます [他]）</note>
+    </item>
+    <item>
+        <id>4</id>
+        <type>自動詞</type>
+        <kanji>消えますⅡ [電気が～]</kanji>
+        <kana>きえますⅡ [でんきが～]</kana>
+        <pureKana>きえます</pureKana>
+        <chinese>[燈] 熄滅</chinese>
+        <note>消えますⅡ（消します [他]）</note>
+    </item>
+    <item>
+        <id>5</id>
+        <type>自動詞</type>
+        <kanji>壊れますⅡ [いすが～]</kanji>
+        <kana>こわれますⅡ [いすが～]</kana>
+        <pureKana>こわれます</pureKana>
+        <chinese>[椅子] 壞了</chinese>
+        <note>壊れますⅡ（壊します [他]）</note>
+    </item>
+    <item>
+        <id>6</id>
+        <type>自動詞</type>
+        <kanji>割れますⅡ [コップが～]</kanji>
+        <kana>われますⅡ [コップが～]</kana>
+        <pureKana>われます</pureKana>
+        <chinese>[杯子] 碎了</chinese>
+        <note>割れますⅡ（割ります [他]）</note>
+    </item>
+    <item>
+        <id>7</id>
+        <type>自動詞</type>
+        <kanji>折れますⅡ [木が～]</kanji>
+        <kana>おれますⅡ [きが～]</kana>
+        <pureKana>おれます</pureKana>
+        <chinese>[樹] 折斷了</chinese>
+        <note>折れますⅡ（折ります [他]）</note>
+    </item>
+    <item>
+        <id>8</id>
+        <type>自動詞</type>
+        <kanji>破れますⅡ [紙が～]</kanji>
+        <kana>やぶれますⅡ [かみが～]</kana>
+        <pureKana>やぶれます</pureKana>
+        <chinese>[紙] 破了</chinese>
+        <note>破れますⅡ（破ります [他]）</note>
+    </item>
+    <item>
+        <id>9</id>
+        <type>自動詞</type>
+        <kanji>汚れますⅡ [服が～]</kanji>
+        <kana>よごれますⅡ [ふくが～]</kana>
+        <pureKana>よごれます</pureKana>
+        <chinese>[衣服] 髒了</chinese>
+        <note>汚れますⅡ（汚します [他]）</note>
+    </item>
+    <item>
+        <id>10</id>
+        <type>自動詞</type>
+        <kanji>付きますⅠ [ポケットが～]</kanji>
+        <kana>つきますⅠ [ポケットが～]</kana>
+        <pureKana>つきます</pureKana>
+        <chinese>附有 [口袋]</chinese>
+        <note>付きますⅠ（付けます [他]）</note>
+    </item>
+    <item>
+        <id>11</id>
+        <type>自動詞</type>
+        <kanji>外れますⅡ [ボタンが～]</kanji>
+        <kana>はずれますⅡ [ボタンが～]</kana>
+        <pureKana>はずれます</pureKana>
+        <chinese>[鈕扣] 掉了</chinese>
+        <note>外れますⅡ（外します [他]）</note>
+    </item>
+    <item>
+        <id>12</id>
+        <type>自動詞</type>
+        <kanji>止まりますⅠ [車が～]</kanji>
+        <kana>とまりますⅠ [くるまが～]</kana>
+        <pureKana>とまります</pureKana>
+        <chinese>[車] 停下</chinese>
+        <note>止まりますⅠ（止めます [他]）</note>
+    </item>
+    <item>
+        <id>13</id>
+        <type>他動詞</type>
+        <kanji>間違えますⅡ</kanji>
+        <kana>まちがえますⅡ</kana>
+        <pureKana>まちがえます</pureKana>
+        <chinese>弄錯</chinese>
+        <note>間違えますⅡ</note>
+    </item>
+    <item>
+        <id>14</id>
+        <type>他動詞</type>
+        <kanji>落しますⅠ</kanji>
+        <kana>おとしますⅠ</kana>
+        <pureKana>おとします</pureKana>
+        <chinese>落下、弄丟</chinese>
+        <note>落としますⅠ</note>
+    </item>
+    <item>
+        <id>15</id>
+        <type>自動詞</type>
+        <kanji>掛かりますⅠ [かぎが～]</kanji>
+        <kana>かかりますⅠ [かぎが～]</kana>
+        <pureKana>かかります</pureKana>
+        <chinese>上鎖 [鑰匙]</chinese>
+        <note>掛かりますⅠ（掛けます [他]）</note>
+    </item>
+    <item>
+        <id>16</id>
+        <type>他動詞</type>
+        <kanji>拭きますⅠ</kanji>
+        <kana>ふきますⅠ</kana>
+        <pureKana>ふきます</pureKana>
+        <chinese>擦拭</chinese>
+        <note>拭きますⅠ</note>
+    </item>
+    <item>
+        <id>17</id>
+        <type>他動詞</type>
+        <kanji>取り替えますⅡ</kanji>
+        <kana>とりかえますⅡ</kana>
+        <pureKana>とりかえます</pureKana>
+        <chinese>更換</chinese>
+        <note>取り替えますⅡ</note>
+    </item>
+    <item>
+        <id>18</id>
+        <type>他動詞</type>
+        <kanji>片づけますⅡ</kanji>
+        <kana>かたづけますⅡ</kana>
+        <pureKana>かたづけます</pureKana>
+        <chinese>收拾、整理</chinese>
+        <note>片づけますⅡ</note>
+    </item>
+    <item>
+        <id>19</id>
+        <type>noun</type>
+        <kanji>[お]皿</kanji>
+        <kana>[お]さら</kana>
+        <pureKana>さら</pureKana>
+        <chinese>盤子、碟子</chinese>
+        <note>皿</note>
+    </item>
+    <item>
+        <id>20</id>
+        <type>noun</type>
+        <kanji>[お]茶わん</kanji>
+        <kana>[お]ちゃわん</kana>
+        <pureKana>ちゃわん</pureKana>
+        <chinese>飯碗、碗</chinese>
+        <note>茶わん</note>
+    </item>
+    <item>
+        <id>21</id>
+        <type>noun</type>
+        <kanji>コップ</kanji>
+        <kana>コップ</kana>
+        <pureKana>コップ</pureKana>
+        <chinese>杯子</chinese>
+        <note>コップ</note>
+    </item>
+    <item>
+        <id>22</id>
+        <type>noun</type>
+        <kanji>ガラス</kanji>
+        <kana>ガラス</kana>
+        <pureKana>ガラス</pureKana>
+        <chinese>玻璃</chinese>
+        <note>ガラス</note>
+    </item>
+    <item>
+        <id>23</id>
+        <type>noun</type>
+        <kanji>袋</kanji>
+        <kana>ふくろ</kana>
+        <pureKana>ふくろ</pureKana>
+        <chinese>袋子</chinese>
+        <note>袋</note>
+    </item>
+    <item>
+        <id>24</id>
+        <type>noun</type>
+        <kanji>書類</kanji>
+        <kana>しょるい</kana>
+        <pureKana>しょるい</pureKana>
+        <chinese>文件、資料</chinese>
+        <note>書類</note>
+    </item>
+    <item>
+        <id>25</id>
+        <type>noun</type>
+        <kanji>枝</kanji>
+        <kana>えだ</kana>
+        <pureKana>えだ</pureKana>
+        <chinese>樹枝</chinese>
+        <note>枝</note>
+    </item>
+    <item>
+        <id>26</id>
+        <type>noun</type>
+        <kanji>駅員</kanji>
+        <kana>えきいん</kana>
+        <pureKana>えきいん</pureKana>
+        <chinese>站務員</chinese>
+        <note>駅員</note>
+    </item>
+    <item>
+        <id>27</id>
+        <type>noun</type>
+        <kanji>交番</kanji>
+        <kana>こうばん</kana>
+        <pureKana>こうばん</pureKana>
+        <chinese>派出所</chinese>
+        <note>交番</note>
+    </item>
+    <item>
+        <id>28</id>
+        <type>noun</type>
+        <kanji>スピーチ</kanji>
+        <kana>スピーチ</kana>
+        <pureKana>スピーチ</pureKana>
+        <chinese>演講（～を します：演講）</chinese>
+        <note>スピーチ</note>
+    </item>
+    <item>
+        <id>29</id>
+        <type>noun</type>
+        <kanji>返事</kanji>
+        <kana>へんじ</kana>
+        <pureKana>へんじ</pureKana>
+        <chinese>回信、回答（～を します：回話）</chinese>
+        <note>返事</note>
+    </item>
+    <item>
+        <id>30</id>
+        <type>expression</type>
+        <kanji>お先にどうぞ。</kanji>
+        <kana>おさきにどうぞ。</kana>
+        <pureKana>おさきにどうぞ</pureKana>
+        <chinese>您先請。</chinese>
+        <note>お先にどうぞ。</note>
+    </item>
+    <item>
+        <id>31</id>
+        <type>noun</type>
+        <kanji>源氏物語</kanji>
+        <kana>げんじものがたり</kana>
+        <pureKana>げんじものがたり</pureKana>
+        <chinese>源氏物語（平安時代代表式部寫的小說）</chinese>
+        <note>源氏物語</note>
+    </item>
+    <item>
+        <id>32</id>
+        <type>noun</type>
+        <kanji>今の電車</kanji>
+        <kana>いまのでんしゃ</kana>
+        <pureKana>いまのでんしゃ</pureKana>
+        <chinese>剛才的電車</chinese>
+        <note>会話 今の電車</note>
+    </item>
+    <item>
+        <id>33</id>
+        <type>noun</type>
+        <kanji>忘れ物</kanji>
+        <kana>わすれもの</kana>
+        <pureKana>わすれもの</pureKana>
+        <chinese>遺失物品</chinese>
+        <note>会話 忘れ物</note>
+    </item>
+    <item>
+        <id>34</id>
+        <type>noun</type>
+        <kanji>このくらい</kanji>
+        <kana>このくらい</kana>
+        <pureKana>このくらい</pureKana>
+        <chinese>這樣大小的</chinese>
+        <note>会話 このくらい</note>
+    </item>
+    <item>
+        <id>35</id>
+        <type>noun</type>
+        <kanji>～側</kanji>
+        <kana>～がわ</kana>
+        <pureKana>がわ</pureKana>
+        <chinese>～側</chinese>
+        <note>会話 ～側</note>
+    </item>
+    <item>
+        <id>36</id>
+        <type>noun</type>
+        <kanji>ポケット</kanji>
+        <kana>ポケット</kana>
+        <pureKana>ポケット</pureKana>
+        <chinese>口袋</chinese>
+        <note>会話 ポケット</note>
+    </item>
+    <item>
+        <id>37</id>
+        <type>noun</type>
+        <kanji>～辺</kanji>
+        <kana>～へん</kana>
+        <pureKana>へん</pureKana>
+        <chinese>～邊</chinese>
+        <note>会話 ～辺</note>
+    </item>
+    <item>
+        <id>38</id>
+        <type>expression</type>
+        <kanji>覚えていません。</kanji>
+        <kana>おぼえていません。</kana>
+        <pureKana>おぼえていません</pureKana>
+        <chinese>不記得了。</chinese>
+        <note>会話 覚えていません。</note>
+    </item>
+    <item>
+        <id>39</id>
+        <type>noun</type>
+        <kanji>網棚</kanji>
+        <kana>あみだな</kana>
+        <pureKana>あみだな</pureKana>
+        <chinese>行李網架</chinese>
+        <note>会話 網棚</note>
+    </item>
+    <item>
+        <id>40</id>
+        <type>adverb</type>
+        <kanji>確か</kanji>
+        <kana>たしか</kana>
+        <pureKana>たしか</pureKana>
+        <chinese>似乎是、大概</chinese>
+        <note>会話 確か</note>
+    </item>
+    <item>
+        <id>41</id>
+        <type>expression</type>
+        <kanji>[ああ、]よかった。</kanji>
+        <kana>[ああ、]よかった。</kana>
+        <pureKana>よかった</pureKana>
+        <chinese>[啊、]太好了。（用於表示安心時）</chinese>
+        <note>会話 [ああ、]よかった。</note>
+    </item>
+    <item>
+        <id>42</id>
+        <type>noun</type>
+        <kanji>新宿</kanji>
+        <kana>しんじゅく</kana>
+        <pureKana>しんじゅく</pureKana>
+        <chinese>新宿（東京的地名、車站名）</chinese>
+        <note>会話 新宿</note>
+    </item>
+    <item>
+        <id>43</id>
+        <type>noun</type>
+        <kanji>地震</kanji>
+        <kana>じしん</kana>
+        <pureKana>じしん</pureKana>
+        <chinese>地震</chinese>
+        <note>読物 地震</note>
+    </item>
+    <item>
+        <id>44</id>
+        <type>noun</type>
+        <kanji>壁</kanji>
+        <kana>かべ</kana>
+        <pureKana>かべ</pureKana>
+        <chinese>牆壁</chinese>
+        <note>読物 壁</note>
+    </item>
+    <item>
+        <id>45</id>
+        <type>noun</type>
+        <kanji>針</kanji>
+        <kana>はり</kana>
+        <pureKana>はり</pureKana>
+        <chinese>針（鐘錶的）指針</chinese>
+        <note>読物 針</note>
+    </item>
+    <item>
+        <id>46</id>
+        <type>他動詞</type>
+        <kanji>指しますⅠ</kanji>
+        <kana>さしますⅠ</kana>
+        <pureKana>さします</pureKana>
+        <chinese>指</chinese>
+        <note>読物 指します</note>
+    </item>
+    <item>
+        <id>47</id>
+        <type>noun</type>
+        <kanji>駅前</kanji>
+        <kana>えきまえ</kana>
+        <pureKana>えきまえ</pureKana>
+        <chinese>車站前</chinese>
+        <note>読物 駅前</note>
+    </item>
+    <item>
+        <id>48</id>
+        <type>自動詞</type>
+        <kanji>倒れますⅡ</kanji>
+        <kana>たおれますⅡ</kana>
+        <pureKana>たおれます</pureKana>
+        <chinese>倒、倒下來</chinese>
+        <note>読物 倒れます</note>
+    </item>
+    <item>
+        <id>49</id>
+        <type>noun</type>
+        <kanji>西</kanji>
+        <kana>にし</kana>
+        <pureKana>にし</pureKana>
+        <chinese>西</chinese>
+        <note>読物 西</note>
+    </item>
+    <item>
+        <id>50</id>
+        <type>noun</type>
+        <kanji>～の方</kanji>
+        <kana>～のほう</kana>
+        <pureKana>ほう</pureKana>
+        <chinese>～方面、～方</chinese>
+        <note>読物 ～の方</note>
+    </item>
+    <item>
+        <id>51</id>
+        <type>自動詞</type>
+        <kanji>燃えますⅡ</kanji>
+        <kana>もえますⅡ</kana>
+        <pureKana>もえます</pureKana>
+        <chinese>燃燒</chinese>
+        <note>読物 燃えます</note>
+    </item>
+    <item>
+        <id>52</id>
+        <type>noun</type>
+        <kanji>レポーター</kanji>
+        <kana>レポーター</kana>
+        <pureKana>レポーター</pureKana>
+        <chinese>採訪記者</chinese>
+        <note>読物 レポーター</note>
+    </item>
+</vocabulary_list>

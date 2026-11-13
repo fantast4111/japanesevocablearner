@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary_list>
+    <lesson_name>第27課：何でも 作れるんですね</lesson_name>
+    <item>
+        <id>1</id>
+        <type>他動詞</type>
+        <kanji>飼いますⅠ</kanji>
+        <kana>かいますⅠ</kana>
+        <pureKana>かいます</pureKana>
+        <chinese>飼養</chinese>
+        <note>飼います</note>
+    </item>
+    <item>
+        <id>2</id>
+        <type>自動詞</type>
+        <kanji>走りますⅠ [道を～]</kanji>
+        <kana>はしりますⅠ [みちを～]</kana>
+        <pureKana>はしります</pureKana>
+        <chinese>跑、奔跑 [經過道路]</chinese>
+        <note>走ります</note>
+    </item>
+    <item>
+        <id>3</id>
+        <type>自動詞</type>
+        <kanji>見えますⅡ [山が～]</kanji>
+        <kana>みえますⅡ [やまが～]</kana>
+        <pureKana>みえます</pureKana>
+        <chinese>看得見 [山]</chinese>
+        <note>見えます</note>
+    </item>
+    <item>
+        <id>4</id>
+        <type>自動詞</type>
+        <kanji>聞こえますⅡ [音が～]</kanji>
+        <kana>きこえますⅡ [おとが～]</kana>
+        <pureKana>きこえます</pureKana>
+        <chinese>聽得見 [聲音]</chinese>
+        <note>聞こえます</note>
+    </item>
+    <item>
+        <id>5</id>
+        <type>自動詞</type>
+        <kanji>できますⅡ [道が～]</kanji>
+        <kana>できますⅡ [みちが～]</kana>
+        <pureKana>できます</pureKana>
+        <chinese>建成、完成 [道路]</chinese>
+        <note>できます</note>
+    </item>
+    <item>
+        <id>6</id>
+        <type>他動詞</type>
+        <kanji>開きますⅠ [教室を～]</kanji>
+        <kana>ひらきますⅠ [きょうしつを～]</kana>
+        <pureKana>ひらきます</pureKana>
+        <chinese>開、開設 [教室]</chinese>
+        <note>開きます</note>
+    </item>
+    <item>
+        <id>7</id>
+        <type>な形容詞</type>
+        <kanji>心配[な]</kanji>
+        <kana>しんぱい[な]</kana>
+        <pureKana>しんぱい</pureKana>
+        <chinese>擔心</chinese>
+        <note>心配[な]</note>
+    </item>
+    <item>
+        <id>8</id>
+        <type>noun</type>
+        <kanji>ペット</kanji>
+        <kana>ペット</kana>
+        <pureKana>ペット</pureKana>
+        <chinese>寵物</chinese>
+        <note>ペット</note>
+    </item>
+    <item>
+        <id>9</id>
+        <type>noun</type>
+        <kanji>鳥</kanji>
+        <kana>とり</kana>
+        <pureKana>とり</pureKana>
+        <chinese>鳥</chinese>
+        <note>鳥</note>
+    </item>
+    <item>
+        <id>10</id>
+        <type>noun</type>
+        <kanji>声</kanji>
+        <kana>こえ</kana>
+        <pureKana>こえ</pureKana>
+        <chinese>聲音</chinese>
+        <note>声</note>
+    </item>
+    <item>
+        <id>11</id>
+        <type>noun</type>
+        <kanji>波</kanji>
+        <kana>なみ</kana>
+        <pureKana>なみ</pureKana>
+        <chinese>波浪</chinese>
+        <note>波</note>
+    </item>
+    <item>
+        <id>12</id>
+        <type>noun</type>
+        <kanji>花火</kanji>
+        <kana>はなび</kana>
+        <pureKana>はなび</pureKana>
+        <chinese>煙火</chinese>
+        <note>花火</note>
+    </item>
+    <item>
+        <id>13</id>
+        <type>noun</type>
+        <kanji>道具</kanji>
+        <kana>どうぐ</kana>
+        <pureKana>どうぐ</pureKana>
+        <chinese>工具</chinese>
+        <note>道具</note>
+    </item>
+    <item>
+        <id>14</id>
+        <type>noun</type>
+        <kanji>クリーニング</kanji>
+        <kana>クリーニング</kana>
+        <pureKana>クリーニング</pureKana>
+        <chinese>洗衣店、乾洗</chinese>
+        <note>クリーニング</note>
+    </item>
+    <item>
+        <id>15</id>
+        <type>noun</type>
+        <kanji>家</kanji>
+        <kana>いえ</kana>
+        <pureKana>いえ</pureKana>
+        <chinese>家、住宅</chinese>
+        <note>家</note>
+    </item>
+    <item>
+        <id>16</id>
+        <type>noun</type>
+        <kanji>マンション</kanji>
+        <kana>マンション</kana>
+        <pureKana>マンション</pureKana>
+        <chinese>公寓</chinese>
+        <note>マンション</note>
+    </item>
+    <item>
+        <id>17</id>
+        <type>noun</type>
+        <kanji>キッチン</kanji>
+        <kana>キッチン</kana>
+        <pureKana>キッチン</pureKana>
+        <chinese>廚房</chinese>
+        <note>キッチン</note>
+    </item>
+    <item>
+        <id>18</id>
+        <type>noun</type>
+        <kanji>～教室</kanji>
+        <kana>～きょうしつ</kana>
+        <pureKana>きょうしつ</pureKana>
+        <chinese>～教室</chinese>
+        <note>～教室</note>
+    </item>
+    <item>
+        <id>19</id>
+        <type>noun</type>
+        <kanji>パーティルーム</kanji>
+        <kana>パーティルーム</kana>
+        <pureKana>パーティルーム</pureKana>
+        <chinese>宴會廳</chinese>
+        <note>パーティルーム</note>
+    </item>
+    <item>
+        <id>20</id>
+        <type>noun</type>
+        <kanji>方</kanji>
+        <kana>かた</kana>
+        <pureKana>かた</pureKana>
+        <chinese>位（「ひと」的尊敬語）</chinese>
+        <note>方</note>
+    </item>
+    <item>
+        <id>21</id>
+        <type>noun</type>
+        <kanji>～後</kanji>
+        <kana>～ご</kana>
+        <pureKana>ご</pureKana>
+        <chinese>～後（時間上）</chinese>
+        <note>～後</note>
+    </item>
+    <item>
+        <id>22</id>
+        <type>adverb</type>
+        <kanji>～しか</kanji>
+        <kana>～しか</kana>
+        <pureKana>しか</pureKana>
+        <chinese>只～（後接否定）</chinese>
+        <note>～しか</note>
+    </item>
+    <item>
+        <id>23</id>
+        <type>adjective</type>
+        <kanji>ほかの</kanji>
+        <kana>ほかの</kana>
+        <pureKana>ほかの</pureKana>
+        <chinese>其他的</chinese>
+        <note>ほかの</note>
+    </item>
+    <item>
+        <id>24</id>
+        <type>adverb</type>
+        <kanji>はっきり</kanji>
+        <kana>はっきり</kana>
+        <pureKana>はっきり</pureKana>
+        <chinese>清楚地</chinese>
+        <note>はっきり</note>
+    </item>
+    <item>
+        <id>25</id>
+        <type>noun</type>
+        <kanji>家具</kanji>
+        <kana>かぐ</kana>
+        <pureKana>かぐ</pureKana>
+        <chinese>家具</chinese>
+        <note>会話 家具</note>
+    </item>
+    <item>
+        <id>26</id>
+        <type>noun</type>
+        <kanji>本棚</kanji>
+        <kana>ほんだな</kana>
+        <pureKana>ほんだな</pureKana>
+        <chinese>書架</chinese>
+        <note>会話 本棚</note>
+    </item>
+    <item>
+        <id>27</id>
+        <type>adverb</type>
+        <kanji>いつか</kanji>
+        <kana>いつか</kana>
+        <pureKana>いつか</pureKana>
+        <chinese>什麼時候、有朝一日</chinese>
+        <note>会話 いつか</note>
+    </item>
+    <item>
+        <id>28</id>
+        <type>他動詞</type>
+        <kanji>建てますⅡ</kanji>
+        <kana>たてますⅡ</kana>
+        <pureKana>たてます</pureKana>
+        <chinese>建、蓋</chinese>
+        <note>会話 建てます</note>
+    </item>
+    <item>
+        <id>29</id>
+        <type>い形容詞</type>
+        <kanji>素晴らしい</kanji>
+        <kana>すばらしい</kana>
+        <pureKana>すばらしい</pureKana>
+        <chinese>很棒、了不起</chinese>
+        <note>会話 素晴らしい</note>
+    </item>
+    <item>
+        <id>30</id>
+        <type>noun</type>
+        <kanji>子どもたち</kanji>
+        <kana>こどもたち</kana>
+        <pureKana>こどもたち</pureKana>
+        <chinese>孩子們</chinese>
+        <note>読物 子どもたち</note>
+    </item>
+    <item>
+        <id>31</id>
+        <type>な形容詞</type>
+        <kanji>大好き[な]</kanji>
+        <kana>だいすき[な]</kana>
+        <pureKana>だいすき</pureKana>
+        <chinese>非常喜歡</chinese>
+        <note>読物 大好き[な]</note>
+    </item>
+    <item>
+        <id>32</id>
+        <type>noun</type>
+        <kanji>主人公</kanji>
+        <kana>しゅじんこう</kana>
+        <pureKana>しゅじんこう</pureKana>
+        <chinese>主角、主人翁</chinese>
+        <note>読物 主人公</note>
+    </item>
+    <item>
+        <id>33</id>
+        <type>noun</type>
+        <kanji>形</kanji>
+        <kana>かたち</kana>
+        <pureKana>かたち</pureKana>
+        <chinese>形狀、樣子</chinese>
+        <note>読物 形</note>
+    </item>
+    <item>
+        <id>34</id>
+        <type>な形容詞</type>
+        <kanji>不思議[な]</kanji>
+        <kana>ふしぎ[な]</kana>
+        <pureKana>ふしぎ</pureKana>
+        <chinese>不可思議、奇妙</chinese>
+        <note>読物 不思議[な]</note>
+    </item>
+    <item>
+        <id>35</id>
+        <type>noun</type>
+        <kanji>ポケット</kanji>
+        <kana>ポケット</kana>
+        <pureKana>ポケット</pureKana>
+        <chinese>口袋</chinese>
+        <note>読物 ポケット</note>
+    </item>
+    <item>
+        <id>36</id>
+        <type>adverb</type>
+        <kanji>例えば</kanji>
+        <kana>たとえば</kana>
+        <pureKana>たとえば</pureKana>
+        <chinese>例如</chinese>
+        <note>読物 例えば</note>
+    </item>
+    <item>
+        <id>37</id>
+        <type>他動詞</type>
+        <kanji>付けますⅡ</kanji>
+        <kana>つけますⅡ</kana>
+        <pureKana>つけます</pureKana>
+        <chinese>戴上、裝上</chinese>
+        <note>読物 付けます</note>
+    </item>
+    <item>
+        <id>38</id>
+        <type>adverb</type>
+        <kanji>自由に</kanji>
+        <kana>じゆうに</kana>
+        <pureKana>じゆうに</pureKana>
+        <chinese>自由地、隨意地</chinese>
+        <note>読物 自由に</note>
+    </item>
+    <item>
+        <id>39</id>
+        <type>noun</type>
+        <kanji>空</kanji>
+        <kana>そら</kana>
+        <pureKana>そら</pureKana>
+        <chinese>天空</chinese>
+        <note>読物 空</note>
+    </item>
+    <item>
+        <id>40</id>
+        <type>自動詞</type>
+        <kanji>飛びますⅠ</kanji>
+        <kana>とびますⅠ</kana>
+        <pureKana>とびます</pureKana>
+        <chinese>飛、飛翔</chinese>
+        <note>読物 飛びます</note>
+    </item>
+    <item>
+        <id>41</id>
+        <type>noun</type>
+        <kanji>昔</kanji>
+        <kana>むかし</kana>
+        <pureKana>むかし</pureKana>
+        <chinese>過去、以前、從前</chinese>
+        <note>読物 昔</note>
+    </item>
+    <item>
+        <id>42</id>
+        <type>noun</type>
+        <kanji>自分</kanji>
+        <kana>じぶん</kana>
+        <pureKana>じぶん</pureKana>
+        <chinese>自己</chinese>
+        <note>読物 自分</note>
+    </item>
+    <item>
+        <id>43</id>
+        <type>noun</type>
+        <kanji>将来</kanji>
+        <kana>しょうらい</kana>
+        <pureKana>しょうらい</pureKana>
+        <chinese>將來</chinese>
+        <note>読物 將來</note>
+    </item>
+</vocabulary_list>
