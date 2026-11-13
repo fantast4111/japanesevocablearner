@@ -422,30 +422,25 @@
     return audioCtx;
   }
 
-  // 答對慶祝聲 (清脆上升和弦)
   function playCorrectSound() {
     try {
       const ctx = getAudioContext();
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       notes.forEach((freq, index) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, ctx.currentTime + index * 0.08);
-        
         gain.gain.setValueAtTime(0.15, ctx.currentTime + index * 0.08);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.08 + 0.3);
-        
         osc.connect(gain);
         gain.connect(ctx.destination);
-        
         osc.start(ctx.currentTime + index * 0.08);
         osc.stop(ctx.currentTime + index * 0.08 + 0.3);
       });
-    } catch(e) { console.log(e); }
+    } catch(e) {}
   }
 
-  // 答錯提示聲 (柔和低音)
   function playIncorrectSound() {
     try {
       const ctx = getAudioContext();
@@ -454,19 +449,15 @@
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(220, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(146.83, ctx.currentTime + 0.25);
-      
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-      
       osc.connect(gain);
       gain.connect(ctx.destination);
-      
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.25);
-    } catch(e) { console.log(e); }
+    } catch(e) {}
   }
 
-  // 全部答完歡呼聲 (勝利華麗旋律)
   function playVictorySound() {
     try {
       const ctx = getAudioContext();
@@ -483,21 +474,17 @@
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(note.f, ctx.currentTime + note.t);
-        
         gain.gain.setValueAtTime(0.2, ctx.currentTime + note.t);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + note.t + note.d);
-        
         osc.connect(gain);
         gain.connect(ctx.destination);
-        
         osc.start(ctx.currentTime + note.t);
         osc.stop(ctx.currentTime + note.t + note.d);
       });
-    } catch(e) { console.log(e); }
+    } catch(e) {}
   }
 
-
-  // === 原始應用程式邏輯 ===
+  // === 應用程式狀態變數 ===
   let defaultPokemonCards = [
     { id: 1, name: "皮卡丘", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
     { id: 2, name: "妙蛙種子", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" },
@@ -627,7 +614,7 @@
     if (isCorrect) {
       score++;
       btnElem.classList.add('correct');
-      playCorrectSound(); // 播放答對音效
+      playCorrectSound();
       
       consecutiveCorrectCount++;
       if (consecutiveCorrectCount >= 3) {
@@ -639,7 +626,7 @@
       }
     } else {
       btnElem.classList.add('incorrect');
-      playIncorrectSound(); // 播放答錯提示音
+      playIncorrectSound();
       const allBtns = document.querySelectorAll('.option-btn');
       allBtns.forEach(b => {
         if (b.innerText === q.answer) b.classList.add('correct');
@@ -665,7 +652,7 @@
   }
 
   function finishQuiz() {
-    playVictorySound(); // 播放全部答完歡呼音效
+    playVictorySound();
     document.getElementById('quiz-area').style.display = 'none';
     document.getElementById('result-area').style.display = 'block';
     
@@ -835,6 +822,7 @@
     updateTicketsDisplay();
   }
 
+  // === 修復後的抽卡執行核心 ===
   function executeGachaDraw() {
     if (gachaTickets <= 0) return;
 
@@ -843,24 +831,31 @@
       return;
     }
 
+    // 篩選尚未擁有的卡片
     let availableCards = rewardCardPool.filter(card => !userInventory.includes(card.id));
     if (availableCards.length === 0) {
       alert("恭喜你！已經收集完全部卡片了！");
       return;
     }
 
+    // 扣除次數並儲存
     gachaTickets--;
     saveTickets();
     updateTicketsDisplay();
 
+    // 隨機抽出一張
     let randomIndex = Math.floor(Math.random() * availableCards.length);
     let wonCard = availableCards[randomIndex];
 
-    userInventory.push(wonCard.id);
+    // 加入收藏庫並儲存
+    if (!userInventory.includes(wonCard.id)) {
+      userInventory.push(wonCard.id);
+    }
     try {
       localStorage.setItem('user_inventory', JSON.stringify(userInventory));
     } catch(e) {}
 
+    // 顯示抽中圖片與提示
     const imgElem = document.getElementById('gacha-result-image');
     if(imgElem) {
       imgElem.src = wonCard.image;
