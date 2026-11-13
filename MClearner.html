@@ -239,7 +239,6 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    /* 絕對置中箭頭與防位移設定 */
     .zoom-modal-content {
       background: rgba(0,0,0,0.95);
       padding: 20px 60px;
@@ -369,7 +368,6 @@
     </div>
   </header>
 
-  <!-- 控制面板 -->
   <div class="control-panel">
     <div class="control-row">
       <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
@@ -384,7 +382,6 @@
 
       <button onclick="loadDefaultPokemonCards()" class="btn-secondary">⚡ 重設為預設寶可夢卡池</button>
     </div>
-    <!-- 獨立第二行：貼上 Google CSV 網址 -->
     <div class="control-row">
       <button onclick="openCsvLinkModal()" class="btn-secondary" style="width: 100%; max-width: 400px;">🔗 貼上 Google CSV 網址</button>
     </div>
@@ -772,7 +769,6 @@
     document.getElementById('feedback-explanation').innerText = "解析：" + (q.explanation || "（無）");
     document.getElementById('feedback-box').style.display = 'block';
 
-    // 安全保障機制：無論對錯或是否獲得抽卡機會，統一在 1 秒後顯示「下一題」按鈕
     setTimeout(() => {
       document.getElementById('next-btn').style.display = 'inline-block';
     }, 1000);
@@ -954,6 +950,7 @@
     if(drawBtn) drawBtn.disabled = (gachaTickets <= 0);
   }
 
+  // 修正後的安全關閉抽卡視窗函式
   function closeGachaModal() {
     document.getElementById('gacha-modal').style.display = 'none';
     updateTicketsDisplay();
