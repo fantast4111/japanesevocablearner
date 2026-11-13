@@ -544,39 +544,35 @@
     let consecutiveCorrectCount = 0;
 
     // 支援快速載入 Lxx.json
-    async function loadLessonNumber() {
-      const numInput = document.getElementById('quick-lesson-num').value.trim();
-      if (!numInput) {
-        showToast('請輸入課程數字編號（例如 34）', '⚠️');
-        return;
-      }
-      const fileName = `L${numInput}.json`;
-      // 嘗試從同網域載入 Lxx.json 或使用預設 L34 範例
-      try {
-        const response = await fetch(fileName);
-        if (!response.ok) throw new Error(`找不到檔案 ${fileName}`);
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          activeDeckQuestions = data;
-          activeDeckMeta = { badge: `L${numInput}`, title: `第 ${numInput} 課聽力填空測驗`, subtitle: `共 ${data.length} 題` };
-          updateDeckHeaderUI();
-          initQuiz(false);
-          showToast(`成功載入 ${fileName} 題庫！`, '✅');
+    // 【新增】讀取 json 資料夾內的 Lxx.json 檔案
+      async function loadLessonJsonFromFolder() {
+        const num = document.getElementById('lesson-num-input').value.trim();
+        if (!num) {
+          alert("請輸入有效的課程數字！");
           return;
         }
-      } catch (e) {
-        // 如果找不到實體檔案，若為 34 則直接載入內建範例
-        if (numInput === '34') {
-          activeDeckQuestions = SAMPLE_TEMPLATE_DATA;
-          activeDeckMeta = { badge: `L34`, title: `第 34 課聽力填空測驗`, subtitle: `共 ${SAMPLE_TEMPLATE_DATA.length} 題` };
-          updateDeckHeaderUI();
-          initQuiz(false);
-          showToast('成功載入 L34 預設題庫！', '✅');
-        } else {
-          showToast(`無法讀取 ${fileName}，請確認檔案存在或使用進階匯入`, '❌');
+        const filePath = `json/L${num}.json`;
+        try {
+          const response = await fetch(filePath);
+          if (!response.ok) {
+            throw new Error(`找不到檔案：${filePath} (狀態碼 ${response.status})`);
+          }
+          const data = await response.json();
+          
+          // 假設你的題庫載入處理函數叫做 loadQuizData 或 processQuizData
+          // 請把下面這行換成你程式中實際處理匯入資料的函數名稱
+          if (typeof processImportedQuiz === 'function') {
+            processImportedQuiz(data);
+          } else if (typeof quizData !== 'undefined') {
+            quizData = data;
+            initQuiz();
+          }
+          alert(`成功載入 ${filePath}！`);
+        } catch (error) {
+          console.error(error);
+          alert(`讀取失敗：無法載入 ${filePath}\n請確認 json 資料夾中是否有此檔案。`);
         }
       }
-    }
 
     async function fetchGoogleSheetRewards() {
       const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRceONgowH9Reg0_NY3qNrB4nWGqYrUJsjgglVQlfNQO3LL9dRaJCw1z6526UIp3CKWg-ShXU3Nu8XE/pub?output=csv";
