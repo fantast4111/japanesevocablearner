@@ -396,8 +396,8 @@
                             <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
-                    <button onclick="resetAndInitSpelling()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
-                        進入下一輪特訓（重設精通紀錄）
+                    <button onclick="handleSpellingNextRound()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        進入下一輪特訓
                     </button>
                 </div>
             </div>
@@ -1407,11 +1407,13 @@
             nextSpellingQuestion();
         }
 
-        // 1. 聽寫特訓中全部字詞已精通，再按開啟下一輪時，先清空精通的紀錄
-        function resetAndInitSpelling() {
-            masteredSpellingSet.clear();
-            initSpelling();
-        }
+            // 點擊進入下一輪特訓：未全部精通時直接進下一輪；若全部生字已精通則自動重設
+            function handleSpellingNextRound() {
+                if (vocabList.length > 0 && masteredSpellingSet.size >= vocabList.length) {
+                    masteredSpellingSet.clear(); // 除非全部生字已精通，否則才重設
+                }
+                initSpelling();
+            }
 
         function nextSpellingQuestion() {
             if (spellingPool.length === 0) {
