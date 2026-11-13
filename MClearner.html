@@ -389,10 +389,20 @@
         <button onclick="closeGalleryModal()" class="w-8 h-8 rounded-xl hover:bg-stone-200 font-bold text-slate-500">✕</button>
       </div>
 
-      <div class="p-6 overflow-y-auto">
-        <div class="flex items-center justify-between mb-4 text-xs text-slate-500">
-          <span>已收集：<strong id="gallery-collected-count" class="text-amber-700 text-sm">0</strong> / <span id="gallery-total-count">0</span> 張</span>
-          <button onclick="resetGalleryCollection()" class="text-rose-600 hover:underline">重設收藏紀錄</button>
+      <div class="p-6 overflow-y-auto space-y-4">
+        <!-- Gallery Top Control & Draw Button -->
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 bg-washi p-3.5 rounded-2xl border border-stone-200/80">
+          <div>
+            已收集：<strong id="gallery-collected-count" class="text-amber-700 text-sm">0</strong> / <span id="gallery-total-count">0</span> 張
+            <span class="ml-3 text-slate-400">剩餘抽卡機會: <strong id="gallery-pending-chances" class="text-indigoJp-700">0</strong></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openGachaFromGallery()" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+              <span>🎴</span>
+              <span>抽卡 (補抽)</span>
+            </button>
+            <button onclick="resetGalleryCollection()" class="text-rose-600 hover:underline px-2 py-1">重設紀錄</button>
+          </div>
         </div>
 
         <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
@@ -402,58 +412,72 @@
     </div>
   </div>
 
+  <!-- Card Zoom Modal (放大檢視卡片) -->
+  <div id="card-zoom-modal" class="hidden fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeCardZoom()">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
+      <button onclick="closeCardZoom()" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 font-bold text-slate-600 flex items-center justify-center">✕</button>
+      <div class="w-48 h-48 mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center p-2 shadow-inner">
+        <img id="zoom-card-img" src="" alt="放大卡片" class="w-full h-full object-contain" />
+      </div>
+      <div>
+        <h3 id="zoom-card-name" class="font-bold text-lg text-slate-900"></h3>
+        <p class="text-xs text-amber-700 font-medium mt-1">✨ 已解鎖收藏獎勵卡</p>
+      </div>
+    </div>
+  </div>
+
   <!-- JSON / CSV Import Modal -->
   <div id="import-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4" role="dialog" aria-modal="true">
-    <div class="bg-white rounded-3xl shadow-2xl border border-stone-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="px-6 py-4 bg-washi border-b border-stone-200 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <span class="w-8 h-8 rounded-xl bg-indigoJp-700 text-white flex items-center justify-center text-sm">📂</span>
-          <div>
-            <h2 class="font-bold text-base sm:text-lg text-slate-900">匯入自訂 JSON 題庫 / Google CSV</h2>
-            <p class="text-xs text-slate-500">上傳 .json 或 .csv 檔案（支援 D 欄圖片作為獎勵卡）</p>
-          </div>
+  <!-- Summary View -->
+  <div id="summary-container" class="hidden bg-white rounded-3xl shadow-sm border border-stone-200/80 p-6 sm:p-10 text-center space-y-6">
+    <div class="w-20 h-20 mx-auto rounded-3xl bg-indigoJp-50 text-indigoJp-700 flex items-center justify-center text-4xl">
+      🎉
+    </div>
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">聽力填空測驗完成！</h2>
+      <p id="summary-deck-subtitle" class="text-sm text-slate-500 mt-1">題庫練習結束</p>
+    </div>
+
+    <div class="max-w-xs mx-auto p-5 rounded-2xl bg-washi border border-stone-200 space-y-3">
+      <div>
+        <div class="text-xs text-slate-500 font-medium">最終總得分</div>
+        <div class="text-4xl font-bold text-indigoJp-700 mt-1">
+          <span id="final-score">0</span> <span class="text-lg font-normal text-slate-400">/ <span id="final-total">0</span></span>
         </div>
-        <button onclick="closeImportModal()" class="w-8 h-8 rounded-xl hover:bg-stone-200 text-slate-500 font-bold">✕</button>
+        <div id="final-comment" class="text-xs font-medium text-emerald-700 mt-2"></div>
       </div>
-
-      <div class="p-6 overflow-y-auto space-y-5 text-sm">
-        <div id="import-alert" class="hidden p-3.5 rounded-2xl text-xs sm:text-sm font-medium leading-relaxed"></div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5">題庫名稱（選填）</label>
-          <input type="text" id="custom-deck-name" placeholder="例如：大家的日本語 第34課 聽力測驗" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-indigoJp-600 outline-none text-sm" />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5">選擇本機檔案 (.json 或 .csv)</label>
-          <label for="json-file-input" class="flex flex-col items-center justify-center w-full p-5 rounded-2xl border-2 border-dashed border-stone-300 hover:border-indigoJp-600 bg-washi/60 cursor-pointer text-center">
-            <span class="text-2xl mb-1">📄</span>
-            <span class="font-bold text-indigoJp-700 text-xs sm:text-sm">點擊選擇 .json 或 .csv 檔案</span>
-            <span id="selected-file-name" class="text-xs text-slate-400 mt-1">支援 Google 試算表匯出之 CSV（D欄為獎勵圖片網址）</span>
-            <input id="json-file-input" type="file" accept=".json,.csv,application/json,text/csv" class="hidden" onchange="handleFileUpload(event)" />
-          </label>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label for="json-textarea" class="text-xs font-bold text-slate-700">直接貼上 JSON 內容</label>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="fillSampleTemplate()" class="text-xs font-bold text-indigoJp-700 hover:underline">填入範例</button>
-              <span class="text-stone-300">|</span>
-              <button type="button" onclick="downloadSampleJson()" class="text-xs font-bold text-slate-600 hover:underline">下載範例 JSON</button>
-            </div>
-          </div>
-          <textarea id="json-textarea" rows="6" placeholder='[{"question": "...", "options": [...], "answer": "..."}]' class="w-full p-3.5 rounded-2xl border border-stone-300 font-mono text-xs bg-stone-50/50 outline-none"></textarea>
-        </div>
+      <!-- Bonus Gacha Reward Banner on Finish -->
+      <div id="summary-bonus-banner" class="hidden pt-3 border-t border-stone-200 text-center space-y-2">
+        <div id="summary-bonus-text" class="text-xs font-bold text-amber-800"></div>
+        <button onclick="openGachaModal()" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition">
+          立即前往抽卡 🎴
+        </button>
       </div>
+    </div>
 
-      <div class="px-6 py-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
-        <button type="button" onclick="clearQuizBank()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-bold text-xs">🗑️ 清空目前題庫</button>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="closeImportModal()" class="px-4 py-2.5 rounded-xl text-slate-600 font-bold text-xs">取消</button>
-          <button type="button" onclick="importFromTextarea()" class="px-6 py-2.5 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs shadow-sm">✓ 載入題庫並開始</button>
-        </div>
-      </div>
+    <div id="review-list" class="text-left max-w-2xl mx-auto space-y-2.5 max-h-96 overflow-y-auto pr-1">
+      <!-- Review items injected here -->
+    </div>
+
+    <div class="pt-4 flex flex-wrap justify-center gap-3">
+      <button
+        onclick="restartQuiz(false)"
+        class="px-6 py-3 rounded-2xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-sm shadow-sm transition cursor-pointer"
+      >
+        🔄 依序重新測驗
+      </button>
+      <button
+        onclick="restartQuiz(true)"
+        class="px-6 py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-slate-800 font-bold text-sm transition cursor-pointer"
+      >
+        🔀 隨機打亂題目重測
+      </button>
+      <button
+        onclick="openImportModal()"
+        class="px-6 py-3 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-sm transition cursor-pointer"
+      >
+        📂 匯入其他 JSON / CSV
+      </button>
     </div>
   </div>
 
@@ -550,9 +574,14 @@
         document.getElementById('gacha-draw-btn').classList.add('hidden');
       } else {
         document.getElementById('gacha-content').classList.add('hidden');
-        document.getElementById('gacha-empty-msg').classList.remove('hidden');
+        document.getElementById('gacha-empty-msg').classList.add('hidden');
         document.getElementById('gacha-draw-btn').classList.add('hidden');
       }
+    }
+
+    function openGachaFromGallery() {
+      closeGalleryModal();
+      openGachaModal();
     }
 
     function closeGachaModal() {
@@ -584,8 +613,8 @@
       grid.innerHTML = '';
       document.getElementById('gallery-collected-count').textContent = collectedCards.length;
       document.getElementById('gallery-total-count').textContent = collectedCards.length + currentRewardPool.length;
+      document.getElementById('gallery-pending-chances').textContent = pendingGachaChances;
 
-      // 合併顯示已收集與未收集卡片
       const allDisplayCards = [
         ...collectedCards.map(c => ({ ...c, collected: true })),
         ...currentRewardPool.map(c => ({ ...c, collected: false }))
@@ -594,19 +623,42 @@
       allDisplayCards.forEach(card => {
         const div = document.createElement('div');
         div.className = `p-3 rounded-2xl border flex flex-col items-center text-center transition ${
-          card.collected ? 'bg-amber-50/60 border-amber-200 shadow-xs' : 'bg-stone-100/70 border-stone-200 opacity-50 grayscale'
+          card.collected ? 'bg-amber-50/60 border-amber-200 shadow-xs cursor-pointer hover:scale-102' : 'bg-stone-100/70 border-stone-200 opacity-60'
         }`;
-        div.innerHTML = `
-          <div class="w-20 h-20 rounded-xl bg-white flex items-center justify-center p-1 mb-2 border border-stone-200/80">
-            <img src="${card.img}" alt="${card.name}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/fef3c7/b45309?text=Card'" />
-          </div>
-          <span class="font-bold text-xs text-slate-800 truncate w-full">${card.collected ? card.name : '？？？'}</span>
-          <span class="text-[10px] mt-0.5 ${card.collected ? 'text-amber-700 font-medium' : 'text-stone-400'}">${card.collected ? '已收藏' : '未解鎖'}</span>
-        `;
+
+        if (card.collected) {
+          div.onclick = () => showCardZoom(card);
+          div.innerHTML = `
+            <div class="w-20 h-20 rounded-xl bg-white flex items-center justify-center p-1 mb-2 border border-amber-200">
+              <img src="${card.img}" alt="${card.name}" class="w-full h-full object-contain" />
+            </div>
+            <span class="font-bold text-xs text-slate-800 truncate w-full">${card.name}</span>
+            <span class="text-[10px] mt-0.5 text-amber-700 font-medium">點擊放大 🔍</span>
+          `;
+        } else {
+          // 未解鎖卡片不加載圖片以節省流量
+          div.innerHTML = `
+            <div class="w-20 h-20 rounded-xl bg-stone-200/80 flex items-center justify-center p-1 mb-2 text-stone-400 text-2xl font-bold">
+              ?
+            </div>
+            <span class="font-bold text-xs text-stone-400 truncate w-full">？？？</span>
+            <span class="text-[10px] mt-0.5 text-stone-400">未解鎖</span>
+          `;
+        }
         grid.appendChild(div);
       });
 
       document.getElementById('gallery-modal').classList.remove('hidden');
+    }
+
+    function showCardZoom(card) {
+      document.getElementById('zoom-card-img').src = card.img;
+      document.getElementById('zoom-card-name').textContent = card.name;
+      document.getElementById('card-zoom-modal').classList.remove('hidden');
+    }
+
+    function closeCardZoom() {
+      document.getElementById('card-zoom-modal').classList.add('hidden');
     }
 
     function closeGalleryModal() {
@@ -1031,7 +1083,34 @@
       document.getElementById('summary-container').classList.remove('hidden');
       document.getElementById('final-score').textContent = score;
       document.getElementById('final-total').textContent = questions.length;
-      document.getElementById('final-comment').textContent = score === questions.length ? '滿分！太強了！' : '完成測驗！';
+
+      const accuracy = (score / questions.length) * 100;
+      let bonusChances = 0;
+      let bonusText = '';
+
+      if (accuracy === 100) {
+        bonusChances = 3;
+        bonusText = '🌟 滿分達成！獲得額外 3 次抽卡機會！';
+        document.getElementById('final-comment').textContent = '完美滿分！太強了！';
+      } else if (accuracy >= 80) {
+        bonusChances = 2;
+        bonusText = '🎉 得分超過 80%！獲得額外 2 次抽卡機會！';
+        document.getElementById('final-comment').textContent = '表現優異！';
+      } else if (accuracy >= 50) {
+        bonusChances = 1;
+        bonusText = '👍 得分超過 50%！獲得額外 1 次抽卡機會！';
+        document.getElementById('final-comment').textContent = '完成測驗！';
+      } else {
+        document.getElementById('final-comment').textContent = '加油，再接再厲！';
+      }
+
+      if (bonusChances > 0) {
+        pendingGachaChances += bonusChances;
+        document.getElementById('summary-bonus-banner').classList.remove('hidden');
+        document.getElementById('summary-bonus-text').textContent = bonusText;
+      } else {
+        document.getElementById('summary-bonus-banner').classList.add('hidden');
+      }
 
       const list = document.getElementById('review-list');
       list.innerHTML = '';
