@@ -515,23 +515,36 @@
         </div>
     </dialog>
 
-    <!-- 🔍 圖片放大檢視彈窗 -->
-    <dialog id="imageZoomModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/90 max-w-3xl w-[95vw] overflow-hidden border-0 bg-slate-950 text-white">
-        <div class="relative p-4 flex flex-col items-center space-y-3">
-            <div class="w-full flex justify-between items-center px-2">
-                <h4 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-magnifying-glass-plus"></i> 獎勵圖片放大檢視</h4>
-                <button onclick="closeZoomModal()" class="text-slate-400 hover:text-white text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
+        <!-- 🔍 圖片放大檢視彈窗 (支援左右切換已解鎖圖片) -->
+        <dialog id="imageZoomModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/90 max-w-3xl w-[95vw] overflow-hidden border-0 bg-slate-950 text-white">
+            <div class="relative p-4 flex flex-col items-center space-y-3">
+                <div class="w-full flex justify-between items-center px-2">
+                    <h4 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-magnifying-glass-plus"></i> 獎勵圖片放大檢視</h4>
+                    <button onclick="closeZoomModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <!-- 圖片容器與左右切換箭頭 -->
+                <div class="relative w-full max-h-[75vh] flex items-center justify-center bg-black/50 rounded-xl p-2 overflow-hidden">
+                    <!-- 左切換按鈕 -->
+                    <button onclick="zoomPrevImage()" class="absolute left-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-full transition shadow-lg">
+                        <i class="fa-solid fa-chevron-left text-lg"></i>
+                    </button>
+        
+                    <img id="zoomedImageElement" src="" alt="放大獎勵圖" class="max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl">
+        
+                    <!-- 右切換按鈕 -->
+                    <button onclick="zoomNextImage()" class="absolute right-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-full transition shadow-lg">
+                        <i class="fa-solid fa-chevron-right text-lg"></i>
+                    </button>
+                </div>
+        
+                <button onclick="closeZoomModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition">
+                    關閉放大
                 </button>
             </div>
-            <div class="w-full max-h-[75vh] flex items-center justify-center bg-black/50 rounded-xl p-2 overflow-hidden">
-                <img id="zoomedImageElement" src="" alt="放大獎勵圖" class="max-h-[70vh] max-w-full object-contain rounded-lg shadow-2xl">
-            </div>
-            <button onclick="closeZoomModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition">
-                關閉放大
-            </button>
-        </div>
-    </dialog>
+        </dialog>
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
@@ -1625,9 +1638,39 @@
             document.getElementById('imageZoomModal').showModal();
         }
 
+        // 🔍 圖庫圖片放大與左右切換邏輯
+        let currentZoomedList = [];
+        let currentZoomIndex = 0;
+        
         function zoomSpecificImage(imgSrc) {
-            document.getElementById('zoomedImageElement').src = imgSrc;
+            const allPool = rewardImagesArray.length > 0 ? rewardImagesArray : DEFAULT_POKEMON_IMAGES;
+            // 篩選出所有「已解鎖（收集到）」的圖片清單供左右切換瀏覽
+            currentZoomedList = allPool.filter(url => collectedCardsSet.has(url));
+            currentZoomIndex = currentZoomedList.indexOf(imgSrc);
+            if (currentZoomIndex === -1) {
+                currentZoomedList = [imgSrc];
+                currentZoomIndex = 0;
+            }
+            updateZoomedImageDisplay();
             document.getElementById('imageZoomModal').showModal();
+        }
+        
+        function updateZoomedImageDisplay() {
+            if (currentZoomedList.length > 0) {
+                document.getElementById('zoomedImageElement').src = currentZoomedList[currentZoomIndex];
+            }
+        }
+        
+        function zoomPrevImage() {
+            if (currentZoomedList.length <= 1) return;
+            currentZoomIndex = (currentZoomIndex - 1 + currentZoomedList.length) % currentZoomedList.length;
+            updateZoomedImageDisplay();
+        }
+        
+        function zoomNextImage() {
+            if (currentZoomedList.length <= 1) return;
+            currentZoomIndex = (currentZoomIndex + 1) % currentZoomedList.length;
+            updateZoomedImageDisplay();
         }
 
         function closeZoomModal() {
