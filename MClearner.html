@@ -91,7 +91,6 @@
       background-color: #475569;
     }
 
-    /* 題庫控制面板 */
     .control-panel {
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -105,7 +104,6 @@
       justify-content: center;
     }
 
-    /* 測驗卡片置中對齊 */
     .quiz-card {
       background: #ffffff;
       border: 1px solid var(--border);
@@ -205,7 +203,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    /* Modal 視窗 */
     .modal {
       display: none;
       position: fixed;
@@ -232,7 +229,6 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    /* 放大圖片 3/4 高度視窗 */
     .zoom-modal-content {
       background: rgba(0,0,0,0.95);
       padding: 20px;
@@ -251,7 +247,6 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* 收藏藝廊格線 */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -312,7 +307,6 @@
     </div>
   </header>
 
-  <!-- 控制與題庫載入面板 -->
   <div class="control-panel">
     <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
     <button onclick="document.getElementById('json-file-input').click()">📁 上傳 JSON</button>
@@ -328,7 +322,6 @@
     <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 預設寶可夢卡池</button>
   </div>
 
-  <!-- 測驗主畫面 (置中優化) -->
   <div id="quiz-area">
     <div class="quiz-card">
       <div class="progress-bar">
@@ -341,7 +334,7 @@
       </div>
 
       <div class="options-grid" id="options-container">
-        <!-- 選項動態生成 (固定 4 個) -->
+        <!-- 4 個選項 -->
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
@@ -357,7 +350,6 @@
     </div>
   </div>
 
-  <!-- 測驗結算畫面 -->
   <div id="result-area" style="display:none; text-align: center; padding: 50px 20px;">
     <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">🎉 測驗完成！</h2>
     <p id="final-score-text" style="font-size: 1.3rem; margin: 20px 0; font-weight: 600;"></p>
@@ -388,9 +380,7 @@
   <div class="modal-content" style="max-width: 650px;">
     <h2 style="margin-top:0; color:var(--primary);">🖼️ 獎勵卡收藏藝廊</h2>
     <p style="font-size: 0.9rem; color: #64748b; margin-top:0;">點擊已解鎖的卡片圖片可以放大觀看</p>
-    <div class="gallery-grid" id="gallery-grid-container">
-      <!-- 藝廊卡片動態載入 -->
-    </div>
+    <div class="gallery-grid" id="gallery-grid-container"></div>
     <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); pt: 16px;">
       <span id="gallery-stats" style="font-weight: 700; font-size: 1.05rem;">已收集: 0 / 0</span>
       <div style="display: flex; gap: 10px;">
@@ -414,7 +404,7 @@
   </div>
 </div>
 
-<!-- 圖片放大 Zoom Modal (佔視窗高度 75%) -->
+<!-- 圖片放大 Zoom Modal -->
 <div id="zoom-modal" class="modal" onclick="closeZoomModal()">
   <div class="zoom-modal-content" onclick="event.stopPropagation()">
     <img id="zoomed-image-elem" src="" alt="放大卡片">
@@ -440,6 +430,7 @@
   let quizData = [];
   let currentIdx = 0;
   let score = 0;
+  let consecutiveCorrectCount = 0; // 用於中途每答對 3 題送抽卡一次
   let isAnswered = false;
 
   window.onload = function() {
@@ -470,6 +461,7 @@
   function initQuiz() {
     currentIdx = 0;
     score = 0;
+    consecutiveCorrectCount = 0;
     document.getElementById('result-area').style.display = 'none';
     document.getElementById('quiz-area').style.display = 'block';
     loadQuestion();
@@ -485,17 +477,16 @@
     qTextElem.innerText = "點擊此處顯示題目文字 (音訊播放中)";
     qTextElem.classList.remove('revealed');
 
-    // **選項智慧處理：確保只挑選 4 個選項，且其中一定包含正確答案**
+    // 選項智慧處理：強制挑選 4 個選項，且確保包含正確答案
     let optionsPool = [...q.options];
     if (!optionsPool.includes(q.answer)) {
       optionsPool.push(q.answer);
     }
-    // 排除正確答案後隨機挑選其他錯誤選項湊滿 4 個
     let incorrects = optionsPool.filter(opt => opt !== q.answer);
     incorrects.sort(() => Math.random() - 0.5);
     
     let finalOptions = [q.answer, ...incorrects.slice(0, 3)];
-    finalOptions.sort(() => Math.random() - 0.5); // 再次打亂順序
+    finalOptions.sort(() => Math.random() - 0.5);
 
     const container = document.getElementById('options-container');
     container.innerHTML = '';
@@ -541,6 +532,16 @@
     if (isCorrect) {
       score++;
       btnElem.classList.add('correct');
+      
+      // **中途答對獎勵機制：每累積答對 3 題送抽卡 1 次**
+      consecutiveCorrectCount++;
+      if (consecutiveCorrectCount >= 3) {
+        consecutiveCorrectCount = 0;
+        gachaTickets++;
+        saveTickets();
+        updateTicketsDisplay();
+        alert("🎉 太棒了！中途累積答對 3 題，獲得 1 次抽卡機會！🎴");
+      }
     } else {
       btnElem.classList.add('incorrect');
       const allBtns = document.querySelectorAll('.option-btn');
@@ -574,7 +575,7 @@
     const accuracy = (score / quizData.length) * 100;
     document.getElementById('final-score-text').innerText = `您的得分: ${score} / ${quizData.length} (${accuracy.toFixed(1)}%)`;
 
-    // 抽獎機會獎勵機制：100%=+3, 80-99%=+2, 50-79%=+1
+    // 測驗結束結算獎勵：100%=+3, 80-99%=+2, 50-79%=+1
     let addedTickets = 0;
     if (accuracy === 100) addedTickets = 3;
     else if (accuracy >= 80) addedTickets = 2;
@@ -583,9 +584,9 @@
     if (addedTickets > 0) {
       gachaTickets += addedTickets;
       saveTickets();
-      document.getElementById('reward-notice').innerText = `🎁 恭喜達成門檻！獲得額外 ${addedTickets} 次抽卡機會！`;
+      document.getElementById('reward-notice').innerText = `🎁 測驗完成獎勵！獲得額外 ${addedTickets} 次抽卡機會！`;
     } else {
-      document.getElementById('reward-notice').innerText = `💪 再接再厲，得分達到 50% 以上即可獲得抽卡機會！`;
+      document.getElementById('reward-notice').innerText = `💪 繼續加油，答對更多題目來收集獎勵卡吧！`;
     }
     updateTicketsDisplay();
   }
@@ -594,7 +595,7 @@
     initQuiz();
   }
 
-  // === 從 GitHub json/Lxx.json 讀取 ===
+  // 從 GitHub json/Lxx.json 讀取
   async function loadLessonJsonFromFolder() {
     const num = document.getElementById('lesson-num-input').value.trim();
     if (!num) {
@@ -615,11 +616,10 @@
       }
     } catch (error) {
       console.error(error);
-      alert(`讀取失敗：無法載入 ${filePath}\n請確認您的專案中是否有 json 資料夾以及 L${num}.json 檔案。`);
+      alert(`讀取失敗：無法載入 ${filePath}\n請確認專案中是否有 json 資料夾以及 L${num}.json 檔案。`);
     }
   }
 
-  // === 處理本地 JSON 上傳 ===
   function handleJsonUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -632,7 +632,7 @@
           initQuiz();
           alert("成功匯入 JSON 題庫！");
         } else {
-          alert("JSON 格式不正確或內容為空。");
+          alert("JSON 格式不正確。");
         }
       } catch (err) {
         alert("解析 JSON 失敗：" + err.message);
@@ -641,7 +641,6 @@
     reader.readAsText(file);
   }
 
-  // === Google CSV 網址讀取 ===
   function openCsvLinkModal() {
     document.getElementById('csv-link-modal').style.display = 'flex';
   }
@@ -663,7 +662,7 @@
       closeCsvLinkModal();
     } catch (err) {
       console.error(err);
-      alert("無法讀取該網址的 CSV，可能是 CORS 限制，建議直接下載 CSV 檔案或檢查網址是否正確公開發布。");
+      alert("無法讀取該網址的 CSV，可能是 CORS 限制，建議確認網址是否為公開發布的 CSV。");
     }
   }
 
@@ -702,7 +701,6 @@
     }
   }
 
-  // === 抽卡與收藏系統 ===
   function updateTicketsDisplay() {
     document.getElementById('gacha-tickets-badge').innerText = `抽卡機會: ${gachaTickets} 🎴`;
     document.getElementById('modal-tickets-count').innerText = gachaTickets;
