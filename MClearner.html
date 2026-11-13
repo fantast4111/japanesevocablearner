@@ -203,7 +203,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    /* 彈出視窗樣式與層級控制 */
     .modal {
       display: none;
       position: fixed;
@@ -217,13 +216,8 @@
       box-sizing: border-box;
     }
 
-    /* 讓抽卡視窗層級高於收藏庫，確保可在收藏庫中開啟抽卡 */
-    #gacha-modal {
-      z-index: 1100;
-    }
-    #zoom-modal {
-      z-index: 1200;
-    }
+    #gacha-modal { z-index: 1100; }
+    #zoom-modal { z-index: 1200; }
 
     .modal-content {
       background: white;
@@ -238,6 +232,7 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
+    /* 放大檢視視窗 (附帶左右切換箭頭) */
     .zoom-modal-content {
       background: rgba(0,0,0,0.95);
       padding: 20px;
@@ -247,14 +242,34 @@
       justify-content: center;
       align-items: center;
       border-radius: 16px;
+      position: relative;
     }
     .zoom-modal-content img {
       max-height: 75vh;
-      max-width: 100%;
+      max-width: 85vw;
       object-fit: contain;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+    .zoom-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      font-size: 2rem;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.2s;
+      z-index: 1300;
+    }
+    .zoom-arrow:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    #zoom-prev { left: 15px; }
+    #zoom-next { right: 15px; }
 
     .gallery-grid {
       display: grid;
@@ -302,28 +317,6 @@
       border: 1px solid var(--border);
       padding: 10px;
     }
-
-    /* 非阻塞式提示橫幅 (Toast) */
-    #toast-notification {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #1e293b;
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      font-weight: 600;
-      z-index: 2000;
-      transition: transform 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    #toast-notification.show {
-      transform: translateX(-50%) translateY(0);
-    }
   </style>
 </head>
 <body>
@@ -368,6 +361,7 @@
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
         <button onclick="playCurrentQuestionAudio()" class="btn-secondary">🔊 重播語音</button>
+        <!-- 修改後：只要答題後固定顯示「下一題」按鈕 -->
         <button id="next-btn" onclick="nextQuestion()" style="display:none; padding: 10px 24px; font-size:1.05rem;">下一題 ➡️</button>
       </div>
 
@@ -389,7 +383,7 @@
   </div>
 </div>
 
-<!-- 抽卡 Modal (層級高於收藏庫) -->
+<!-- 抽卡 Modal -->
 <div id="gacha-modal" class="modal">
   <div class="modal-content">
     <h2 style="margin-top:0; color:var(--primary);">🎴 獎勵卡抽卡</h2>
@@ -433,27 +427,16 @@
   </div>
 </div>
 
-<!-- 圖片放大 Zoom Modal -->
+<!-- 圖片放大 Zoom Modal (附帶左右切換箭頭) -->
 <div id="zoom-modal" class="modal" onclick="closeZoomModal()">
   <div class="zoom-modal-content" onclick="event.stopPropagation()">
+    <button class="zoom-arrow" id="zoom-prev" onclick="changeZoomIndex(-1)">❮</button>
     <img id="zoomed-image-elem" src="" alt="放大卡片">
+    <button class="zoom-arrow" id="zoom-next" onclick="changeZoomIndex(1)">❯</button>
   </div>
 </div>
 
-<!-- 非阻塞式提示橫幅 (Toast) -->
-<div id="toast-notification">🎉 獲得抽卡機會！</div>
-
 <script>
-  // === 非阻塞式 Toast 提示函式 ===
-  function showToast(message) {
-    const toast = document.getElementById('toast-notification');
-    toast.innerText = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
-
   // === Web Audio API 音效產生器 ===
   let audioCtx = null;
   function getAudioContext() {
@@ -557,13 +540,15 @@
   let quizData = [];
   let currentIdx = 0;
   let score = 0;
-  let consecutiveCorrectCount = 0;
   let isAnswered = false;
+
+  // 用於收藏庫放大時左右切換的清單
+  let unlockedCardsCache = [];
+  let currentZoomIndex = 0;
 
   window.onload = function() {
     updateTicketsDisplay();
     loadDefaultQuiz();
-    // 自動預載入你指定的預設 Google CSV 網址
     fetchDefaultCsvOnStart();
   };
 
@@ -573,7 +558,7 @@
       const response = await fetch(defaultUrl);
       if (response.ok) {
         const text = await response.text();
-        parseCsvData(text, false); // 不彈出干擾提示，靜默載入
+        parseCsvData(text, false);
       }
     } catch(e) {}
   }
@@ -601,7 +586,6 @@
   function initQuiz() {
     currentIdx = 0;
     score = 0;
-    consecutiveCorrectCount = 0;
     document.getElementById('result-area').style.display = 'none';
     document.getElementById('quiz-area').style.display = 'block';
     loadQuestion();
@@ -672,16 +656,6 @@
       score++;
       btnElem.classList.add('correct');
       playCorrectSound();
-      
-      consecutiveCorrectCount++;
-      if (consecutiveCorrectCount >= 3) {
-        consecutiveCorrectCount = 0;
-        gachaTickets++;
-        saveTickets();
-        updateTicketsDisplay();
-        // 改用非阻塞式 Toast 提示，徹底避免 alert 導致程式死機
-        showToast("🎉 中途累積答對 3 題，獲得 1 次抽卡機會！🎴");
-      }
     } else {
       btnElem.classList.add('incorrect');
       playIncorrectSound();
@@ -697,6 +671,7 @@
     document.getElementById('feedback-explanation').innerText = "解析：" + (q.explanation || "（無）");
     document.getElementById('feedback-box').style.display = 'block';
 
+    // 只要一答題（無論對錯），立刻顯示「下一題」按鈕
     document.getElementById('next-btn').style.display = 'inline-block';
   }
 
@@ -719,13 +694,9 @@
     document.getElementById('final-score-text').innerText = `您的得分: ${score} / ${totalQ} (${accuracy.toFixed(1)}%)`;
 
     let addedTickets = 0;
-    // 限制條件：如果總題數少於 5 題，就算答對 100% 也只有 1 張抽卡機會
     if (totalQ < 5) {
-      if (accuracy === 100) {
-        addedTickets = 1;
-      } else if (accuracy >= 50) {
-        addedTickets = 1;
-      }
+      if (accuracy === 100) addedTickets = 1;
+      else if (accuracy >= 50) addedTickets = 1;
     } else {
       if (accuracy === 100) addedTickets = 3;
       else if (accuracy >= 80) addedTickets = 2;
@@ -782,7 +753,7 @@
           initQuiz();
           alert("成功匯入 JSON 題庫！");
         } else {
-          alert("JSON 格式不正確或內容為空。");
+          alert("JSON 格式不正確。");
         }
       } catch (err) {
         alert("解析 JSON 失敗：" + err.message);
@@ -918,7 +889,7 @@
     if(imgElem) {
       imgElem.src = wonCard.image;
       imgElem.style.display = 'block';
-      imgElem.onclick = () => showZoomedModal(wonCard.image);
+      imgElem.onclick = () => showZoomedModalById(wonCard.id);
     }
 
     document.getElementById('gacha-prize-info').innerText = `🎉 恭喜抽中：${wonCard.name}！ (點擊圖片可放大)`;
@@ -935,16 +906,21 @@
     container.innerHTML = '';
 
     let collectedCount = 0;
+    unlockedCardsCache = []; // 重建已解鎖卡片快取清單
+
     rewardCardPool.forEach(card => {
       let isUnlocked = userInventory.includes(card.id);
-      if (isUnlocked) collectedCount++;
+      if (isUnlocked) {
+        collectedCount++;
+        unlockedCardsCache.push(card);
+      }
 
       const item = document.createElement('div');
       item.className = `gallery-item ${isUnlocked ? '' : 'locked'}`;
       
       if (isUnlocked) {
         item.innerHTML = `
-          <img src="${card.image}" alt="${card.name}" onclick="showZoomedModal('${card.image}')" title="點擊放大">
+          <img src="${card.image}" alt="${card.name}" onclick="showZoomedModalById(${card.id})" title="點擊放大">
           <div style="font-size:0.75rem; margin-top:6px; font-weight:700;">${card.name}</div>
         `;
       } else {
@@ -964,9 +940,30 @@
     document.getElementById('gallery-modal').style.display = 'none';
   }
 
-  function showZoomedModal(imgSrc) {
-    document.getElementById('zoomed-image-elem').src = imgSrc;
+  // === 收藏庫放大與左右切換功能 ===
+  function showZoomedModalById(cardId) {
+    unlockedCardsCache = rewardCardPool.filter(c => userInventory.includes(c.id));
+    currentZoomIndex = unlockedCardsCache.findIndex(c => c.id === cardId);
+    if (currentZoomIndex === -1) currentZoomIndex = 0;
+    updateZoomModalImage();
     document.getElementById('zoom-modal').style.display = 'flex';
+  }
+
+  function changeZoomIndex(direction) {
+    if (unlockedCardsCache.length === 0) return;
+    currentZoomIndex += direction;
+    if (currentZoomIndex < 0) {
+      currentZoomIndex = unlockedCardsCache.length - 1; // 循環到最後一張
+    } else if (currentZoomIndex >= unlockedCardsCache.length) {
+      currentZoomIndex = 0; // 循環到第一張
+    }
+    updateZoomModalImage();
+  }
+
+  function updateZoomModalImage() {
+    if (unlockedCardsCache.length > 0 && unlockedCardsCache[currentZoomIndex]) {
+      document.getElementById('zoomed-image-elem').src = unlockedCardsCache[currentZoomIndex].image;
+    }
   }
 
   function closeZoomModal() {
