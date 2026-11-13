@@ -3,49 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日語生字遊戲化互動溫習系統 v37 (獎勵圖庫收集冊與不重複抽卡)</title>
+    <title>日語生字遊戲化互動溫習系統 v38 (廣東話順序朗讀與聽寫重設)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-  @keyframes fall {
-    from { transform: translateY(0px); }
-    to { transform: translateY(280px); }
-  }
-  .falling-box {
-    animation: fall linear forwards;
-  }
-  /* 彈出視窗遮罩：深暗色微透紅 */
-  dialog::backdrop {
-    background-color: rgba(20, 5, 8, 0.85);
-    backdrop-filter: blur(6px);
-  }
-  .perspective-1000 {
-    perspective: 1000px;
-  }
-  .card-flip {
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
-  }
-  .card-flip.flipped {
-    transform: rotateY(180deg);
-  }
-  .card-face {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-  .card-revealed-face {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transform: rotateY(180deg);
-  }
-</style>
+        @keyframes fall {
+            from { transform: translateY(0px); }
+            to { transform: translateY(280px); }
+        }
+        .falling-box {
+            animation: fall linear forwards;
+        }
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .card-flip {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .card-flip.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .card-revealed-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: rotateY(180deg);
+        }
+    </style>
 </head>
-<body class="bg-slate-800 text-slate-800 min-h-screen flex flex-col">
 
+<!-- 🎨 【修改位置 1】修改網頁整體背景色：預設為 bg-slate-50，可改為 bg-white 或其他顏色 -->
+<body class="bg-rose-950 text-rose-50 min-h-screen flex flex-col">
+
+    <!-- 🎨 【修改位置 2】修改頂條 (Header) 顏色：預設為 bg-indigo-600，可改為 bg-slate-900 或 bg-emerald-600 等 -->
     <!-- Header -->
-    <header class="bg-red-950 text-red-100 border-b border-red-900/50 shadow-md">
+    <header class="bg-red-900 text-white shadow-md border-b border-red-800">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <h1 class="text-lg md:text-xl font-bold flex items-center gap-2">
                 <i class="fa-solid fa-gamepad"></i> 日語生字遊戲化溫習系統
@@ -78,7 +80,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- GitHub vocab/ 只需要輸入數字 -->
                 <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
                     <label class="block text-sm font-medium text-indigo-900">
                         <i class="fa-brands fa-github"></i> 輸入 GitHub 課數數字（例如 34）：
@@ -94,14 +95,12 @@
                     <p class="text-[11px] text-slate-500">提示：直接輸入數字即可自動對應 `vocab/L34.xml`。</p>
                 </div>
 
-                <!-- 手動上傳 XML -->
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-slate-700">或手動上傳自訂 XML 檔案：</label>
                     <input type="file" id="xmlFileInput" accept=".xml" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-slate-300 rounded-lg">
                 </div>
             </div>
 
-            <!-- 📊 獎勵圖片來源：Google Spreadsheet D欄 / 預設 Pokémon / 本地圖庫 -->
             <div class="pt-4 border-t border-slate-100 space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2 bg-emerald-50/70 p-3 rounded-xl border border-emerald-100">
                     <div class="text-xs text-emerald-900">
@@ -118,7 +117,6 @@
                     </div>
                 </div>
 
-                <!-- 本地資料夾批次上傳 -->
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <span class="text-xs text-slate-600"><i class="fa-solid fa-folder-open text-amber-500 mr-1"></i> 或從電腦一鍵批次選取本地圖片資料夾：</span>
                     <input type="file" id="folderInput" webkitdirectory directory multiple accept="image/png, image/jpeg, image/jpg, image/webp, image/gif" class="text-xs text-slate-500 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer border border-amber-200 rounded">
@@ -172,7 +170,12 @@
                     <h3 class="font-bold text-base md:text-lg text-indigo-600 flex items-center gap-2">
                         <i class="fa-solid fa-book-open"></i> 課程完整生字清單
                     </h3>
-                    <span class="text-xs text-slate-500">點擊任意行即可聽取發音</span>
+                    <div class="flex items-center gap-2">
+                        <button id="sequentialPlayBtn" onclick="toggleSequentialPlay()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5">
+                            <i id="playIcon" class="fa-solid fa-play"></i> <span id="playBtnText">順序朗讀全部</span>
+                        </button>
+                        <span class="text-xs text-slate-500 hidden md:inline">點擊行聽取發音</span>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -388,8 +391,8 @@
                             <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
                         </button>
                     </div>
-                    <button onclick="initSpelling()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
-                        進入下一輪特訓
+                    <button onclick="resetAndInitSpelling()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        進入下一輪特訓（重設精通紀錄）
                     </button>
                 </div>
             </div>
@@ -427,10 +430,13 @@
             </div>
 
         </div>
-
+        <!-- 用於保持手機鎖屏後背景播放的無聲音訊 -->
+        <audio id="silentAudio" loop style="display:none;">
+            <source src="https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.ogg" type="audio/ogg">
+        </audio>
     </main>
 
-    <!-- 🌟 抽牌解鎖互動視窗 (不重複抽卡，純色卡背) -->
+    <!-- 🌟 抽牌解鎖互動視窗 -->
     <dialog id="cardDrawModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/80 max-w-xl w-[92vw] overflow-hidden border-0 bg-slate-900 text-white">
         <div class="relative p-6 text-center space-y-4">
             <h3 class="text-xl font-bold text-amber-400"><i class="fa-solid fa-hat-wizard"></i> 神祕抽牌區：請憑直覺選擇一張牌！</h3>
@@ -497,9 +503,7 @@
             </div>
             
             <div class="max-h-[60vh] overflow-y-auto p-2">
-                <div id="collectionGrid" class="grid grid-cols-3 md:grid-cols-4 gap-3">
-                    <!-- 動態渲染已收集卡片 -->
-                </div>
+                <div id="collectionGrid" class="grid grid-cols-3 md:grid-cols-4 gap-3"></div>
             </div>
 
             <div class="flex justify-between items-center pt-3 border-t border-slate-800 text-xs text-slate-400">
@@ -511,7 +515,7 @@
         </div>
     </dialog>
 
-    <!-- 🔍 圖片放大檢視彈窗 (Modal) -->
+    <!-- 🔍 圖片放大檢視彈窗 -->
     <dialog id="imageZoomModal" class="p-0 rounded-2xl shadow-2xl backdrop:bg-black/90 max-w-3xl w-[95vw] overflow-hidden border-0 bg-slate-950 text-white">
         <div class="relative p-4 flex flex-col items-center space-y-3">
             <div class="w-full flex justify-between items-center px-2">
@@ -531,7 +535,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-400 border-t border-slate-200 mt-auto">
-        XML Vocab Trainer v37 &copy; 2026 | Reward Card Collection & No-Repeat Draw
+        XML Vocab Trainer v38 &copy; 2026 | Cantonese Sequential Audio & Reset Spelling
     </footer>
 
     <!-- JavaScript Logic -->
@@ -558,7 +562,7 @@
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png"
         ];
 
-        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRceONgowH9Reg0_NY3qNrB4nWGqYrUJsjgglVQlfNQO3LL9dRaJCw1z6526UIp3CKWg-ShXU3Nu8XE/pub?output=csv";
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxCGdNXhiKG6TgI1_lXnRANMEh_t2OSbO87Auc6DzKCjd5YKYIPnRc6isWk9iokodadod3rhGvyDs8/pub?output=csv";
 
         let rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
         let collectedCardsSet = new Set(JSON.parse(localStorage.getItem('vocab_collected_reward_cards') || '[]'));
@@ -679,7 +683,6 @@
             document.getElementById('collectedStatusCount').textContent = collectedArr.length;
         }
 
-        // 開啟我的圖庫收集冊
         function openCollectionModal() {
             const grid = document.getElementById('collectionGrid');
             grid.innerHTML = '';
@@ -820,6 +823,7 @@
             tbody.innerHTML = '';
             vocabList.forEach((item, index) => {
                 const tr = document.createElement('tr');
+                tr.id = `vocab-row-${index}`;
                 tr.className = "hover:bg-slate-50 transition cursor-pointer";
                 tr.onclick = () => playAudio(item.cleanKana);
                 tr.innerHTML = `
@@ -838,7 +842,119 @@
             });
         }
 
+        // --- 🎙️ 順序朗讀全部字詞（日文 + 廣東話解釋） ---
+        let isSequentialPlaying = false;
+        let currentSequentialIndex = 0;
+
+        function toggleSequentialPlay() {
+            if (isSequentialPlaying) {
+                stopSequentialPlay();
+            } else {
+                startSequentialPlay();
+            }
+        }
+
+        function startSequentialPlay() {
+            if (vocabList.length === 0) return;
+            isSequentialPlaying = true;
+            currentSequentialIndex = 0;
+        
+            // 🔊 讓手機保持後台運作
+            const silentAudio = document.getElementById('silentAudio');
+            if (silentAudio) {
+                silentAudio.volume = 0.01; // 設為極小聲或無聲
+                silentAudio.play().catch(e => console.log("背景音訊啟動受阻:", e));
+            }
+        
+            document.getElementById('playIcon').className = "fa-solid fa-stop";
+            document.getElementById('playBtnText').textContent = "停止朗讀";
+            document.getElementById('sequentialPlayBtn').className = "bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5";
+            playNextSequentialItem();
+        }
+
+        function stopSequentialPlay() {
+            isSequentialPlaying = false;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        
+            // 🔇 停止背景音訊
+            const silentAudio = document.getElementById('silentAudio');
+            if (silentAudio) {
+                silentAudio.pause();
+                silentAudio.currentTime = 0;
+            }
+        
+            clearRowHighlights();
+            document.getElementById('playIcon').className = "fa-solid fa-play";
+            document.getElementById('playBtnText').textContent = "順序朗讀全部";
+            document.getElementById('sequentialPlayBtn').className = "bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5";
+        }
+
+        function clearRowHighlights() {
+            vocabList.forEach((_, idx) => {
+                const row = document.getElementById(`vocab-row-${idx}`);
+                if (row) row.classList.remove('bg-indigo-100/80', 'font-semibold');
+            });
+        }
+
+        function playNextSequentialItem() {
+            if (!isSequentialPlaying || currentSequentialIndex >= vocabList.length) {
+                stopSequentialPlay();
+                return;
+            }
+
+            clearRowHighlights();
+            const item = vocabList[currentSequentialIndex];
+            const row = document.getElementById(`vocab-row-${currentSequentialIndex}`);
+            if (row) {
+                row.classList.add('bg-indigo-100/80', 'font-semibold');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            if (!('speechSynthesis' in window)) {
+                currentSequentialIndex++;
+                setTimeout(playNextSequentialItem, 1500);
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            // 1. 讀取日文 (cleanKana 或 rawKanji)
+            const jpText = cleanText(item.cleanKana || item.rawKana);
+            const jpUtter = new SpeechSynthesisUtterance(jpText);
+            jpUtter.lang = 'ja-JP';
+            jpUtter.rate = 0.85;
+
+            // 2. 讀取中文解釋 (使用香港廣東話 zh-HK)
+            // 修改後的程式碼：
+            const cleanChineseText = item.chinese.replace(/[（\(〔\[].*?[）\)〕\]]/g, '').replace(/[（\）〔〕]/g, '').trim();
+            const cantoneseUtter = new SpeechSynthesisUtterance(cleanChineseText);
+            cantoneseUtter.lang = 'zh-HK';
+            cantoneseUtter.rate = 0.9;
+
+            jpUtter.onend = () => {
+                if (!isSequentialPlaying) return;
+                setTimeout(() => {
+                    if (isSequentialPlaying) window.speechSynthesis.speak(cantoneseUtter);
+                }, 400);
+            };
+
+            cantoneseUtter.onend = () => {
+                if (!isSequentialPlaying) return;
+                currentSequentialIndex++;
+                setTimeout(playNextSequentialItem, 800);
+            };
+
+            jpUtter.onerror = cantoneseUtter.onerror = () => {
+                if (!isSequentialPlaying) return;
+                currentSequentialIndex++;
+                setTimeout(playNextSequentialItem, 800);
+            };
+
+            window.speechSynthesis.speak(jpUtter);
+        }
+
         function switchMode(mode) {
+            if (isSequentialPlaying) stopSequentialPlay();
             currentMode = mode;
             isGameFinished = false; 
             if (speedTimerInterval) clearInterval(speedTimerInterval);
@@ -1289,6 +1405,12 @@
             nextSpellingQuestion();
         }
 
+        // 1. 聽寫特訓中全部字詞已精通，再按開啟下一輪時，先清空精通的紀錄
+        function resetAndInitSpelling() {
+            masteredSpellingSet.clear();
+            initSpelling();
+        }
+
         function nextSpellingQuestion() {
             if (spellingPool.length === 0) {
                 isGameFinished = true; 
@@ -1417,7 +1539,6 @@
             }
         }
 
-        // --- 🌟 抽牌解鎖機制 (不重複抽卡，全部抽光則停止抽新卡) ---
         let currentPoolImagesForDraw = [];
         let hasPickedCard = false;
 
@@ -1436,12 +1557,10 @@
             if (targetBtn) targetBtn.style.display = 'none';
 
             const sourcePool = rewardImagesArray.length > 0 ? rewardImagesArray : DEFAULT_POKEMON_IMAGES;
-            // 找出尚未被收集的圖片池
             const uncollectedPool = sourcePool.filter(img => !collectedCardsSet.has(img));
 
             if (uncollectedPool.length === 0) {
-                // 全部抽光了！
-                document.getElementById('drawModalSubtitle.textContent') = "🎉 太神啦！圖庫中的所有獎勵卡已經全部抽光收集完畢！";
+                document.getElementById('drawModalSubtitle').textContent = "🎉 太神啦！圖庫中的所有獎勵卡已經全部抽光收集完畢！";
                 document.getElementById('cardsTable').innerHTML = `
                     <div class="col-span-3 py-8 text-center text-pink-400 font-bold">
                         <i class="fa-solid fa-crown text-4xl mb-2 animate-bounce"></i><br>
@@ -1452,11 +1571,9 @@
                 return;
             }
 
-            // 從未收集的圖片中隨機挑選最多 3 張
             const shuffledUncollected = [...uncollectedPool].sort(() => Math.random() - 0.5);
             currentPoolImagesForDraw = [];
             for (let i = 0; i < 3; i++) {
-                // 如果未收集的不足 3 張，允許用已收集的補滿，但優先抽未收集
                 const chosen = shuffledUncollected[i] || sourcePool[Math.floor(Math.random() * sourcePool.length)];
                 currentPoolImagesForDraw.push(chosen);
                 
