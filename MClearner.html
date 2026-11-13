@@ -89,9 +89,9 @@
           <span class="hidden sm:inline">清空</span>
         </button>
 
-        <button onclick="openImportModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs sm:text-sm shadow-xs transition cursor-pointer" title="匯入自訂 JSON 題庫或 Google CSV">
+        <button onclick="openImportModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs sm:text-sm shadow-xs transition cursor-pointer" title="載入 Lxx 課程或匯入題庫">
           <span>📂</span>
-          <span>匯入題庫</span>
+          <span>載入題庫</span>
         </button>
 
         <div id="score-badge" class="hidden text-right pl-1">
@@ -126,42 +126,33 @@
       </div>
 
       <div class="max-w-lg mx-auto space-y-2">
-        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">請先匯入 JSON 題庫以開始測驗</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">載入課程或匯入 JSON 題庫</h2>
         <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
-          內建題庫已清空。支援載入自訂 <code class="px-1.5 py-0.5 rounded bg-stone-100 text-slate-700 font-mono">.json</code> 題目檔或 Google Spreadsheet CSV（支援 D 欄圖片網址作為抽獎卡片）。答對指定題數即可解鎖寶可夢獎勵卡抽獎！
+          您可以直接輸入課程編號（例如 <code class="px-1.5 py-0.5 rounded bg-stone-100 text-slate-700 font-mono">34</code> 代表載入 L34.json），或上傳自訂檔案與貼上內容。
         </p>
+      </div>
+
+      <!-- Lxx Quick Input Form -->
+      <div class="max-w-md mx-auto p-4 rounded-2xl bg-washi border border-stone-200/80 flex items-center gap-2">
+        <span class="text-sm font-bold text-slate-700">L</span>
+        <input type="number" id="quick-lesson-num" placeholder="34" min="1" max="99" class="w-20 px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-center font-bold text-slate-800 focus:outline-none focus:border-indigoJp-600 bg-white" />
+        <span class="text-sm text-slate-500">.json</span>
+        <button onclick="loadLessonNumber()" class="flex-1 py-2.5 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs sm:text-sm shadow-xs transition cursor-pointer">
+          快速載入課次
+        </button>
       </div>
 
       <!-- Quick Action Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
-        <button onclick="openImportModal()" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-indigoJp-700 hover:bg-indigoJp-800 active:scale-95 text-white font-bold text-sm sm:text-base shadow-md shadow-indigoJp-700/20 transition flex items-center justify-center gap-2 cursor-pointer">
+        <button onclick="openImportModal()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-stone-100 hover:bg-stone-200 text-slate-800 font-bold text-xs sm:text-sm border border-stone-200 transition flex items-center justify-center gap-2 cursor-pointer">
           <span>📂</span>
-          <span>匯入 JSON 題庫檔案 / 貼上內容</span>
+          <span>進階檔案匯入 / 貼上 JSON</span>
         </button>
 
         <button onclick="downloadSampleJson()" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-stone-100 hover:bg-stone-200/80 text-slate-700 font-bold text-xs sm:text-sm border border-stone-200 transition flex items-center justify-center gap-2 cursor-pointer">
           <span>⬇️</span>
-          <span>下載範例 JSON 模板</span>
+          <span>下載範例 L34 模板</span>
         </button>
-      </div>
-
-      <!-- JSON Format Quick Reference -->
-      <div class="max-w-xl mx-auto text-left p-4 sm:p-5 rounded-2xl bg-washi border border-stone-200/80 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-slate-600">📋 JSON 題庫欄位結構參考</span>
-          <button onclick="copyJsonTemplate()" class="text-xs font-bold text-indigoJp-700 hover:underline cursor-pointer">
-            複製範例格式
-          </button>
-        </div>
-        <pre class="text-[11px] sm:text-xs font-mono text-slate-700 overflow-x-auto leading-relaxed bg-white p-3 rounded-xl border border-stone-200/70">[
-  {
-    "question": "毎朝起きてから、必ず歯を（　　　）。",
-    "options": ["みがきます", "みがいた", "みがいて", "みがかない", "みがく前に", "みがいたあとで", "みがいたり", "みがこう"],
-    "answer": "みがきます",
-    "translation": "每天早上起床後，一定會刷牙。",
-    "explanation": "表示每天的習慣性動作，使用現在肯定形「みがきます」。"
-  }
-]</pre>
       </div>
     </div>
 
@@ -352,19 +343,24 @@
       </div>
 
       <div id="gacha-content" class="space-y-4">
-        <div class="w-32 h-32 mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center shadow-inner overflow-hidden relative">
-          <img id="gacha-card-img" src="" alt="獎勵卡" class="w-full h-full object-contain p-2" onerror="this.src='https://placehold.co/150x150/fef3c7/b45309?text=Pokemon'" />
+        <!-- 抽卡前的預設寶可夢禮盒或未揭曉圖示（抽獎前不顯示上一次抽中的圖片） -->
+        <div id="gacha-card-container" class="w-full h-64 mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center shadow-inner overflow-hidden relative">
+          <div id="gacha-placeholder-view" class="flex flex-col items-center justify-center space-y-2 text-amber-700">
+            <span class="text-5xl animate-bounce">🎁</span>
+            <span class="text-xs sm:text-sm font-bold">點擊下方按鈕抽取隨機獎勵卡！</span>
+          </div>
+          <img id="gacha-card-img" src="" alt="獎勵卡" class="hidden w-full h-full object-contain p-4" onerror="this.src='https://placehold.co/300x300/fef3c7/b45309?text=Pokemon'" />
         </div>
         <div>
-          <h3 id="gacha-card-name" class="font-bold text-xl text-slate-900">獲得卡片名稱</h3>
-          <p class="text-xs text-slate-500 mt-1">已成功加入您的收藏圖鑑！</p>
+          <h3 id="gacha-card-name" class="font-bold text-lg sm:text-xl text-slate-900">準備抽卡</h3>
+          <p id="gacha-card-desc" class="text-xs text-slate-500 mt-1">累積答題獲得抽卡機會，享受零重複收藏樂趣！</p>
         </div>
       </div>
 
-      <div id="gacha-empty-msg" class="hidden py-8 space-y-3">
-        <div class="text-4xl">🌟</div>
-        <h3 class="font-bold text-lg text-slate-800">太厲害了！所有獎勵卡已全部抽完！</h3>
-        <p class="text-xs text-slate-500">你已經收集完了目前題庫或圖鑑的所有寶可夢獎勵卡！</p>
+      <div id="gacha-empty-msg" class="hidden py-10 space-y-3">
+        <div class="text-5xl">🌟</div>
+        <h3 class="font-bold text-lg text-slate-800">所有獎勵卡已全部抽完！</h3>
+        <p class="text-xs text-slate-500">你已經收集完了目前所有寶可夢獎勵卡！</p>
       </div>
 
       <div class="pt-2 flex items-center justify-center gap-3">
@@ -372,7 +368,7 @@
           🎲 抽一張獎勵卡 (剩餘機會: <span id="gacha-chances">0</span>)
         </button>
         <button onclick="closeGachaModal(); openGalleryModal();" class="w-full py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-slate-700 font-bold text-sm transition cursor-pointer">
-          🎴 查看收藏庫
+          🎴 收藏庫
         </button>
       </div>
     </div>
@@ -397,9 +393,10 @@
             <span class="ml-3 text-slate-400">剩餘抽卡機會: <strong id="gallery-pending-chances" class="text-indigoJp-700">0</strong></span>
           </div>
           <div class="flex items-center gap-2">
+            <!-- 加入「抽卡 🎴」按鈕在收藏庫，如果之前中途忘記抽卡，剩餘次數大於0的話可以補抽 -->
             <button onclick="openGachaFromGallery()" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer">
               <span>🎴</span>
-              <span>抽卡 (補抽)</span>
+              <span>抽卡 🎴</span>
             </button>
             <button onclick="resetGalleryCollection()" class="text-rose-600 hover:underline px-2 py-1">重設紀錄</button>
           </div>
@@ -412,16 +409,17 @@
     </div>
   </div>
 
-  <!-- Card Zoom Modal (放大檢視卡片) -->
+  <!-- Card Zoom Modal (放大檢視卡片：佔視窗約 3/4 高度) -->
   <div id="card-zoom-modal" class="hidden fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeCardZoom()">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
-      <button onclick="closeCardZoom()" class="absolute top-4 right-4 w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 font-bold text-slate-600 flex items-center justify-center">✕</button>
-      <div class="w-48 h-48 mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center p-2 shadow-inner">
-        <img id="zoom-card-img" src="" alt="放大卡片" class="w-full h-full object-contain" />
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full text-center space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
+      <button onclick="closeCardZoom()" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-stone-100 hover:bg-stone-200 font-bold text-slate-600 flex items-center justify-center text-base">✕</button>
+      <!-- 放大檢視圖片容器：高度佔視窗約 3/4 (h-[75vh]) -->
+      <div class="w-full h-[72vh] sm:h-[75vh] mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center p-4 shadow-inner overflow-hidden">
+        <img id="zoom-card-img" src="" alt="放大卡片" class="w-full h-full object-contain cursor-zoom-out" onclick="closeCardZoom()" />
       </div>
       <div>
-        <h3 id="zoom-card-name" class="font-bold text-lg text-slate-900"></h3>
-        <p class="text-xs text-amber-700 font-medium mt-1">✨ 已解鎖收藏獎勵卡</p>
+        <h3 id="zoom-card-name" class="font-bold text-xl sm:text-2xl text-slate-900"></h3>
+        <p class="text-xs sm:text-sm text-amber-700 font-medium mt-1">✨ 點擊圖片或按右上角關閉放大檢視</p>
       </div>
     </div>
   </div>
@@ -525,7 +523,7 @@
 
   <script>
     // ==========================================
-    // 1. 預設寶可夢獎勵卡池（防重複抽獎機制）
+    // 1. 預設寶可夢獎勵卡池與 Lxx 載入支援
     // ==========================================
     const DEFAULT_POKEMON_CARDS = [
       { id: "pk_1", name: "皮卡丘 (Pikachu)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
@@ -545,7 +543,41 @@
     let pendingGachaChances = 0;
     let consecutiveCorrectCount = 0;
 
-    // 自動在背景載入指定 Google Spreadsheet CSV 的 D欄圖片作為獎勵卡池
+    // 支援快速載入 Lxx.json
+    async function loadLessonNumber() {
+      const numInput = document.getElementById('quick-lesson-num').value.trim();
+      if (!numInput) {
+        showToast('請輸入課程數字編號（例如 34）', '⚠️');
+        return;
+      }
+      const fileName = `L${numInput}.json`;
+      // 嘗試從同網域載入 Lxx.json 或使用預設 L34 範例
+      try {
+        const response = await fetch(fileName);
+        if (!response.ok) throw new Error(`找不到檔案 ${fileName}`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          activeDeckQuestions = data;
+          activeDeckMeta = { badge: `L${numInput}`, title: `第 ${numInput} 課聽力填空測驗`, subtitle: `共 ${data.length} 題` };
+          updateDeckHeaderUI();
+          initQuiz(false);
+          showToast(`成功載入 ${fileName} 題庫！`, '✅');
+          return;
+        }
+      } catch (e) {
+        // 如果找不到實體檔案，若為 34 則直接載入內建範例
+        if (numInput === '34') {
+          activeDeckQuestions = SAMPLE_TEMPLATE_DATA;
+          activeDeckMeta = { badge: `L34`, title: `第 34 課聽力填空測驗`, subtitle: `共 ${SAMPLE_TEMPLATE_DATA.length} 題` };
+          updateDeckHeaderUI();
+          initQuiz(false);
+          showToast('成功載入 L34 預設題庫！', '✅');
+        } else {
+          showToast(`無法讀取 ${fileName}，請確認檔案存在或使用進階匯入`, '❌');
+        }
+      }
+    }
+
     async function fetchGoogleSheetRewards() {
       const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRceONgowH9Reg0_NY3qNrB4nWGqYrUJsjgglVQlfNQO3LL9dRaJCw1z6526UIp3CKWg-ShXU3Nu8XE/pub?output=csv";
       try {
@@ -560,7 +592,6 @@
           const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
           const cleanCols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
           
-          // D欄 (索引 3) 若有圖片網址則加入獎勵池
           if (cleanCols.length >= 4 && cleanCols[3] && cleanCols[3].startsWith('http')) {
             dynamicCards.push({
               id: `sheet_card_${index}`,
@@ -586,7 +617,6 @@
 
     function checkGachaUnlockOnCorrect() {
       consecutiveCorrectCount++;
-      // 每答對 3 題獲得一次抽獎機會
       if (consecutiveCorrectCount >= 3) {
         consecutiveCorrectCount = 0;
         pendingGachaChances++;
@@ -595,10 +625,19 @@
       }
     }
 
+    // 抽獎前：不顯示上一次抽中的圖片，回復預設禮盒提示狀態
     function openGachaModal() {
       document.getElementById('reward-unlock-banner').classList.add('hidden');
       document.getElementById('gacha-modal').classList.remove('hidden');
       document.getElementById('gacha-chances').textContent = pendingGachaChances;
+
+      // 重置抽卡視窗狀態（不預先顯示上一次圖片）
+      document.getElementById('gacha-placeholder-view').classList.remove('hidden');
+      const cardImg = document.getElementById('gacha-card-img');
+      cardImg.classList.add('hidden');
+      cardImg.src = '';
+      document.getElementById('gacha-card-name').textContent = '準備抽卡';
+      document.getElementById('gacha-card-desc').textContent = '點擊下方按鈕抽取隨機獎勵卡！';
 
       if (pendingGachaChances > 0 && currentRewardPool.length > 0) {
         document.getElementById('gacha-content').classList.remove('hidden');
@@ -609,9 +648,9 @@
         document.getElementById('gacha-empty-msg').classList.remove('hidden');
         document.getElementById('gacha-draw-btn').classList.add('hidden');
       } else {
-        document.getElementById('gacha-content').classList.add('hidden');
+        document.getElementById('gacha-content').classList.remove('hidden');
         document.getElementById('gacha-empty-msg').classList.add('hidden');
-        document.getElementById('gacha-draw-btn').classList.add('hidden');
+        document.getElementById('gacha-draw-btn').classList.remove('hidden');
       }
     }
 
@@ -629,7 +668,6 @@
       pendingGachaChances--;
       document.getElementById('gacha-chances').textContent = pendingGachaChances;
 
-      // 隨機抽出一張並從卡池移除（防重複抽獎）
       const randomIndex = Math.floor(Math.random() * currentRewardPool.length);
       const wonCard = currentRewardPool.splice(randomIndex, 1)[0];
 
@@ -637,13 +675,17 @@
       localStorage.setItem('jp_quiz_collected_cards', JSON.stringify(collectedCards));
       updateHeaderCardCount();
 
-      // 顯示抽中卡片畫面
-      document.getElementById('gacha-card-img').src = wonCard.img;
+      // 抽完後顯示圖片，並允許點擊放大觀看
+      document.getElementById('gacha-placeholder-view').classList.add('hidden');
+      const cardImg = document.getElementById('gacha-card-img');
+      cardImg.src = wonCard.img;
+      cardImg.classList.remove('hidden');
       document.getElementById('gacha-card-name').textContent = wonCard.name;
-      document.getElementById('gacha-draw-btn').classList.add('hidden');
+      document.getElementById('gacha-card-desc').textContent = '✨ 恭喜獲得！點擊收藏庫可隨時放大觀看';
       showToast(`恭喜抽中寶可夢：${wonCard.name}！`, '🎴');
     }
 
+    // 收藏庫：未解鎖的卡不用給予預覽，減少 loading
     function openGalleryModal() {
       const grid = document.getElementById('gallery-grid');
       grid.innerHTML = '';
@@ -672,7 +714,7 @@
             <span class="text-[10px] mt-0.5 text-amber-700 font-medium">點擊放大 🔍</span>
           `;
         } else {
-          // 未解鎖卡片不加載圖片以節省流量
+          // 未解鎖卡片不加載圖片
           div.innerHTML = `
             <div class="w-20 h-20 rounded-xl bg-stone-200/80 flex items-center justify-center p-1 mb-2 text-stone-400 text-2xl font-bold">
               ?
@@ -713,9 +755,9 @@
     }
 
     // ==========================================
-    // 2. 狀態變數與語音設定
+    // 2. 測驗主邏輯與計分獎勵機制
     // ==========================================
-    const DEFAULT_DECK_META = { badge: "聽力", title: "日文語音聽力填空測驗", subtitle: "尚未載入題庫，請先匯入 JSON 檔案" };
+    const DEFAULT_DECK_META = { badge: "聽力", title: "日文語音聽力填空測驗", subtitle: "尚未載入題庫，請輸入課次或匯入 JSON" };
     let activeDeckQuestions = [];
     let activeDeckMeta = { ...DEFAULT_DECK_META };
     let questions = [];
@@ -728,6 +770,23 @@
     let jaVoice = null;
     let userHistory = [];
     let audioCtx = null;
+
+    const SAMPLE_TEMPLATE_DATA = [
+      {
+        "question": "毎朝起きてから、必ず歯を（　　　）。",
+        "options": ["みがきます", "みがいた", "みがいて", "みがかない"],
+        "answer": "みがきます",
+        "translation": "每天早上起床後，一定會刷牙。",
+        "explanation": "表示每天的習慣性動作，使用現在肯定形「みがきます」。"
+      },
+      {
+        "question": "料理を作る前に、石鹸でよく手を（　　　）。",
+        "options": ["洗います", "洗いました", "洗って", "洗わない"],
+        "answer": "洗います",
+        "translation": "做菜之前，會用肥皂仔細洗手。",
+        "explanation": "「～前に」前接動詞辭書形，主句表示現在習慣，使用「洗います」。"
+      }
+    ];
 
     function loadJapaneseVoice() {
       const voices = window.speechSynthesis.getVoices();
@@ -825,20 +884,6 @@
       if (questions.length) playQuestionAudio();
     }
 
-    // ==========================================
-    // 3. 檔案匯入 (JSON / Google CSV 支援 D欄圖片)
-    // ==========================================
-    const SAMPLE_TEMPLATE_DATA = [
-      {
-        "question": "毎朝起きてから、必ず歯を（　　　）。",
-        "options": ["みがきます", "みがいた", "みがいて", "みがかない", "みがく前に", "みがいたあとで", "みがいたり", "みがこう"],
-        "answer": "みがきます",
-        "translation": "每天早上起床後，一定會刷牙。",
-        "explanation": "表示每天的習慣性動作，使用現在肯定形「みがきます」。",
-        "rewardImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
-      }
-    ];
-
     function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
     function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); }
     function showToast(msg, icon = '✅') {
@@ -861,7 +906,7 @@
       const blob = new Blob([JSON.stringify(SAMPLE_TEMPLATE_DATA, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'quiz_sample.json';
+      a.download = 'L34.json';
       a.click();
     }
 
@@ -876,7 +921,6 @@
           parseCsvContent(text);
         } else {
           try {
-            // Validate JSON format immediately
             const parsed = JSON.parse(text);
             if (Array.isArray(parsed)) {
               document.getElementById('json-textarea').value = text;
@@ -889,21 +933,16 @@
           }
         }
       };
-      reader.onerror = () => {
-        showToast('讀取檔案失敗', '❌');
-      };
       reader.readAsText(file, 'UTF-8');
     }
 
-    // 解析 CSV 格式 (支援 D欄作為圖片網址)
     function parseCsvContent(csvText) {
       const lines = csvText.split(/\r?\n/).filter(Boolean);
       const parsedQuestions = [];
       const customRewardsFromCsv = [];
 
       lines.forEach((line, index) => {
-        if (index === 0 && (line.includes('question') || line.includes('題目'))) return; // Skip header
-        // 簡易 CSV split (支援雙引號)
+        if (index === 0 && (line.includes('question') || line.includes('題目'))) return;
         const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
         const cleanCols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
 
@@ -911,11 +950,11 @@
           const qText = cleanCols[0];
           const ans = cleanCols[1];
           const opts = cleanCols[2] ? cleanCols[2].split('|').map(o => o.trim()) : [ans];
-          const imgUrl = cleanCols[3] || ''; // D欄作為圖片網址
+          const imgUrl = cleanCols[3] || '';
 
           parsedQuestions.push({
             question: qText,
-            options: opts.length >= 2 ? opts : [ans, '其他1', '其他2', '其他3'],
+            options: opts.length >= 2 ? opts.slice(0, 4) : [ans, '其他1', '其他2', '其他3'],
             answer: ans,
             translation: cleanCols[4] || '',
             explanation: cleanCols[5] || '請根據句型與時態作答。'
@@ -935,7 +974,7 @@
         document.getElementById('json-textarea').value = JSON.stringify(parsedQuestions, null, 2);
         if (customRewardsFromCsv.length > 0) {
           currentRewardPool = customRewardsFromCsv;
-          showToast(`成功從 CSV 匯入 ${parsedQuestions.length} 題與 ${customRewardsFromCsv.length} 張 D欄獎勵圖片！`, '🌟');
+          showToast(`成功匯入 ${parsedQuestions.length} 題與 D欄獎勵圖片！`, '🌟');
         } else {
           showToast(`成功解析 CSV 題庫（共 ${parsedQuestions.length} 題）`, '✅');
         }
@@ -952,7 +991,7 @@
 
         activeDeckQuestions = list.map(item => ({
           question: item.question,
-          options: item.options,
+          options: item.options ? item.options.slice(0, 4) : [item.answer],
           answer: item.answer,
           translation: item.translation || '',
           explanation: item.explanation || ''
@@ -991,9 +1030,6 @@
       document.getElementById('deck-subtitle').textContent = activeDeckMeta.subtitle;
     }
 
-    // ==========================================
-    // 4. 測驗主流程
-    // ==========================================
     function initQuiz(shuffle = false) {
       if (!activeDeckQuestions.length) return;
       questions = shuffle ? [...activeDeckQuestions].sort(() => Math.random() - 0.5) : [...activeDeckQuestions];
@@ -1037,10 +1073,9 @@
       document.getElementById('feedback-card').classList.add('hidden');
       document.getElementById('reward-unlock-banner').classList.add('hidden');
 
-      // 將選項限制或取樣為 4 個選項
+      // 嚴格限制為 4 個選項
       let rawOpts = q.options && q.options.length > 0 ? [...q.options] : [q.answer];
       if (!rawOpts.includes(q.answer)) rawOpts.push(q.answer);
-      // 隨機打亂並取最多 4 個選項
       const shuffledOpts = rawOpts.sort(() => Math.random() - 0.5).slice(0, 4);
       if (!shuffledOpts.includes(q.answer)) shuffledOpts[0] = q.answer;
 
@@ -1127,6 +1162,7 @@
       }
     }
 
+    // 完成每個練習後得分分級獎勵抽卡次數：100% (+3), 80-99% (+2), 50-79% (+1)
     function showSummary() {
       document.getElementById('progress-bar').style.width = '100%';
       document.getElementById('quiz-container').classList.add('hidden');
@@ -1140,15 +1176,15 @@
 
       if (accuracy === 100) {
         bonusChances = 3;
-        bonusText = '🌟 滿分達成！獲得額外 3 次抽卡機會！';
+        bonusText = '🌟 滿分 100% 達成！獲得額外 3 次抽卡機會！';
         document.getElementById('final-comment').textContent = '完美滿分！太強了！';
       } else if (accuracy >= 80) {
         bonusChances = 2;
-        bonusText = '🎉 得分超過 80%！獲得額外 2 次抽卡機會！';
+        bonusText = '🎉 得分 80% 以上！獲得額外 2 次抽卡機會！';
         document.getElementById('final-comment').textContent = '表現優異！';
       } else if (accuracy >= 50) {
         bonusChances = 1;
-        bonusText = '👍 得分超過 50%！獲得額外 1 次抽卡機會！';
+        bonusText = '👍 得分 50% 以上！獲得額外 1 次抽卡機會！';
         document.getElementById('final-comment').textContent = '完成測驗！';
       } else {
         document.getElementById('final-comment').textContent = '加油，再接再厲！';
@@ -1177,7 +1213,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       updateDeckHeaderUI();
       updateHeaderCardCount();
-      fetchGoogleSheetRewards(); // 自動讀取 Google Spreadsheet D欄獎勵圖片
+      fetchGoogleSheetRewards();
     });
   </script>
 </body>
