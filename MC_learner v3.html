@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日文語音聽力填空測驗｜寶可夢抽卡與自訂題庫版</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Sans JP & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+            jp: ['Noto Sans JP', 'Noto Sans TC', 'sans-serif'],
+          },
+          colors: {
+            washi: '#FAF8F5',
+            indigoJp: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              600: '#3730A3',
+              700: '#1E3A8A',
+              800: '#172554',
+            },
+            coralJp: {
+              500: '#E11D48',
+              600: '#BE123C',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      70% { transform: scale(1.25); opacity: 0; }
+      100% { transform: scale(1.25); opacity: 0; }
+    }
+    .speaking-ring {
+      animation: pulseRing 1.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+    .option-card {
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-card:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+    @keyframes cardFlip {
+      0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
+      50% { transform: rotateY(90deg) scale(1.05); }
+      100% { transform: rotateY(360deg) scale(1); opacity: 1; }
+    }
+    .animate-gacha-card {
+      animation: cardFlip 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-washi text-slate-800 min-h-screen flex flex-col selection:bg-indigoJp-100 selection:text-indigoJp-800">
+
+  <!-- Top Header -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-20">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span id="deck-badge" class="shrink-0 px-2.5 h-9 rounded-xl bg-indigoJp-700 text-white flex items-center justify-center font-jp font-bold text-xs sm:text-sm shadow-sm">
+          聽力
+        </span>
+        <div class="truncate">
+          <h1 id="deck-title" class="font-bold text-sm sm:text-lg text-slate-900 leading-tight truncate">日文語音聽力填空測驗</h1>
+          <p id="deck-subtitle" class="text-xs text-slate-500 truncate">尚未載入題庫，請先匯入 JSON 檔案</p>
+        </div>
+      </div>
+
+      <!-- Import Button, Collection & Score Badge -->
+      <div id="header-stats" class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <button onclick="openGalleryModal()" class="inline-flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs sm:text-sm border border-amber-200 transition cursor-pointer" title="查看寶可夢獎勵卡收藏">
+          <span>🎴</span>
+          <span class="hidden sm:inline">收藏庫</span>
+          <span id="header-card-count" class="px-1.5 py-0.2 rounded-full bg-amber-200/80 text-amber-900 text-[10px]">0</span>
+        </button>
+
+        <button id="clear-deck-header-btn" onclick="clearQuizBank()" class="hidden inline-flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-stone-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 font-bold text-xs sm:text-sm border border-stone-200 hover:border-rose-200 transition cursor-pointer" title="清空目前題庫">
+          <span>🗑️</span>
+          <span class="hidden sm:inline">清空</span>
+        </button>
+
+        <button onclick="openImportModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs sm:text-sm shadow-xs transition cursor-pointer" title="匯入自訂 JSON 題庫或 Google CSV">
+          <span>📂</span>
+          <span>匯入題庫</span>
+        </button>
+
+        <div id="score-badge" class="hidden text-right pl-1">
+          <div class="text-[11px] text-slate-400 font-medium">目前得分</div>
+          <div class="text-sm sm:text-base font-bold text-indigoJp-700">
+            <span id="score-display">0</span> <span class="text-xs font-normal text-slate-400">/ <span id="total-display">0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Progress Bar -->
+    <div class="w-full h-1.5 bg-stone-200">
+      <div id="progress-bar" class="h-full bg-indigoJp-600 transition-all duration-500 ease-out" style="width: 0%"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 sm:py-8">
+
+    <!-- Voice Warning Banner -->
+    <div id="voice-warning" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs sm:text-sm flex items-start gap-2.5">
+      <span class="text-base">⚠️</span>
+      <div>
+        <strong>語音引擎提示：</strong>您的瀏覽器目前未偵測到日文語音包（ja-JP），系統將使用預設語音代替。建議使用 Chrome、Edge 或 Safari 以獲得最佳日文發音效果。
+      </div>
+    </div>
+
+    <!-- Empty State / Welcome Screen -->
+    <div id="empty-state-container" class="bg-white rounded-3xl shadow-sm border border-stone-200/80 p-6 sm:p-10 text-center space-y-6">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-indigoJp-50 text-indigoJp-700 flex items-center justify-center text-3xl shadow-xs">
+        🎧
+      </div>
+
+      <div class="max-w-lg mx-auto space-y-2">
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900">請先匯入 JSON 題庫以開始測驗</h2>
+        <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+          內建題庫已清空。支援載入自訂 <code class="px-1.5 py-0.5 rounded bg-stone-100 text-slate-700 font-mono">.json</code> 題目檔或 Google Spreadsheet CSV（支援 D 欄圖片網址作為抽獎卡片）。答對指定題數即可解鎖寶可夢獎勵卡抽獎！
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+        <button onclick="openImportModal()" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-indigoJp-700 hover:bg-indigoJp-800 active:scale-95 text-white font-bold text-sm sm:text-base shadow-md shadow-indigoJp-700/20 transition flex items-center justify-center gap-2 cursor-pointer">
+          <span>📂</span>
+          <span>匯入 JSON 題庫檔案 / 貼上內容</span>
+        </button>
+
+        <button onclick="downloadSampleJson()" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-stone-100 hover:bg-stone-200/80 text-slate-700 font-bold text-xs sm:text-sm border border-stone-200 transition flex items-center justify-center gap-2 cursor-pointer">
+          <span>⬇️</span>
+          <span>下載範例 JSON 模板</span>
+        </button>
+      </div>
+
+      <!-- JSON Format Quick Reference -->
+      <div class="max-w-xl mx-auto text-left p-4 sm:p-5 rounded-2xl bg-washi border border-stone-200/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-600">📋 JSON 題庫欄位結構參考</span>
+          <button onclick="copyJsonTemplate()" class="text-xs font-bold text-indigoJp-700 hover:underline cursor-pointer">
+            複製範例格式
+          </button>
+        </div>
+        <pre class="text-[11px] sm:text-xs font-mono text-slate-700 overflow-x-auto leading-relaxed bg-white p-3 rounded-xl border border-stone-200/70">[
+  {
+    "question": "毎朝起きてから、必ず歯を（　　　）。",
+    "options": ["みがきます", "みがいた", "みがいて", "みがかない", "みがく前に", "みがいたあとで", "みがいたり", "みがこう"],
+    "answer": "みがきます",
+    "translation": "每天早上起床後，一定會刷牙。",
+    "explanation": "表示每天的習慣性動作，使用現在肯定形「みがきます」。"
+  }
+]</pre>
+      </div>
+    </div>
+
+    <!-- Quiz View (Hidden until JSON loaded) -->
+    <div id="quiz-container" class="hidden space-y-6">
+
+      <!-- Question Audio & Reveal Card -->
+      <section class="bg-white rounded-3xl shadow-sm border border-stone-200/80 p-5 sm:p-8 relative overflow-hidden">
+        <!-- Top Meta Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-6">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigoJp-50 text-indigoJp-700 text-xs font-bold">
+              第 <span id="q-number">1</span> 題 <span class="text-indigoJp-400 font-normal">/ <span id="q-total">0</span></span>
+            </span>
+            <button id="shuffle-toggle-btn" onclick="toggleShuffleMode()" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200/80 text-slate-600 text-xs font-medium transition cursor-pointer" title="切換依序或隨機出題">
+              🔀 <span id="shuffle-label">依序出題</span>
+            </button>
+          </div>
+
+          <!-- Speed Control -->
+          <div class="flex items-center gap-1 bg-stone-100 p-1 rounded-xl text-xs font-medium">
+            <button id="speed-normal" onclick="setSpeechRate(1.0)" class="px-2.5 py-1 rounded-lg bg-white text-indigoJp-700 shadow-xs transition cursor-pointer">
+              1.0x 正常
+            </button>
+            <button id="speed-slow" onclick="setSpeechRate(0.75)" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">
+              0.75x 慢速
+            </button>
+          </div>
+        </div>
+
+        <!-- Central Audio Player Button -->
+        <div class="flex flex-col items-center justify-center py-4 sm:py-6">
+          <div class="relative flex items-center justify-center">
+            <div id="pulse-ring" class="hidden absolute inset-0 rounded-full bg-indigoJp-600/30 speaking-ring"></div>
+            <button
+              id="play-question-btn"
+              onclick="playQuestionAudio()"
+              class="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-indigoJp-700 hover:bg-indigoJp-800 active:scale-95 text-white shadow-lg shadow-indigoJp-700/25 flex flex-col items-center justify-center transition-all cursor-pointer group"
+              aria-label="播放題目語音"
+            >
+              <svg class="w-8 h-8 sm:w-9 sm:h-9 mb-0.5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              </svg>
+              <span id="play-btn-label" class="text-[11px] font-medium tracking-wide">重聽題目</span>
+            </button>
+          </div>
+
+          <p class="mt-4 text-xs sm:text-sm text-slate-500 text-center">
+            請仔細聆聽語音，聽到 <span class="inline-block px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold text-xs">叮♪ 提示音</span> 處即為空格位置
+          </p>
+        </div>
+
+        <!-- Hidden / Revealed Question Text Box -->
+        <div class="mt-2 pt-4 border-t border-stone-100 flex flex-col items-center">
+          <button
+            id="toggle-text-btn"
+            onclick="toggleQuestionText()"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200/80 text-slate-700 text-xs sm:text-sm font-medium transition cursor-pointer"
+          >
+            <svg id="eye-icon" class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span id="toggle-text-label">按一下顯示題目文字</span>
+          </button>
+
+          <!-- Actual Japanese Question Sentence -->
+          <div id="question-text-box" class="hidden w-full mt-4 p-4 sm:p-5 rounded-2xl bg-washi border border-stone-200/80 text-center transition-all">
+            <p id="question-jp" class="font-jp text-lg sm:text-2xl font-bold text-slate-900 leading-relaxed tracking-wide"></p>
+            <p id="question-zh-hint" class="hidden mt-2 text-xs sm:text-sm text-slate-500"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 Options Grid -->
+      <section aria-label="選項作答區">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <h2 class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-wider">請選出最符合句意與時態的選項（共 8 項）</h2>
+          <span class="text-xs text-slate-400">可點擊右側 🔊 試聽發音</span>
+        </div>
+
+        <div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+          <!-- Options injected by JS -->
+        </div>
+      </section>
+
+      <!-- Feedback & Grammar Explanation Card -->
+      <section id="feedback-card" class="hidden rounded-3xl p-5 sm:p-6 border shadow-sm transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div id="feedback-icon" class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0 font-bold"></div>
+            <div>
+              <h3 id="feedback-title" class="font-bold text-base sm:text-lg"></h3>
+              <p id="feedback-full-sentence" class="font-jp text-base sm:text-lg font-medium text-slate-900 mt-1"></p>
+              <p id="feedback-translation" class="text-xs sm:text-sm text-slate-600 mt-1"></p>
+              <div id="feedback-explanation-box" class="mt-3 p-3 rounded-xl bg-white/80 border border-black/5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                <span class="font-bold text-indigoJp-700">💡 解析：</span>
+                <span id="feedback-explanation"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reward Card Unlock Notice (if triggered) -->
+        <div id="reward-unlock-banner" class="hidden mt-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 flex items-center justify-between gap-3 animate-pulse">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">🎁</span>
+            <div class="text-xs sm:text-sm font-bold">恭喜！已累積答對指定題數，獲得一次寶可夢獎勵卡抽獎機會！</div>
+          </div>
+          <button onclick="openGachaModal()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            立即去抽卡 🎴
+          </button>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-black/5 flex flex-wrap items-center justify-between gap-3">
+          <button
+            onclick="playCompleteSentence()"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-stone-50 text-indigoJp-700 border border-stone-200 text-xs sm:text-sm font-bold shadow-2xs transition cursor-pointer"
+          >
+            <span>🔊 朗讀完整正確句子</span>
+          </button>
+
+          <button
+            id="next-btn"
+            onclick="nextQuestion()"
+            class="ml-auto inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white text-sm font-bold shadow-sm transition cursor-pointer"
+          >
+            <span id="next-btn-label">下一題</span>
+            <span>→</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Summary View -->
+    <div id="summary-container" class="hidden bg-white rounded-3xl shadow-sm border border-stone-200/80 p-6 sm:p-10 text-center space-y-6">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-indigoJp-50 text-indigoJp-700 flex items-center justify-center text-4xl">
+        🎉
+      </div>
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">聽力填空測驗完成！</h2>
+        <p id="summary-deck-subtitle" class="text-sm text-slate-500 mt-1">題庫練習結束</p>
+      </div>
+
+      <div class="max-w-xs mx-auto p-5 rounded-2xl bg-washi border border-stone-200">
+        <div class="text-xs text-slate-500 font-medium">最終總得分</div>
+        <div class="text-4xl font-bold text-indigoJp-700 mt-1">
+          <span id="final-score">0</span> <span class="text-lg font-normal text-slate-400">/ <span id="final-total">0</span></span>
+        </div>
+        <div id="final-comment" class="text-xs font-medium text-emerald-700 mt-2"></div>
+      </div>
+
+      <div id="review-list" class="text-left max-w-2xl mx-auto space-y-2.5 max-h-96 overflow-y-auto pr-1">
+        <!-- Review items injected here -->
+      </div>
+
+      <div class="pt-4 flex flex-wrap justify-center gap-3">
+        <button
+          onclick="restartQuiz(false)"
+          class="px-6 py-3 rounded-2xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-sm shadow-sm transition cursor-pointer"
+        >
+          🔄 依序重新測驗
+        </button>
+        <button
+          onclick="restartQuiz(true)"
+          class="px-6 py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-slate-800 font-bold text-sm transition cursor-pointer"
+        >
+          🔀 隨機打亂題目重測
+        </button>
+        <button
+          onclick="openImportModal()"
+          class="px-6 py-3 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-sm transition cursor-pointer"
+        >
+          📂 匯入其他 JSON / CSV
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Gacha Modal (抽獎彈窗) -->
+  <div id="gacha-modal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-stone-200 w-full max-w-md overflow-hidden flex flex-col p-6 text-center space-y-5 animate-gacha-card">
+      <div class="flex items-center justify-between">
+        <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-xs">🎁 寶可夢獎勵卡抽獎</span>
+        <button onclick="closeGachaModal()" class="w-8 h-8 rounded-xl hover:bg-stone-100 text-slate-500 font-bold">✕</button>
+      </div>
+
+      <div id="gacha-content" class="space-y-4">
+        <div class="w-32 h-32 mx-auto rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center shadow-inner overflow-hidden relative">
+          <img id="gacha-card-img" src="" alt="獎勵卡" class="w-full h-full object-contain p-2" onerror="this.src='https://placehold.co/150x150/fef3c7/b45309?text=Pokemon'" />
+        </div>
+        <div>
+          <h3 id="gacha-card-name" class="font-bold text-xl text-slate-900">獲得卡片名稱</h3>
+          <p class="text-xs text-slate-500 mt-1">已成功加入您的收藏圖鑑！</p>
+        </div>
+      </div>
+
+      <div id="gacha-empty-msg" class="hidden py-8 space-y-3">
+        <div class="text-4xl">🌟</div>
+        <h3 class="font-bold text-lg text-slate-800">太厲害了！所有獎勵卡已全部抽完！</h3>
+        <p class="text-xs text-slate-500">你已經收集完了目前題庫或圖鑑的所有寶可夢獎勵卡！</p>
+      </div>
+
+      <div class="pt-2 flex items-center justify-center gap-3">
+        <button id="gacha-draw-btn" onclick="executeGachaDraw()" class="w-full py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md transition cursor-pointer">
+          🎲 抽一張獎勵卡 (剩餘機會: <span id="gacha-chances">0</span>)
+        </button>
+        <button onclick="closeGachaModal(); openGalleryModal();" class="w-full py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-slate-700 font-bold text-sm transition cursor-pointer">
+          🎴 查看收藏庫
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Modal (收藏庫圖鑑) -->
+  <div id="gallery-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-stone-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="px-6 py-4 bg-washi border-b border-stone-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎴</span>
+          <h2 class="font-bold text-base sm:text-lg text-slate-900">寶可夢獎勵卡收藏藝廊</h2>
+        </div>
+        <button onclick="closeGalleryModal()" class="w-8 h-8 rounded-xl hover:bg-stone-200 font-bold text-slate-500">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-4 text-xs text-slate-500">
+          <span>已收集：<strong id="gallery-collected-count" class="text-amber-700 text-sm">0</strong> / <span id="gallery-total-count">0</span> 張</span>
+          <button onclick="resetGalleryCollection()" class="text-rose-600 hover:underline">重設收藏紀錄</button>
+        </div>
+
+        <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
+          <!-- Gallery cards injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON / CSV Import Modal -->
+  <div id="import-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="bg-white rounded-3xl shadow-2xl border border-stone-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="px-6 py-4 bg-washi border-b border-stone-200 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-indigoJp-700 text-white flex items-center justify-center text-sm">📂</span>
+          <div>
+            <h2 class="font-bold text-base sm:text-lg text-slate-900">匯入自訂 JSON 題庫 / Google CSV</h2>
+            <p class="text-xs text-slate-500">上傳 .json 或 .csv 檔案（支援 D 欄圖片作為獎勵卡）</p>
+          </div>
+        </div>
+        <button onclick="closeImportModal()" class="w-8 h-8 rounded-xl hover:bg-stone-200 text-slate-500 font-bold">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 text-sm">
+        <div id="import-alert" class="hidden p-3.5 rounded-2xl text-xs sm:text-sm font-medium leading-relaxed"></div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">題庫名稱（選填）</label>
+          <input type="text" id="custom-deck-name" placeholder="例如：大家的日本語 第34課 聽力測驗" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-indigoJp-600 outline-none text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">選擇本機檔案 (.json 或 .csv)</label>
+          <label for="json-file-input" class="flex flex-col items-center justify-center w-full p-5 rounded-2xl border-2 border-dashed border-stone-300 hover:border-indigoJp-600 bg-washi/60 cursor-pointer text-center">
+            <span class="text-2xl mb-1">📄</span>
+            <span class="font-bold text-indigoJp-700 text-xs sm:text-sm">點擊選擇 .json 或 .csv 檔案</span>
+            <span id="selected-file-name" class="text-xs text-slate-400 mt-1">支援 Google 試算表匯出之 CSV（D欄為獎勵圖片網址）</span>
+            <input id="json-file-input" type="file" accept=".json,.csv,application/json,text/csv" class="hidden" onchange="handleFileUpload(event)" />
+          </label>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="json-textarea" class="text-xs font-bold text-slate-700">直接貼上 JSON 內容</label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="fillSampleTemplate()" class="text-xs font-bold text-indigoJp-700 hover:underline">填入範例</button>
+              <span class="text-stone-300">|</span>
+              <button type="button" onclick="downloadSampleJson()" class="text-xs font-bold text-slate-600 hover:underline">下載範例 JSON</button>
+            </div>
+          </div>
+          <textarea id="json-textarea" rows="6" placeholder='[{"question": "...", "options": [...], "answer": "..."}]' class="w-full p-3.5 rounded-2xl border border-stone-300 font-mono text-xs bg-stone-50/50 outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
+        <button type="button" onclick="clearQuizBank()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-bold text-xs">🗑️ 清空目前題庫</button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeImportModal()" class="px-4 py-2.5 rounded-xl text-slate-600 font-bold text-xs">取消</button>
+          <button type="button" onclick="importFromTextarea()" class="px-6 py-2.5 rounded-xl bg-indigoJp-700 hover:bg-indigoJp-800 text-white font-bold text-xs shadow-sm">✓ 載入題庫並開始</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs sm:text-sm font-medium shadow-lg flex items-center gap-2">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. 預設寶可夢獎勵卡池（防重複抽獎機制）
+    // ==========================================
+    const DEFAULT_POKEMON_CARDS = [
+      { id: "pk_1", name: "皮卡丘 (Pikachu)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
+      { id: "pk_2", name: "妙蛙種子 (Bulbasaur)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" },
+      { id: "pk_3", name: "小火龍 (Charmander)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" },
+      { id: "pk_4", name: "傑尼龜 (Squirtle)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" },
+      { id: "pk_5", name: "卡比獸 (Snorlax)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" },
+      { id: "pk_6", name: "伊布 (Eevee)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png" },
+      { id: "pk_7", name: "胖丁 (Jigglypuff)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png" },
+      { id: "pk_8", name: "超夢 (Mewtwo)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png" },
+      { id: "pk_9", name: "夢幻 (Mew)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" },
+      { id: "pk_10", name: "烈空坐 (Rayquaza)", img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/384.png" }
+    ];
+
+    let currentRewardPool = [...DEFAULT_POKEMON_CARDS];
+    let collectedCards = JSON.parse(localStorage.getItem('jp_quiz_collected_cards') || '[]');
+    let pendingGachaChances = 0;
+    let consecutiveCorrectCount = 0;
+
+    // 自動在背景載入指定 Google Spreadsheet CSV 的 D欄圖片作為獎勵卡池
+    async function fetchGoogleSheetRewards() {
+      const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRceONgowH9Reg0_NY3qNrB4nWGqYrUJsjgglVQlfNQO3LL9dRaJCw1z6526UIp3CKWg-ShXU3Nu8XE/pub?output=csv";
+      try {
+        const response = await fetch(sheetCsvUrl);
+        if (!response.ok) return;
+        const csvText = await response.text();
+        const lines = csvText.split(/\r?\n/).filter(Boolean);
+        const dynamicCards = [];
+
+        lines.forEach((line, index) => {
+          if (index === 0 && (line.includes('question') || line.includes('題目') || line.includes('選項'))) return;
+          const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+          const cleanCols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
+          
+          // D欄 (索引 3) 若有圖片網址則加入獎勵池
+          if (cleanCols.length >= 4 && cleanCols[3] && cleanCols[3].startsWith('http')) {
+            dynamicCards.push({
+              id: `sheet_card_${index}`,
+              name: cleanCols[0] ? `獎勵卡：${cleanCols[0].substring(0, 8)}...` : `獎勵卡 #${index}`,
+              img: cleanCols[3]
+            });
+          }
+        });
+
+        if (dynamicCards.length > 0) {
+          currentRewardPool = dynamicCards;
+          updateHeaderCardCount();
+        }
+      } catch (e) {
+        console.log("使用預設寶可夢卡池");
+      }
+    }
+
+    function updateHeaderCardCount() {
+      const badge = document.getElementById('header-card-count');
+      if (badge) badge.textContent = collectedCards.length;
+    }
+
+    function checkGachaUnlockOnCorrect() {
+      consecutiveCorrectCount++;
+      // 每答對 3 題獲得一次抽獎機會
+      if (consecutiveCorrectCount >= 3) {
+        consecutiveCorrectCount = 0;
+        pendingGachaChances++;
+        document.getElementById('reward-unlock-banner').classList.remove('hidden');
+        showToast('太棒了！解鎖了一次寶可夢抽卡機會！', '🎁');
+      }
+    }
+
+    function openGachaModal() {
+      document.getElementById('reward-unlock-banner').classList.add('hidden');
+      document.getElementById('gacha-modal').classList.remove('hidden');
+      document.getElementById('gacha-chances').textContent = pendingGachaChances;
+
+      if (pendingGachaChances > 0 && currentRewardPool.length > 0) {
+        document.getElementById('gacha-content').classList.remove('hidden');
+        document.getElementById('gacha-empty-msg').classList.add('hidden');
+        document.getElementById('gacha-draw-btn').classList.remove('hidden');
+      } else if (currentRewardPool.length === 0) {
+        document.getElementById('gacha-content').classList.add('hidden');
+        document.getElementById('gacha-empty-msg').classList.remove('hidden');
+        document.getElementById('gacha-draw-btn').classList.add('hidden');
+      } else {
+        document.getElementById('gacha-content').classList.add('hidden');
+        document.getElementById('gacha-empty-msg').classList.remove('hidden');
+        document.getElementById('gacha-draw-btn').classList.add('hidden');
+      }
+    }
+
+    function closeGachaModal() {
+      document.getElementById('gacha-modal').classList.add('hidden');
+    }
+
+    function executeGachaDraw() {
+      if (pendingGachaChances <= 0 || currentRewardPool.length === 0) return;
+      pendingGachaChances--;
+      document.getElementById('gacha-chances').textContent = pendingGachaChances;
+
+      // 隨機抽出一張並從卡池移除（防重複抽獎）
+      const randomIndex = Math.floor(Math.random() * currentRewardPool.length);
+      const wonCard = currentRewardPool.splice(randomIndex, 1)[0];
+
+      collectedCards.push(wonCard);
+      localStorage.setItem('jp_quiz_collected_cards', JSON.stringify(collectedCards));
+      updateHeaderCardCount();
+
+      // 顯示抽中卡片畫面
+      document.getElementById('gacha-card-img').src = wonCard.img;
+      document.getElementById('gacha-card-name').textContent = wonCard.name;
+      document.getElementById('gacha-draw-btn').classList.add('hidden');
+      showToast(`恭喜抽中寶可夢：${wonCard.name}！`, '🎴');
+    }
+
+    function openGalleryModal() {
+      const grid = document.getElementById('gallery-grid');
+      grid.innerHTML = '';
+      document.getElementById('gallery-collected-count').textContent = collectedCards.length;
+      document.getElementById('gallery-total-count').textContent = collectedCards.length + currentRewardPool.length;
+
+      // 合併顯示已收集與未收集卡片
+      const allDisplayCards = [
+        ...collectedCards.map(c => ({ ...c, collected: true })),
+        ...currentRewardPool.map(c => ({ ...c, collected: false }))
+      ];
+
+      allDisplayCards.forEach(card => {
+        const div = document.createElement('div');
+        div.className = `p-3 rounded-2xl border flex flex-col items-center text-center transition ${
+          card.collected ? 'bg-amber-50/60 border-amber-200 shadow-xs' : 'bg-stone-100/70 border-stone-200 opacity-50 grayscale'
+        }`;
+        div.innerHTML = `
+          <div class="w-20 h-20 rounded-xl bg-white flex items-center justify-center p-1 mb-2 border border-stone-200/80">
+            <img src="${card.img}" alt="${card.name}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/fef3c7/b45309?text=Card'" />
+          </div>
+          <span class="font-bold text-xs text-slate-800 truncate w-full">${card.collected ? card.name : '？？？'}</span>
+          <span class="text-[10px] mt-0.5 ${card.collected ? 'text-amber-700 font-medium' : 'text-stone-400'}">${card.collected ? '已收藏' : '未解鎖'}</span>
+        `;
+        grid.appendChild(div);
+      });
+
+      document.getElementById('gallery-modal').classList.remove('hidden');
+    }
+
+    function closeGalleryModal() {
+      document.getElementById('gallery-modal').classList.add('hidden');
+    }
+
+    function resetGalleryCollection() {
+      if (confirm('確定要重設所有寶可夢獎勵卡收藏紀錄嗎？')) {
+        collectedCards = [];
+        currentRewardPool = [...DEFAULT_POKEMON_CARDS];
+        localStorage.removeItem('jp_quiz_collected_cards');
+        updateHeaderCardCount();
+        closeGalleryModal();
+        showToast('已重設收藏紀錄', '🔄');
+      }
+    }
+
+    // ==========================================
+    // 2. 狀態變數與語音設定
+    // ==========================================
+    const DEFAULT_DECK_META = { badge: "聽力", title: "日文語音聽力填空測驗", subtitle: "尚未載入題庫，請先匯入 JSON 檔案" };
+    let activeDeckQuestions = [];
+    let activeDeckMeta = { ...DEFAULT_DECK_META };
+    let questions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let isTextVisible = false;
+    let isShuffleMode = false;
+    let speechRate = 1.0;
+    let jaVoice = null;
+    let userHistory = [];
+    let audioCtx = null;
+
+    function loadJapaneseVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      jaVoice = voices.find(v => v.lang === 'ja-JP' && (v.name.includes('Google') || v.name.includes('Nanami') || v.name.includes('Keita'))) ||
+                voices.find(v => v.lang.toLowerCase().startsWith('ja'));
+      document.getElementById('voice-warning').classList.toggle('hidden', !!jaVoice);
+    }
+    if ('speechSynthesis' in window) {
+      loadJapaneseVoice();
+      window.speechSynthesis.onvoiceschanged = loadJapaneseVoice;
+    }
+
+    function playBlankChime() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1174.66, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.26);
+      } catch (e) {}
+    }
+
+    function speakUtterance(text, onEnd) {
+      if (!('speechSynthesis' in window)) return;
+      const clean = text.trim();
+      if (!clean) { if (onEnd) onEnd(); return; }
+      const utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = 'ja-JP';
+      if (jaVoice) utter.voice = jaVoice;
+      utter.rate = speechRate;
+      utter.onend = () => { if (onEnd) onEnd(); };
+      utter.onerror = () => { if (onEnd) onEnd(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    let playSessionId = 0;
+    function playQuestionAudio() {
+      if (!questions.length) return;
+      window.speechSynthesis.cancel();
+      playSessionId++;
+      const currentSession = playSessionId;
+      const q = questions[currentIndex];
+      const parts = q.question.split(/（\s*）|\(\s*\)/);
+      const pulse = document.getElementById('pulse-ring');
+      const label = document.getElementById('play-btn-label');
+      pulse.classList.remove('hidden');
+      label.textContent = '播放中...';
+
+      const finish = () => {
+        if (currentSession !== playSessionId) return;
+        pulse.classList.add('hidden');
+        label.textContent = '重聽題目';
+      };
+
+      if (parts.length === 2) {
+        speakUtterance(parts[0], () => {
+          if (currentSession !== playSessionId) return;
+          playBlankChime();
+          setTimeout(() => {
+            if (currentSession !== playSessionId) return;
+            speakUtterance(parts[1], finish);
+          }, 320);
+        });
+      } else {
+        speakUtterance(q.question, finish);
+      }
+    }
+
+    function speakOption(text, event) {
+      if (event) event.stopPropagation();
+      window.speechSynthesis.cancel();
+      speakUtterance(text);
+    }
+
+    function playCompleteSentence() {
+      if (!questions.length) return;
+      const q = questions[currentIndex];
+      speakUtterance(q.question.replace(/（\s*）|\(\s*\)/, q.answer));
+    }
+
+    function setSpeechRate(rate) {
+      speechRate = rate;
+      document.getElementById('speed-normal').className = rate === 1.0 ? 'px-2.5 py-1 rounded-lg bg-white text-indigoJp-700 shadow-xs transition cursor-pointer' : 'px-2.5 py-1 rounded-lg text-slate-600 cursor-pointer';
+      document.getElementById('speed-slow').className = rate === 0.75 ? 'px-2.5 py-1 rounded-lg bg-white text-indigoJp-700 shadow-xs transition cursor-pointer' : 'px-2.5 py-1 rounded-lg text-slate-600 cursor-pointer';
+      if (questions.length) playQuestionAudio();
+    }
+
+    // ==========================================
+    // 3. 檔案匯入 (JSON / Google CSV 支援 D欄圖片)
+    // ==========================================
+    const SAMPLE_TEMPLATE_DATA = [
+      {
+        "question": "毎朝起きてから、必ず歯を（　　　）。",
+        "options": ["みがきます", "みがいた", "みがいて", "みがかない", "みがく前に", "みがいたあとで", "みがいたり", "みがこう"],
+        "answer": "みがきます",
+        "translation": "每天早上起床後，一定會刷牙。",
+        "explanation": "表示每天的習慣性動作，使用現在肯定形「みがきます」。",
+        "rewardImage": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+      }
+    ];
+
+    function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
+    function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); }
+    function showToast(msg, icon = '✅') {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-icon').textContent = icon;
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(window._t);
+      window._t = setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+
+    function fillSampleTemplate() {
+      document.getElementById('json-textarea').value = JSON.stringify(SAMPLE_TEMPLATE_DATA, null, 2);
+    }
+    function copyJsonTemplate() {
+      navigator.clipboard.writeText(JSON.stringify(SAMPLE_TEMPLATE_DATA, null, 2));
+      showToast('已複製範例格式', '📋');
+    }
+    function downloadSampleJson() {
+      const blob = new Blob([JSON.stringify(SAMPLE_TEMPLATE_DATA, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'quiz_sample.json';
+      a.click();
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      document.getElementById('selected-file-name').textContent = `已選擇：${file.name}`;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        if (file.name.endsWith('.csv')) {
+          parseCsvContent(text);
+        } else {
+          document.getElementById('json-textarea').value = text;
+        }
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+
+    // 解析 CSV 格式 (支援 D欄作為圖片網址)
+    function parseCsvContent(csvText) {
+      const lines = csvText.split(/\r?\n/).filter(Boolean);
+      const parsedQuestions = [];
+      const customRewardsFromCsv = [];
+
+      lines.forEach((line, index) => {
+        if (index === 0 && (line.includes('question') || line.includes('題目'))) return; // Skip header
+        // 簡易 CSV split (支援雙引號)
+        const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+        const cleanCols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
+
+        if (cleanCols.length >= 3) {
+          const qText = cleanCols[0];
+          const ans = cleanCols[1];
+          const opts = cleanCols[2] ? cleanCols[2].split('|').map(o => o.trim()) : [ans];
+          const imgUrl = cleanCols[3] || ''; // D欄作為圖片網址
+
+          parsedQuestions.push({
+            question: qText,
+            options: opts.length >= 2 ? opts : [ans, '其他1', '其他2', '其他3'],
+            answer: ans,
+            translation: cleanCols[4] || '',
+            explanation: cleanCols[5] || '請根據句型與時態作答。'
+          });
+
+          if (imgUrl) {
+            customRewardsFromCsv.push({
+              id: `csv_card_${index}`,
+              name: `獎勵卡 #${index}`,
+              img: imgUrl
+            });
+          }
+        }
+      });
+
+      if (parsedQuestions.length > 0) {
+        document.getElementById('json-textarea').value = JSON.stringify(parsedQuestions, null, 2);
+        if (customRewardsFromCsv.length > 0) {
+          currentRewardPool = customRewardsFromCsv;
+          showToast(`成功從 CSV 匯入 ${parsedQuestions.length} 題與 ${customRewardsFromCsv.length} 張 D欄獎勵圖片！`, '🌟');
+        } else {
+          showToast(`成功解析 CSV 題庫（共 ${parsedQuestions.length} 題）`, '✅');
+        }
+      } else {
+        showToast('CSV 解析失敗，格式不符', '❌');
+      }
+    }
+
+    function importFromTextarea() {
+      try {
+        const raw = document.getElementById('json-textarea').value.trim();
+        const list = JSON.parse(raw);
+        if (!Array.isArray(list) || list.length === 0) throw new Error('必須為 JSON 陣列');
+
+        activeDeckQuestions = list.map(item => ({
+          question: item.question,
+          options: item.options,
+          answer: item.answer,
+          translation: item.translation || '',
+          explanation: item.explanation || ''
+        }));
+
+        const customTitle = document.getElementById('custom-deck-name').value.trim() || '自訂題庫';
+        activeDeckMeta = { badge: "自訂", title: customTitle, subtitle: `共 ${activeDeckQuestions.length} 題` };
+
+        updateDeckHeaderUI();
+        closeImportModal();
+        initQuiz(false);
+        showToast(`成功載入題庫：${customTitle}`);
+      } catch (e) {
+        showToast(`格式錯誤：${e.message}`, '❌');
+      }
+    }
+
+    function clearQuizBank() {
+      window.speechSynthesis.cancel();
+      activeDeckQuestions = [];
+      questions = [];
+      activeDeckMeta = { ...DEFAULT_DECK_META };
+      updateDeckHeaderUI();
+      closeImportModal();
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('summary-container').classList.add('hidden');
+      document.getElementById('empty-state-container').classList.remove('hidden');
+      document.getElementById('score-badge').classList.add('hidden');
+      document.getElementById('clear-deck-header-btn').classList.add('hidden');
+      showToast('已清空題庫', '🗑️');
+    }
+
+    function updateDeckHeaderUI() {
+      document.getElementById('deck-badge').textContent = activeDeckMeta.badge;
+      document.getElementById('deck-title').textContent = activeDeckMeta.title;
+      document.getElementById('deck-subtitle').textContent = activeDeckMeta.subtitle;
+    }
+
+    // ==========================================
+    // 4. 測驗主流程
+    // ==========================================
+    function initQuiz(shuffle = false) {
+      if (!activeDeckQuestions.length) return;
+      questions = shuffle ? [...activeDeckQuestions].sort(() => Math.random() - 0.5) : [...activeDeckQuestions];
+      currentIndex = 0;
+      score = 0;
+      userHistory = [];
+      consecutiveCorrectCount = 0;
+
+      document.getElementById('total-display').textContent = questions.length;
+      document.getElementById('score-display').textContent = '0';
+      document.getElementById('empty-state-container').classList.add('hidden');
+      document.getElementById('summary-container').classList.add('hidden');
+      document.getElementById('quiz-container').classList.remove('hidden');
+      document.getElementById('score-badge').classList.remove('hidden');
+      document.getElementById('clear-deck-header-btn').classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    function toggleShuffleMode() {
+      isShuffleMode = !isShuffleMode;
+      document.getElementById('shuffle-label').textContent = isShuffleMode ? '隨機出題' : '依序出題';
+      if (activeDeckQuestions.length) initQuiz(isShuffleMode);
+    }
+
+    function renderQuestion() {
+      answered = false;
+      isTextVisible = false;
+      const q = questions[currentIndex];
+      const total = questions.length;
+
+      document.getElementById('q-number').textContent = currentIndex + 1;
+      document.getElementById('q-total').textContent = total;
+      document.getElementById('progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+
+      document.getElementById('question-text-box').classList.add('hidden');
+      document.getElementById('question-zh-hint').classList.add('hidden');
+      document.getElementById('toggle-text-label').textContent = '按一下顯示題目文字';
+      document.getElementById('question-jp').textContent = q.question;
+      document.getElementById('question-zh-hint').textContent = q.translation;
+      document.getElementById('feedback-card').classList.add('hidden');
+      document.getElementById('reward-unlock-banner').classList.add('hidden');
+
+      // 將選項限制或取樣為 4 個選項
+      let rawOpts = q.options && q.options.length > 0 ? [...q.options] : [q.answer];
+      if (!rawOpts.includes(q.answer)) rawOpts.push(q.answer);
+      // 隨機打亂並取最多 4 個選項
+      const shuffledOpts = rawOpts.sort(() => Math.random() - 0.5).slice(0, 4);
+      if (!shuffledOpts.includes(q.answer)) shuffledOpts[0] = q.answer;
+
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = '';
+
+      shuffledOpts.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'option-card group relative flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white border-2 border-stone-200/90 hover:border-indigoJp-600 hover:bg-indigoJp-50/40 cursor-pointer shadow-2xs';
+        btn.onclick = () => selectOption(opt, btn);
+        btn.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-7 h-7 rounded-lg bg-stone-100 group-hover:bg-indigoJp-100 text-slate-600 font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
+            <span class="font-jp text-base sm:text-lg font-medium text-slate-800 truncate">${opt}</span>
+          </div>
+          <button type="button" onclick="speakOption('${opt.replace(/'/g, "\\'")}', event)" class="ml-2 w-9 h-9 rounded-xl bg-stone-100 hover:bg-indigoJp-700 text-slate-500 hover:text-white flex items-center justify-center transition cursor-pointer">
+            🔊
+          </button>
+        `;
+        grid.appendChild(btn);
+      });
+
+      setTimeout(() => playQuestionAudio(), 250);
+    }
+
+    function toggleQuestionText() {
+      isTextVisible = !isTextVisible;
+      document.getElementById('question-text-box').classList.toggle('hidden', !isTextVisible);
+      document.getElementById('toggle-text-label').textContent = isTextVisible ? '隱藏題目文字' : '按一下顯示題目文字';
+    }
+
+    function selectOption(selected, cardElem) {
+      if (answered) return;
+      answered = true;
+      const q = questions[currentIndex];
+      const isCorrect = selected === q.answer;
+
+      if (isCorrect) {
+        score++;
+        document.getElementById('score-display').textContent = score;
+        checkGachaUnlockOnCorrect();
+      }
+
+      userHistory.push({ question: q.question, userAnswer: selected, correctAnswer: q.answer, isCorrect, translation: q.translation });
+
+      isTextVisible = true;
+      document.getElementById('question-text-box').classList.remove('hidden');
+      if (q.translation) document.getElementById('question-zh-hint').classList.remove('hidden');
+
+      document.querySelectorAll('#options-grid .option-card').forEach(card => {
+        card.onclick = null;
+        const opt = card.querySelector('span.font-jp').textContent.trim();
+        if (opt === q.answer) {
+          card.className = 'option-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/90 ring-2 ring-emerald-500/20';
+          card.querySelector('span:first-child').className = 'w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center';
+          card.querySelector('span:first-child').textContent = '✓';
+        } else if (opt === selected && !isCorrect) {
+          card.className = 'option-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-rose-500 bg-rose-50/90';
+          card.querySelector('span:first-child').className = 'w-7 h-7 rounded-lg bg-rose-600 text-white font-bold text-xs flex items-center justify-center';
+          card.querySelector('span:first-child').textContent = '✕';
+        } else {
+          card.classList.add('opacity-55');
+        }
+      });
+
+      const fb = document.getElementById('feedback-card');
+      fb.classList.remove('hidden');
+      document.getElementById('feedback-title').textContent = isCorrect ? '答對了！素晴らしい！' : `答錯了！正確答案是「${q.answer}」`;
+      document.getElementById('feedback-full-sentence').textContent = q.question.replace(/（\s*）|\(\s*\)/, `【${q.answer}】`);
+      document.getElementById('feedback-translation').textContent = q.translation;
+      document.getElementById('feedback-explanation').textContent = q.explanation;
+      document.getElementById('next-btn-label').textContent = currentIndex === questions.length - 1 ? '查看結果' : '下一題';
+
+      playCompleteSentence();
+    }
+
+    function nextQuestion() {
+      window.speechSynthesis.cancel();
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showSummary();
+      }
+    }
+
+    function showSummary() {
+      document.getElementById('progress-bar').style.width = '100%';
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('summary-container').classList.remove('hidden');
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('final-total').textContent = questions.length;
+      document.getElementById('final-comment').textContent = score === questions.length ? '滿分！太強了！' : '完成測驗！';
+
+      const list = document.getElementById('review-list');
+      list.innerHTML = '';
+      userHistory.forEach((item, i) => {
+        const d = document.createElement('div');
+        d.className = `p-3.5 rounded-2xl border text-xs ${item.isCorrect ? 'bg-emerald-50/40 border-emerald-200' : 'bg-rose-50/50 border-rose-200'}`;
+        d.innerHTML = `<strong>第 ${i+1} 題 (${item.isCorrect ? '✓' : '✕'})</strong>：${item.question}`;
+        list.appendChild(d);
+      });
+    }
+
+    function restartQuiz(shuffle) { initQuiz(shuffle); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateDeckHeaderUI();
+      updateHeaderCardCount();
+      fetchGoogleSheetRewards(); // 自動讀取 Google Spreadsheet D欄獎勵圖片
+    });
+  </script>
+</body>
+</html>
