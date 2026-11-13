@@ -66,6 +66,11 @@
 
     <!-- Main Container -->
     <main class="max-w-4xl w-full mx-auto px-3 md:px-4 py-4 md:py-8 flex-grow space-y-4">
+    
+        <!-- 🎵 新增：用於維持後台播放的無聲音訊 -->
+        <audio id="silentAudio" loop style="display:none;">
+            <source src="https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.ogg" type="audio/ogg">
+        </audio>
 
         <!-- 1. 匯入 XML 與 獎勵圖片設定 -->
         <section id="importSection" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-4 transition-all">
@@ -431,9 +436,6 @@
 
         </div>
         <!-- 用於保持手機鎖屏後背景播放的無聲音訊 -->
-        <audio id="silentAudio" loop style="display:none;">
-            <source src="https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.ogg" type="audio/ogg">
-        </audio>
     </main>
 
     <!-- 🌟 抽牌解鎖互動視窗 -->
@@ -858,11 +860,11 @@
             if (vocabList.length === 0) return;
             isSequentialPlaying = true;
             currentSequentialIndex = 0;
-        
-            // 🔊 讓手機保持後台運作
+            
+            // 🔊 啟動無聲音訊，讓手機系統保持背景活躍
             const silentAudio = document.getElementById('silentAudio');
             if (silentAudio) {
-                silentAudio.volume = 0.01; // 設為極小聲或無聲
+                silentAudio.volume = 0.01;
                 silentAudio.play().catch(e => console.log("背景音訊啟動受阻:", e));
             }
         
@@ -871,11 +873,11 @@
             document.getElementById('sequentialPlayBtn').className = "bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5";
             playNextSequentialItem();
         }
-
+        
         function stopSequentialPlay() {
             isSequentialPlaying = false;
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-        
+            
             // 🔇 停止背景音訊
             const silentAudio = document.getElementById('silentAudio');
             if (silentAudio) {
