@@ -91,7 +91,6 @@
       background-color: #475569;
     }
 
-    /* 重新排版的控制面板 */
     .control-panel {
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -240,7 +239,7 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    /* 放大檢視視窗 (修正箭頭位置與位移問題) */
+    /* 修正放大檢視視窗與絕對置中箭頭，防範 hover/active 造成的位移 */
     .zoom-modal-content {
       background: rgba(0,0,0,0.95);
       padding: 20px 60px;
@@ -251,6 +250,7 @@
       align-items: center;
       border-radius: 16px;
       position: relative;
+      box-sizing: border-box;
     }
     .zoom-modal-content img {
       max-height: 75vh;
@@ -267,15 +267,23 @@
       color: white;
       border: none;
       font-size: 1.8rem;
-      padding: 12px 16px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       border-radius: 50%;
       transition: background 0.2s;
       z-index: 1300;
-      line-height: 1;
+      box-sizing: border-box;
+      outline: none;
+      margin: 0;
     }
-    .zoom-arrow:hover {
+    .zoom-arrow:hover, .zoom-arrow:focus, .zoom-arrow:active {
       background: rgba(255, 255, 255, 0.6);
+      transform: translateY(-50%); /* 確保 active/focus 時不產生垂直位移 */
+      outline: none;
     }
     #zoom-prev { left: 15px; }
     #zoom-next { right: 15px; }
@@ -327,7 +335,6 @@
       padding: 10px;
     }
 
-    /* 非阻塞式提示橫幅 (Toast) */
     #toast-notification {
       position: fixed;
       bottom: 24px;
@@ -362,7 +369,7 @@
     </div>
   </header>
 
-  <!-- 排版優化的控制面板 -->
+  <!-- 控制面板 -->
   <div class="control-panel">
     <div class="control-row">
       <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
@@ -375,7 +382,7 @@
         <button onclick="loadLessonJsonFromFolder()">📥 讀取 GitHub</button>
       </div>
 
-      <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 預設試算表卡池</button>
+      <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 重載卡池</button>
     </div>
     <!-- 獨立第二行：貼上 Google CSV 網址 -->
     <div class="control-row">
@@ -386,12 +393,12 @@
   <div id="quiz-area">
     <div class="quiz-card">
       <div class="progress-bar">
-        <span id="progress-text">題目 1 / 20</span>
+        <span id="progress-text">準備就緒</span>
         <span id="score-text">得分: 0</span>
       </div>
       
       <div class="question-box">
-        <div id="question-text" class="hidden-text" onclick="toggleQuestionText()">點擊此處顯示題目文字 (音訊播放中)</div>
+        <div id="question-text" class="hidden-text" onclick="toggleQuestionText()">請先上傳 JSON 或載入題庫開始測驗</div>
       </div>
 
       <div class="options-grid" id="options-container"></div>
@@ -463,7 +470,7 @@
   </div>
 </div>
 
-<!-- 圖片放大 Zoom Modal (附帶左右切換箭頭) -->
+<!-- 圖片放大 Zoom Modal (附帶防位移左右箭頭) -->
 <div id="zoom-modal" class="modal" onclick="closeZoomModal()">
   <div class="zoom-modal-content" onclick="event.stopPropagation()">
     <button class="zoom-arrow" id="zoom-prev" onclick="changeZoomIndex(-1)">❮</button>
@@ -476,7 +483,6 @@
 <div id="toast-notification">🎉 獲得抽卡機會！</div>
 
 <script>
-  // === 非阻塞式 Toast 提示函式 ===
   function showToast(message) {
     const toast = document.getElementById('toast-notification');
     toast.innerText = message;
@@ -486,7 +492,6 @@
     }, 3000);
   }
 
-  // === Web Audio API 音效與提示音產生器 ===
   let audioCtx = null;
   function getAudioContext() {
     if (!audioCtx) {
@@ -498,27 +503,38 @@
     return audioCtx;
   }
 
-  // 填空位置的「咚」提示音
-  function playDongSound(callback) {
+  // 1. 填空位置的「叮咚」提示音 (雙音階)
+  function playDingDongSound(callback) {
     try {
       const ctx = getAudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(300, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.2);
+      // "叮" (高音)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      gain1.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(ctx.currentTime);
+      osc1.stop(ctx.currentTime + 0.15);
 
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.2);
+      // "咚" (低音，稍後響起)
+      setTimeout(() => {
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        gain2.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(ctx.currentTime);
+        osc2.stop(ctx.currentTime + 0.2);
+      }, 150);
 
       if (callback) {
-        setTimeout(callback, 250);
+        setTimeout(callback, 380);
       }
     } catch(e) {
       if (callback) callback();
@@ -587,7 +603,6 @@
     } catch(e) {}
   }
 
-  // === 應用程式狀態變數 ===
   let defaultPokemonCards = [
     { id: 1, name: "皮卡丘", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" },
     { id: 2, name: "妙蛙種子", image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" },
@@ -616,7 +631,7 @@
   let quizData = [];
   let currentIdx = 0;
   let score = 0;
-  let consecutiveCorrectCount = 0;
+  let consecutiveCorrectCount = 0; // 4. 中途連續答對計數器
   let isAnswered = false;
 
   let unlockedCardsCache = [];
@@ -624,7 +639,7 @@
 
   window.onload = function() {
     updateTicketsDisplay();
-    loadDefaultQuiz();
+    // 5. 載入時自動在背景讀取預設 Google CSV 網址作為卡池
     fetchDefaultCsvOnStart();
   };
 
@@ -639,29 +654,11 @@
     } catch(e) {}
   }
 
-  function loadDefaultQuiz() {
-    let rawQuiz = [
-      {
-        question: "毎朝起きてから、必ず歯を（   ）。",
-        options: ["みがきます", "みがいた", "みがいて", "みがかない"],
-        answer: "みがきます",
-        translation: "每天早上起床後，一定會刷牙。",
-        explanation: "表示每天的習慣性動作，應使用現在／未來肯定形「みがきます」。"
-      },
-      {
-        question: "料理を作る前に、石鹸でよく手を（   ）。",
-        options: ["洗います", "洗いました", "洗って", "洗わない"],
-        answer: "洗います",
-        translation: "做菜之前，會用肥皂仔細洗手。",
-        explanation: "「～前に」前接動詞辞書形，主句表示一般習慣或現在動作，使用「洗います」。"
-      }
-    ];
-    // 預設題目隨機洗牌
-    quizData = [...rawQuiz].sort(() => Math.random() - 0.5);
-    initQuiz();
-  }
-
   function initQuiz() {
+    if (!quizData || quizData.length === 0) {
+      alert("目前尚無題庫，請先上傳 JSON 或從 GitHub 讀取課程！");
+      return;
+    }
     currentIdx = 0;
     score = 0;
     consecutiveCorrectCount = 0;
@@ -708,13 +705,15 @@
   }
 
   function toggleQuestionText() {
+    if (!quizData || quizData.length === 0) return;
     const qTextElem = document.getElementById('question-text');
     qTextElem.innerText = quizData[currentIdx].question;
     qTextElem.classList.add('revealed');
   }
 
-  // 朗讀題目時，在 ( ) 位置加入「咚」音效提示填空
+  // 3. 朗讀題目時，在 ( ) 位置播放「叮咚」提示音
   function playCurrentQuestionAudio() {
+    if (!quizData || quizData.length === 0) return;
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
@@ -730,7 +729,7 @@
       utterance1.rate = 1.0;
 
       utterance1.onend = function() {
-        playDongSound(() => {
+        playDingDongSound(() => {
           if (secondPart.trim()) {
             const utterance2 = new SpeechSynthesisUtterance(secondPart);
             utterance2.lang = 'ja-JP';
@@ -761,14 +760,14 @@
       btnElem.classList.add('correct');
       playCorrectSound();
       
-      // 中途每答對 3 題送抽卡機會一次（安全無阻塞 Toast）
+      // 4. 修復「中途每答對 3 題送抽卡機會」獎勵機制
       consecutiveCorrectCount++;
       if (consecutiveCorrectCount >= 3) {
         consecutiveCorrectCount = 0;
         gachaTickets++;
         saveTickets();
         updateTicketsDisplay();
-        showToast("🎉 中途累積答對 3 題，獲得 1 次抽卡機會！🎴");
+        showToast("🎉 中途連續答對 3 題，獲得 1 次抽卡機會！🎴");
       }
     } else {
       btnElem.classList.add('incorrect');
@@ -786,7 +785,6 @@
     document.getElementById('feedback-explanation').innerText = "解析：" + (q.explanation || "（無）");
     document.getElementById('feedback-box').style.display = 'block';
 
-    // 只要一答題（無論對錯），立刻顯示「下一題」按鈕
     document.getElementById('next-btn').style.display = 'inline-block';
   }
 
@@ -829,7 +827,10 @@
   }
 
   function restartQuiz() {
-    initQuiz();
+    if (quizData.length > 0) {
+      quizData = [...quizData].sort(() => Math.random() - 0.5); // 重新隨機洗牌
+      initQuiz();
+    }
   }
 
   async function loadLessonJsonFromFolder() {
@@ -844,9 +845,9 @@
       if (!response.ok) throw new Error(`找不到檔案：${filePath}`);
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
-        quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌題序
+        quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌
         initQuiz();
-        alert(`成功從 GitHub 載入 ${filePath} (已隨機排序)！`);
+        alert(`成功從 GitHub 載入 ${filePath} (共 ${data.题数 || data.length} 題，已隨機排序)！`);
       } else {
         alert("JSON 格式不正確。");
       }
@@ -864,7 +865,7 @@
       try {
         const data = JSON.parse(e.target.result);
         if (Array.isArray(data) && data.length > 0) {
-          quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌題序
+          quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌
           initQuiz();
           alert("成功匯入 JSON 題庫 (已隨機排序)！");
         } else {
@@ -903,8 +904,8 @@
   }
 
   function loadDefaultCsvCards() {
-    rewardCardPool = [...defaultPokemonCards];
-    alert("已載入預設卡池！");
+    fetchDefaultCsvOnStart();
+    alert("已重新載入預設試算表卡池！");
   }
 
   function parseCsvData(text, showAlert = true) {
