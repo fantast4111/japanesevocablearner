@@ -430,7 +430,10 @@
             </div>
 
         </div>
-
+        <!-- 用於保持手機鎖屏後背景播放的無聲音訊 -->
+        <audio id="silentAudio" loop style="display:none;">
+            <source src="https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.ogg" type="audio/ogg">
+        </audio>
     </main>
 
     <!-- 🌟 抽牌解鎖互動視窗 -->
@@ -855,6 +858,14 @@
             if (vocabList.length === 0) return;
             isSequentialPlaying = true;
             currentSequentialIndex = 0;
+        
+            // 🔊 讓手機保持後台運作
+            const silentAudio = document.getElementById('silentAudio');
+            if (silentAudio) {
+                silentAudio.volume = 0.01; // 設為極小聲或無聲
+                silentAudio.play().catch(e => console.log("背景音訊啟動受阻:", e));
+            }
+        
             document.getElementById('playIcon').className = "fa-solid fa-stop";
             document.getElementById('playBtnText').textContent = "停止朗讀";
             document.getElementById('sequentialPlayBtn').className = "bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5";
@@ -864,6 +875,14 @@
         function stopSequentialPlay() {
             isSequentialPlaying = false;
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        
+            // 🔇 停止背景音訊
+            const silentAudio = document.getElementById('silentAudio');
+            if (silentAudio) {
+                silentAudio.pause();
+                silentAudio.currentTime = 0;
+            }
+        
             clearRowHighlights();
             document.getElementById('playIcon').className = "fa-solid fa-play";
             document.getElementById('playBtnText').textContent = "順序朗讀全部";
@@ -906,7 +925,8 @@
             jpUtter.rate = 0.85;
 
             // 2. 讀取中文解釋 (使用香港廣東話 zh-HK)
-            const cleanChineseText = item.chinese.replace(/[\(\（].*?[\)\）]/g, '').trim();
+            // 修改後的程式碼：
+            const cleanChineseText = item.chinese.replace(/[（\(〔\[].*?[）\)〕\]]/g, '').replace(/[（\）〔〕]/g, '').trim();
             const cantoneseUtter = new SpeechSynthesisUtterance(cleanChineseText);
             cantoneseUtter.lang = 'zh-HK';
             cantoneseUtter.rate = 0.9;
