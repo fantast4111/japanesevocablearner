@@ -91,6 +91,7 @@
       background-color: #475569;
     }
 
+    /* 重新排版的控制面板 */
     .control-panel {
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -98,10 +99,17 @@
       border-radius: 12px;
       margin-bottom: 24px;
       display: flex;
+      flex-direction: column;
       gap: 12px;
+      align-items: center;
+    }
+    .control-row {
+      display: flex;
+      gap: 10px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: center;
+      width: 100%;
     }
 
     .quiz-card {
@@ -232,10 +240,10 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    /* 放大檢視視窗 (附帶左右切換箭頭) */
+    /* 放大檢視視窗 (修正箭頭位置與位移問題) */
     .zoom-modal-content {
       background: rgba(0,0,0,0.95);
-      padding: 20px;
+      padding: 20px 60px;
       max-width: 95vw;
       max-height: 95vh;
       display: flex;
@@ -246,7 +254,7 @@
     }
     .zoom-modal-content img {
       max-height: 75vh;
-      max-width: 85vw;
+      max-width: 80vw;
       object-fit: contain;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -255,18 +263,19 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.25);
       color: white;
       border: none;
-      font-size: 2rem;
-      padding: 10px 16px;
+      font-size: 1.8rem;
+      padding: 12px 16px;
       cursor: pointer;
       border-radius: 50%;
       transition: background 0.2s;
       z-index: 1300;
+      line-height: 1;
     }
     .zoom-arrow:hover {
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.6);
     }
     #zoom-prev { left: 15px; }
     #zoom-next { right: 15px; }
@@ -317,6 +326,28 @@
       border: 1px solid var(--border);
       padding: 10px;
     }
+
+    /* 非阻塞式提示橫幅 (Toast) */
+    #toast-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      font-weight: 600;
+      z-index: 2000;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #toast-notification.show {
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 <body>
@@ -331,19 +362,25 @@
     </div>
   </header>
 
+  <!-- 排版優化的控制面板 -->
   <div class="control-panel">
-    <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
-    <button onclick="document.getElementById('json-file-input').click()">📁 上傳 JSON</button>
+    <div class="control-row">
+      <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleJsonUpload(event)">
+      <button onclick="document.getElementById('json-file-input').click()">📁 上傳 JSON</button>
 
-    <div style="display: flex; align-items: center; gap: 6px; background: white; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);">
-      <span style="font-weight:600; color:#64748b;">json/L</span>
-      <input type="number" id="lesson-num-input" value="34" min="1" max="99" style="width: 45px; padding: 4px; text-align: center; font-weight: bold; border:1px solid var(--border); border-radius:4px;">
-      <span style="font-weight:600; color:#64748b;">.json</span>
-      <button onclick="loadLessonJsonFromFolder()">📥 讀取 GitHub</button>
+      <div style="display: flex; align-items: center; gap: 6px; background: white; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);">
+        <span style="font-weight:600; color:#64748b;">json/L</span>
+        <input type="number" id="lesson-num-input" value="34" min="1" max="99" style="width: 45px; padding: 4px; text-align: center; font-weight: bold; border:1px solid var(--border); border-radius:4px;">
+        <span style="font-weight:600; color:#64748b;">.json</span>
+        <button onclick="loadLessonJsonFromFolder()">📥 讀取 GitHub</button>
+      </div>
+
+      <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 預設試算表卡池</button>
     </div>
-
-    <button onclick="openCsvLinkModal()" class="btn-secondary">🔗 貼上 Google CSV 網址</button>
-    <button onclick="loadDefaultCsvCards()" class="btn-secondary">⚡ 預設試算表卡池</button>
+    <!-- 獨立第二行：貼上 Google CSV 網址 -->
+    <div class="control-row">
+      <button onclick="openCsvLinkModal()" class="btn-secondary" style="width: 100%; max-width: 400px;">🔗 貼上 Google CSV 網址</button>
+    </div>
   </div>
 
   <div id="quiz-area">
@@ -361,7 +398,6 @@
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
         <button onclick="playCurrentQuestionAudio()" class="btn-secondary">🔊 重播語音</button>
-        <!-- 修改後：只要答題後固定顯示「下一題」按鈕 -->
         <button id="next-btn" onclick="nextQuestion()" style="display:none; padding: 10px 24px; font-size:1.05rem;">下一題 ➡️</button>
       </div>
 
@@ -436,8 +472,21 @@
   </div>
 </div>
 
+<!-- 非阻塞式提示橫幅 (Toast) -->
+<div id="toast-notification">🎉 獲得抽卡機會！</div>
+
 <script>
-  // === Web Audio API 音效產生器 ===
+  // === 非阻塞式 Toast 提示函式 ===
+  function showToast(message) {
+    const toast = document.getElementById('toast-notification');
+    toast.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // === Web Audio API 音效與提示音產生器 ===
   let audioCtx = null;
   function getAudioContext() {
     if (!audioCtx) {
@@ -447,6 +496,33 @@
       audioCtx.resume();
     }
     return audioCtx;
+  }
+
+  // 填空位置的「咚」提示音
+  function playDongSound(callback) {
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.2);
+
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+
+      if (callback) {
+        setTimeout(callback, 250);
+      }
+    } catch(e) {
+      if (callback) callback();
+    }
   }
 
   function playCorrectSound() {
@@ -540,9 +616,9 @@
   let quizData = [];
   let currentIdx = 0;
   let score = 0;
+  let consecutiveCorrectCount = 0;
   let isAnswered = false;
 
-  // 用於收藏庫放大時左右切換的清單
   let unlockedCardsCache = [];
   let currentZoomIndex = 0;
 
@@ -564,7 +640,7 @@
   }
 
   function loadDefaultQuiz() {
-    quizData = [
+    let rawQuiz = [
       {
         question: "毎朝起きてから、必ず歯を（   ）。",
         options: ["みがきます", "みがいた", "みがいて", "みがかない"],
@@ -580,12 +656,15 @@
         explanation: "「～前に」前接動詞辞書形，主句表示一般習慣或現在動作，使用「洗います」。"
       }
     ];
+    // 預設題目隨機洗牌
+    quizData = [...rawQuiz].sort(() => Math.random() - 0.5);
     initQuiz();
   }
 
   function initQuiz() {
     currentIdx = 0;
     score = 0;
+    consecutiveCorrectCount = 0;
     document.getElementById('result-area').style.display = 'none';
     document.getElementById('quiz-area').style.display = 'block';
     loadQuestion();
@@ -634,15 +713,40 @@
     qTextElem.classList.add('revealed');
   }
 
+  // 朗讀題目時，在 ( ) 位置加入「咚」音效提示填空
   function playCurrentQuestionAudio() {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    
-    const textToSpeak = quizData[currentIdx].question.replace(/（   ）/g, "……空白……");
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = 'ja-JP';
-    utterance.rate = 1.0;
-    window.speechSynthesis.speak(utterance);
+
+    const fullText = quizData[currentIdx].question;
+    const parts = fullText.split(/（[ \s]*）/);
+
+    if (parts.length > 1) {
+      const firstPart = parts[0];
+      const secondPart = parts.slice(1).join(" ");
+
+      const utterance1 = new SpeechSynthesisUtterance(firstPart);
+      utterance1.lang = 'ja-JP';
+      utterance1.rate = 1.0;
+
+      utterance1.onend = function() {
+        playDongSound(() => {
+          if (secondPart.trim()) {
+            const utterance2 = new SpeechSynthesisUtterance(secondPart);
+            utterance2.lang = 'ja-JP';
+            utterance2.rate = 1.0;
+            window.speechSynthesis.speak(utterance2);
+          }
+        });
+      };
+
+      window.speechSynthesis.speak(utterance1);
+    } else {
+      const utterance = new SpeechSynthesisUtterance(fullText);
+      utterance.lang = 'ja-JP';
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
   }
 
   function selectAnswer(selectedOpt, btnElem) {
@@ -656,9 +760,20 @@
       score++;
       btnElem.classList.add('correct');
       playCorrectSound();
+      
+      // 中途每答對 3 題送抽卡機會一次（安全無阻塞 Toast）
+      consecutiveCorrectCount++;
+      if (consecutiveCorrectCount >= 3) {
+        consecutiveCorrectCount = 0;
+        gachaTickets++;
+        saveTickets();
+        updateTicketsDisplay();
+        showToast("🎉 中途累積答對 3 題，獲得 1 次抽卡機會！🎴");
+      }
     } else {
       btnElem.classList.add('incorrect');
       playIncorrectSound();
+      consecutiveCorrectCount = 0; // 答錯重置連續計數
       const allBtns = document.querySelectorAll('.option-btn');
       allBtns.forEach(b => {
         if (b.innerText === q.answer) b.classList.add('correct');
@@ -729,9 +844,9 @@
       if (!response.ok) throw new Error(`找不到檔案：${filePath}`);
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
-        quizData = data;
+        quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌題序
         initQuiz();
-        alert(`成功從 GitHub 載入 ${filePath}！`);
+        alert(`成功從 GitHub 載入 ${filePath} (已隨機排序)！`);
       } else {
         alert("JSON 格式不正確。");
       }
@@ -749,11 +864,11 @@
       try {
         const data = JSON.parse(e.target.result);
         if (Array.isArray(data) && data.length > 0) {
-          quizData = data;
+          quizData = [...data].sort(() => Math.random() - 0.5); // 隨機洗牌題序
           initQuiz();
-          alert("成功匯入 JSON 題庫！");
+          alert("成功匯入 JSON 題庫 (已隨機排序)！");
         } else {
-          alert("JSON 格式不正確。");
+          alert("JSON 格式不正確或內容為空。");
         }
       } catch (err) {
         alert("解析 JSON 失敗：" + err.message);
@@ -906,7 +1021,7 @@
     container.innerHTML = '';
 
     let collectedCount = 0;
-    unlockedCardsCache = []; // 重建已解鎖卡片快取清單
+    unlockedCardsCache = [];
 
     rewardCardPool.forEach(card => {
       let isUnlocked = userInventory.includes(card.id);
@@ -940,7 +1055,6 @@
     document.getElementById('gallery-modal').style.display = 'none';
   }
 
-  // === 收藏庫放大與左右切換功能 ===
   function showZoomedModalById(cardId) {
     unlockedCardsCache = rewardCardPool.filter(c => userInventory.includes(c.id));
     currentZoomIndex = unlockedCardsCache.findIndex(c => c.id === cardId);
@@ -953,9 +1067,9 @@
     if (unlockedCardsCache.length === 0) return;
     currentZoomIndex += direction;
     if (currentZoomIndex < 0) {
-      currentZoomIndex = unlockedCardsCache.length - 1; // 循環到最後一張
+      currentZoomIndex = unlockedCardsCache.length - 1;
     } else if (currentZoomIndex >= unlockedCardsCache.length) {
-      currentZoomIndex = 0; // 循環到第一張
+      currentZoomIndex = 0;
     }
     updateZoomModalImage();
   }
