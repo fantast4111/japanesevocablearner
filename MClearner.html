@@ -281,11 +281,12 @@
       filter: grayscale(100%);
     }
 
+    /* 抽卡結果圖片專屬樣式 */
     #gacha-result-image {
       max-width: 100%;
       height: 220px;
       object-fit: contain;
-      margin: 20px 0;
+      margin: 20px auto;
       cursor: pointer;
       border-radius: 12px;
       display: none;
@@ -364,6 +365,7 @@
     <h2 style="margin-top:0; color:var(--primary);">🎴 獎勵卡抽卡</h2>
     <p id="gacha-prize-info" style="font-weight:600; color:#64748b;">剩餘抽卡次數: <span id="modal-tickets-count">0</span></p>
     
+    <!-- 確保圖片元素正確存在 -->
     <img id="gacha-result-image" alt="獎勵卡圖片" title="點擊放大圖片">
     
     <div id="gacha-actions" style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
@@ -822,7 +824,7 @@
     updateTicketsDisplay();
   }
 
-  // === 修復後的抽卡執行核心 ===
+  // === 徹底修復的抽卡執行核心 ===
   function executeGachaDraw() {
     if (gachaTickets <= 0) return;
 
@@ -831,23 +833,20 @@
       return;
     }
 
-    // 篩選尚未擁有的卡片
     let availableCards = rewardCardPool.filter(card => !userInventory.includes(card.id));
     if (availableCards.length === 0) {
       alert("恭喜你！已經收集完全部卡片了！");
       return;
     }
 
-    // 扣除次數並儲存
+    // 正確扣除次數並儲存
     gachaTickets--;
     saveTickets();
-    updateTicketsDisplay();
 
-    // 隨機抽出一張
     let randomIndex = Math.floor(Math.random() * availableCards.length);
     let wonCard = availableCards[randomIndex];
 
-    // 加入收藏庫並儲存
+    // 加入收藏庫
     if (!userInventory.includes(wonCard.id)) {
       userInventory.push(wonCard.id);
     }
@@ -855,7 +854,7 @@
       localStorage.setItem('user_inventory', JSON.stringify(userInventory));
     } catch(e) {}
 
-    // 顯示抽中圖片與提示
+    // 顯示抽中圖片與更新介面
     const imgElem = document.getElementById('gacha-result-image');
     if(imgElem) {
       imgElem.src = wonCard.image;
@@ -864,8 +863,12 @@
     }
 
     document.getElementById('gacha-prize-info').innerText = `🎉 恭喜抽中：${wonCard.name}！ (點擊圖片可放大)`;
+    document.getElementById('modal-tickets-count').innerText = gachaTickets;
+    
     const drawBtn = document.getElementById('draw-one-btn');
     if(drawBtn) drawBtn.disabled = (gachaTickets <= 0);
+
+    updateTicketsDisplay();
   }
 
   function openGalleryModal() {
