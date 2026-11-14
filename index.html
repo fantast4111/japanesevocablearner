@@ -87,19 +87,34 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
                     <label class="block text-sm font-medium text-indigo-900">
-                        <i class="fa-brands fa-github"></i> 輸入 GitHub 課數數字（例如 34）：
+                        <i class="fa-brands fa-github"></i> 選擇 GitHub 課數（L29 - L43）：
                     </label>
                     <div class="flex gap-2 items-center">
-                        <span class="text-xs text-slate-500 font-mono">vocab/L</span>
-                        <input type="number" id="lessonNumInput" value="34" placeholder="34" class="w-20 text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 text-center focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <span class="text-xs text-slate-500 font-mono">vocab/</span>
+                        <select id="lessonNumInput" class="text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
+                            <option value="29">L29</option>
+                            <option value="30">L30</option>
+                            <option value="31">L31</option>
+                            <option value="32">L32</option>
+                            <option value="33">L33</option>
+                            <option value="34" selected>L34</option>
+                            <option value="35">L35</option>
+                            <option value="36">L36</option>
+                            <option value="37">L37</option>
+                            <option value="38">L38</option>
+                            <option value="39">L39</option>
+                            <option value="40">L40</option>
+                            <option value="41">L41</option>
+                            <option value="42">L42</option>
+                            <option value="43">L43</option>
+                        </select>
                         <span class="text-xs text-slate-500 font-mono">.xml</span>
                         <button onclick="loadFromNumber()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
                             讀取
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：直接輸入數字即可自動對應 `vocab/L34.xml`。</p>
+                    <p class="text-[11px] text-slate-500">提示：選擇課數後點擊讀取，將自動載入對應的 `vocab/LXX.xml`。</p>
                 </div>
-
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-slate-700">或手動上傳自訂 XML 檔案：</label>
                     <input type="file" id="xmlFileInput" accept=".xml" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-slate-300 rounded-lg">
