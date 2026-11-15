@@ -1573,50 +1573,73 @@
         let currentQuizItem = null;
         
         function initQuiz() {
-            if (!vocabList || vocabList.length === 0) {
-                alert("請先載入詞庫！");
+            if (!window.vocabList || window.vocabList.length === 0) {
+                alert("請先在上方選擇課數並點擊「讀取」以載入詞庫！");
                 return;
             }
             quizScoreVal = 0;
             quizQuestionCount = 0;
             quizCorrectCount = 0;
             isGameFinished = false;
-            document.getElementById('quizScore').textContent = 0;
-            document.getElementById('quizGameArea').classList.remove('hidden');
-            document.getElementById('quizResultArea').classList.add('hidden');
-            document.getElementById('quizUnlockBox').classList.add('hidden');
-            document.getElementById('quizFailBox').classList.add('hidden');
+            
+            const scoreEl = document.getElementById('quizScore');
+            if (scoreEl) scoreEl.textContent = 0;
+            
+            const gameArea = document.getElementById('quizGameArea');
+            const resultArea = document.getElementById('quizResultArea');
+            if (gameArea) gameArea.classList.remove('hidden');
+            if (resultArea) resultArea.classList.add('hidden');
+            
+            const unlockBox = document.getElementById('quizUnlockBox');
+            const failBox = document.getElementById('quizFailBox');
+            if (unlockBox) unlockBox.classList.add('hidden');
+            if (failBox) failBox.classList.add('hidden');
+        
             nextQuizQuestion();
         }
         
         function nextQuizQuestion() {
+            if (!window.vocabList || window.vocabList.length === 0) {
+                alert("詞庫為空，無法出題！");
+                return;
+            }
             if (quizQuestionCount >= 10 || quizQuestionCount >= vocabList.length) {
                 endQuiz();
                 return;
             }
             quizQuestionCount++;
             hasQuizQuestionFailed = false;
-            document.getElementById('quizCurrentQ').textContent = quizQuestionCount;
-            document.getElementById('quizResult').innerHTML = "";
+            
+            const currentQEl = document.getElementById('quizCurrentQ');
+            if (currentQEl) currentQEl.textContent = quizQuestionCount;
+            
+            const resultEl = document.getElementById('quizResult');
+            if (resultEl) resultEl.innerHTML = "";
         
             // 隨機選取一題
             const randomIndex = Math.floor(Math.random() * vocabList.length);
             currentQuizItem = vocabList[randomIndex];
         
+            // 支援多種可能的屬性命名欄位（避免抓不到欄位而變空白）
+            const displayKanji = currentQuizItem.kanji || currentQuizItem.word || currentQuizItem.kana || '';
+            const displayKana = currentQuizItem.kana || currentQuizItem.reading || '';
+            const correctChinese = currentQuizItem.chinese || currentQuizItem.meaning || currentQuizItem.definition || '';
+        
             // 顯示日文生字
             const wordDisplayEl = document.getElementById('quizWordDisplay');
             if (wordDisplayEl) {
                 wordDisplayEl.innerHTML = `
-                    <div class="text-xl font-bold text-indigo-900">${currentQuizItem.kanji || currentQuizItem.kana}</div>
-                    <div class="text-sm text-slate-500 font-mono">${currentQuizItem.kana}</div>
+                    <div class="text-xl font-bold text-indigo-900">${displayKanji}</div>
+                    <div class="text-sm text-slate-500 font-mono">${displayKana}</div>
                 `;
             }
         
             // 產生 4 個選項（1個正確，3個錯誤）
-            let options = [currentQuizItem.chinese];
+            let options = [correctChinese];
             while (options.length < 4 && options.length < vocabList.length) {
-                const randomOpt = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
-                if (!options.includes(randomOpt)) {
+                const randomItem = vocabList[Math.floor(Math.random() * vocabList.length)];
+                const randomOpt = randomItem.chinese || randomItem.meaning || randomItem.definition || '';
+                if (randomOpt && !options.includes(randomOpt)) {
                     options.push(randomOpt);
                 }
             }
@@ -1633,24 +1656,25 @@
                     
                     btn.onclick = () => {
                         if (isGameFinished) return;
-                        if (opt === currentQuizItem.chinese) {
+                        if (opt === correctChinese) {
                             if (!hasQuizQuestionFailed) {
                                 quizScoreVal += 10;
                                 quizCorrectCount++;
-                                document.getElementById('quizScore').textContent = quizScoreVal;
-                                document.getElementById('quizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 一次答對！+10 分</span>`;
+                                const sEl = document.getElementById('quizScore');
+                                if (sEl) sEl.textContent = quizScoreVal;
+                                if (resultEl) resultEl.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 一次答對！+10 分</span>`;
                             } else {
-                                document.getElementById('quizResult').innerHTML = `<span class="text-amber-600 font-bold"><i class="fa-solid fa-check"></i> 補答正確（本題曾答錯，不予加分）</span>`;
+                                if (resultEl) resultEl.innerHTML = `<span class="text-amber-600 font-bold"><i class="fa-solid fa-check"></i> 補答正確（本題曾答錯，不予加分）</span>`;
                             }
-                            checkConsecutiveReward();
-                            playBuzzer('correct');
+                            if (typeof checkConsecutiveReward === 'function') checkConsecutiveReward();
+                            if (typeof playBuzzer === 'function') playBuzzer('correct');
                             setTimeout(nextQuizQuestion, 1000);
                         } else {
                             hasQuizQuestionFailed = true;
-                            resetConsecutiveReward();
+                            if (typeof resetConsecutiveReward === 'function') resetConsecutiveReward();
                             btn.className = "w-full py-3 px-4 bg-rose-50 border border-rose-300 rounded-xl text-sm md:text-base font-medium text-rose-700 transition shadow-sm text-left flex items-center justify-between";
-                            document.getElementById('quizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯了（本題不加分）！</span>`;
-                            playBuzzer('wrong');
+                            if (resultEl) resultEl.innerHTML = `<span class="text-rose-600 font-bold">答錯了（本題不加分）！</span>`;
+                            if (typeof playBuzzer === 'function') playBuzzer('wrong');
                         }
                     };
                     optionsContainer.appendChild(btn);
