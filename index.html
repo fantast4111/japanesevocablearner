@@ -1181,7 +1181,8 @@
             if (speedTimerInterval) clearInterval(speedTimerInterval);
             isGameFinished = true; 
             const totalTime = Math.floor((Date.now() - speedStartTime) / 1000);
-            const accuracy = (correctCount / totalCount) * 100;
+            // 🌟 直接用這段取代原本的 if (accuracy >= 50) { ... } else { ... }
+            const accuracy = (speedCorrectCount / 10) * 100;
             let earnedChances = 0;
             
             if (accuracy >= 100) {
@@ -1193,16 +1194,11 @@
             }
             
             if (earnedChances > 0) {
-                addDrawChances(earnedChances); // 🌟 達到對應準確率，自動增加對應抽卡次數
-            }
-            document.getElementById('speedGameArea').classList.add('hidden');
-            document.getElementById('speedResultArea').classList.remove('hidden');
-        
-        if (accuracy >= 50) { // 只要達 50% 以上就算解鎖抽卡權限
-            playBuzzer('celebrate');
-            document.getElementById('speedUnlockBox').classList.remove('hidden');
-            document.getElementById('speedFailBox').classList.add('hidden');
-            document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！已自動獲得抽卡機會（可至上方「我的圖庫」抽卡）：`;
+                addDrawChances(earnedChances); // 統一在這裡加次數並更新畫面
+                playBuzzer('celebrate');
+                document.getElementById('speedUnlockBox').classList.remove('hidden');
+                document.getElementById('speedFailBox').classList.add('hidden');
+                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！抽卡次數 +${earnedChances}（可至上方「我的圖庫」抽卡）：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('speedUnlockBox').classList.add('hidden');
