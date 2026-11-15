@@ -93,28 +93,28 @@
                         <span class="text-xs text-slate-500 font-mono">vocab/</span>
                         <select id="lessonNumInput" class="text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
                             <option value="adver1">adver1</option>
-                            <option value="29">L29</option>
-                            <option value="30">L30</option>
-                            <option value="31">L31</option>
-                            <option value="32">L32</option>
-                            <option value="33">L33</option>
-                            <option value="34">L34</option>
-                            <option value="35">L35</option>
-                            <option value="36">L36</option>
-                            <option value="37">L37</option>
-                            <option value="38">L38</option>
-                            <option value="39">L39</option>
-                            <option value="40">L40</option>
-                            <option value="41">L41</option>
-                            <option value="42">L42</option>
-                            <option value="43">L43</option>
+                            <option value="L29">L29</option>
+                            <option value="L30">L30</option>
+                            <option value="L31">L31</option>
+                            <option value="L32">L32</option>
+                            <option value="L33">L33</option>
+                            <option value="L34">L34</option>
+                            <option value="L35">L35</option>
+                            <option value="L36">L36</option>
+                            <option value="L37">L37</option>
+                            <option value="L38">L38</option>
+                            <option value="L39">L39</option>
+                            <option value="L40">L40</option>
+                            <option value="L41">L41</option>
+                            <option value="L42">L42</option>
+                            <option value="L43">L43</option>
                         </select>
                         <span class="text-xs text-slate-500 font-mono">.xml</span>
                         <button onclick="loadFromNumber()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
                             讀取
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：選擇課數後點擊讀取，將自動載入對應的 `vocab/LXX.xml`。</p>
+                    <p class="text-[11px] text-slate-500">提示：選擇課數後點擊讀取，將自動載入對應的 `vocab/XX.xml`。</p>
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-slate-700">或手動上傳自訂 XML 檔案：</label>
@@ -766,7 +766,7 @@
                 alert('請輸入課數數字（例如 34）！');
                 return;
             }
-            const filePath = `vocab/L${num}.xml`;
+            const filePath = `vocab/${num}.xml`;
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
