@@ -1181,7 +1181,20 @@
             if (speedTimerInterval) clearInterval(speedTimerInterval);
             isGameFinished = true; 
             const totalTime = Math.floor((Date.now() - speedStartTime) / 1000);
-            const accuracy = (speedCorrectCount / 10) * 100;
+            const accuracy = (correctCount / totalCount) * 100;
+            let earnedChances = 0;
+            
+            if (accuracy >= 100) {
+                earnedChances = 3;
+            } else if (accuracy >= 80) {
+                earnedChances = 2;
+            } else if (accuracy >= 50) {
+                earnedChances = 1;
+            }
+            
+            if (earnedChances > 0) {
+                addDrawChances(earnedChances); // 🌟 達到對應準確率，自動增加對應抽卡次數
+            }
             document.getElementById('speedGameArea').classList.add('hidden');
             document.getElementById('speedResultArea').classList.remove('hidden');
         
@@ -1756,14 +1769,13 @@
             if (!text) return "";
             return text.replace(/\[.*?\]/g, '').replace(/[ⅠⅡⅢivxIVXⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+/g, '').replace(/\b[1-3]\b/g, '').replace(/\s+/g, '').trim();
         }
-        // 🌟 抽卡次數變數
+        // 🌟 確保這個加次數的函數存在於你的 <script> 中
         let drawChances = parseInt(localStorage.getItem('vocab_draw_chances') || '0');
-        let sessionConsecutiveCorrect = 0; // 全域連續答對計數器
         
         function addDrawChances(amount) {
             drawChances += amount;
             localStorage.setItem('vocab_draw_chances', drawChances);
-            updateCollectionUI();
+            updateCollectionUI(); // 同時更新 Header 與圖庫內的按鈕
         }
         
         // 每次答對時呼叫此函數檢查連續 3 次
