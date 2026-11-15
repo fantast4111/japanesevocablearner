@@ -1970,6 +1970,23 @@
                     updateCollectionUI();
                 });
         }
-    </script>
+        // 🌟 改為動態從 localStorage 讀取手動輸入的網址（若未輸入則帶入預設空字串或預設網址）
+        function getCloudImageSource() {
+            return localStorage.getItem('vocab_cloud_image_source') || "";
+        }
+        // 範例：原本用 fetch(GOOGLE_SHEET_CSV_URL)
+        const targetUrl = getCloudImageSource();
+        if (!targetUrl) {
+            console.warn("尚未設定雲端圖庫來源網址！");
+            return;
+        }
+        
+        fetch(targetUrl)
+            .then(res => res.text()) // 或 res.json()
+            .then(text => {
+                // 你的解析與載入邏輯...
+            })
+            .catch(err => console.error("載入雲端圖庫失敗", err));
+        </script>
 </body>
 </html>
