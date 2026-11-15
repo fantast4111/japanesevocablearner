@@ -123,7 +123,7 @@
         <kanji>これから</kanji>
         <kana>これから</kana>
         <pureKana>これから</pureKana>
-        <chinese>从现在起、今后</chinese>
+        <chinese>從現在起、今後</chinese>
         <note>これから</note>
     </item>
     <item>
@@ -159,7 +159,7 @@
         <kanji>ちっとも</kanji>
         <kana>ちっとも</kana>
         <pureKana>ちっとも</pureKana>
-        <chinese>一点儿</chinese>
+        <chinese>一點兒</chinese>
         <note>ちっとも</note>
     </item>
     <item>
@@ -177,7 +177,7 @@
         <kanji>とうとう</kanji>
         <kana>とうとう</kana>
         <pureKana>とうとう</pureKana>
-        <chinese>终于/到底</chinese>
+        <chinese>终於/到底</chinese>
         <note>とうとう</note>
     </item>
     <item>
@@ -186,7 +186,7 @@
         <kanji>偶に</kanji>
         <kana>たまに</kana>
         <pureKana>たまに</pureKana>
-        <chinese>偶尔</chinese>
+        <chinese>偶爾</chinese>
         <note>偶に</note>
     </item>
     <item>
@@ -195,7 +195,7 @@
         <kanji>急に</kanji>
         <kana>きゅうに</kana>
         <pureKana>きゅうに</pureKana>
-        <chinese>突然、骤然</chinese>
+        <chinese>突然、驟然</chinese>
         <note>急に</note>
     </item>
     <item>
@@ -213,7 +213,7 @@
         <kanji>是非</kanji>
         <kana>ぜひ</kana>
         <pureKana>ぜひ</pureKana>
-        <chinese>务必</chinese>
+        <chinese>務必</chinese>
         <note>是非</note>
     </item>
     <item>
@@ -240,7 +240,7 @@
         <kanji>決して</kanji>
         <kana>けして</kana>
         <pureKana>けして</pureKana>
-        <chinese>绝对 (不)</chinese>
+        <chinese>絕對 (不)</chinese>
         <note>決して</note>
     </item>
     <item>
@@ -249,7 +249,7 @@
         <kanji>将来</kanji>
         <kana>しょうらい</kana>
         <pureKana>しょうらい</pureKana>
-        <chinese>将来</chinese>
+        <chinese>將來</chinese>
         <note>将来</note>
     </item>
     <item>
@@ -285,7 +285,7 @@
         <kanji>いくら</kanji>
         <kana>いくら</kana>
         <pureKana>いくら</pureKana>
-        <chinese>无论怎样</chinese>
+        <chinese>無論怎樣</chinese>
         <note>いくら</note>
     </item>
     <item>
@@ -294,7 +294,7 @@
         <kanji>やっぱり</kanji>
         <kana>やっぱり</kana>
         <pureKana>やっぱり</pureKana>
-        <chinese>果然 (口语)</chinese>
+        <chinese>果然 (口語)</chinese>
         <note>やっぱり</note>
     </item>
     <item>
@@ -312,7 +312,7 @@
         <kanji>それほど</kanji>
         <kana>それほど</kana>
         <pureKana>それほど</pureKana>
-        <chinese>那么地 (程度)</chinese>
+        <chinese>那麼地 (程度)</chinese>
         <note>それほど</note>
     </item>
     <item>
@@ -321,7 +321,7 @@
         <kanji>なかなか</kanji>
         <kana>なかなか</kana>
         <pureKana>なかなか</pureKana>
-        <chinese>很 / 怎么也 (不)</chinese>
+        <chinese>很 / 怎麼也 (不)</chinese>
         <note>なかなか</note>
     </item>
     <item>
@@ -330,7 +330,7 @@
         <kanji>そろそろ</kanji>
         <kana>そろそろ</kana>
         <pureKana>そろそろ</pureKana>
-        <chinese>差不多、即将</chinese>
+        <chinese>差不多、即將</chinese>
         <note>そろそろ</note>
     </item>
     <item>
@@ -339,7 +339,7 @@
         <kanji>どんどん</kanji>
         <kana>どんどん</kana>
         <pureKana>どんどん</pureKana>
-        <chinese>接连不断 / 顺利</chinese>
+        <chinese>接連不斷 / 順利</chinese>
         <note>どんどん</note>
     </item>
     <item>
@@ -348,7 +348,7 @@
         <kanji>もうすぐ</kanji>
         <kana>もうすぐ</kana>
         <pureKana>もうすぐ</pureKana>
-        <chinese>马上</chinese>
+        <chinese>馬上</chinese>
         <note>もうすぐ</note>
     </item>
     <item>
@@ -357,7 +357,7 @@
         <kanji>できるだけ</kanji>
         <kana>できるだけ</kana>
         <pureKana>できるだけ</pureKana>
-        <chinese>尽可能</chinese>
+        <chinese>盡可能</chinese>
         <note>できるだけ</note>
     </item>
 </vocabulary_list>
