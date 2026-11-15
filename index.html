@@ -1303,17 +1303,28 @@
             document.getElementById('audioQuizGameArea').classList.add('hidden');
             document.getElementById('audioQuizResultArea').classList.remove('hidden');
             const accuracy = (audioCorrectCount / 10) * 100;
-            if (accuracy >= 80) {
+        
+            let earnedChances = 0;
+            if (accuracy >= 100) {
+                earnedChances = 3;
+            } else if (accuracy >= 80) {
+                earnedChances = 2;
+            } else if (accuracy >= 50) {
+                earnedChances = 1;
+            }
+        
+            if (earnedChances > 0) {
                 playBuzzer('celebrate');
+                addDrawChances(earnedChances); // 自動累加次數
                 document.getElementById('audioUnlockBox').classList.remove('hidden');
                 document.getElementById('audioFailBox').classList.add('hidden');
-                document.getElementById('audioUnlockText').textContent = `✨ 一次答對率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
+                document.getElementById('audioUnlockText').textContent = `✨ 一次答對率 ${accuracy}%！已自動獲得 ${earnedChances} 次抽卡機會：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('audioUnlockBox').classList.add('hidden');
                 document.getElementById('audioFailBox').classList.remove('hidden');
             }
-        }
+}
 
         function revealAudioHint() {
             document.getElementById('audioQuizMeaning').classList.remove('hidden');
@@ -1407,9 +1418,18 @@
             document.getElementById('fallingGameArea').classList.add('hidden');
             document.getElementById('fallingResultArea').classList.remove('hidden');
             const accuracy = (fallingCorrectCount / 10) * 100;
-            if (isWin && accuracy >= 80) {
+        
+            let earnedChances = 0;
+            if (isWin && accuracy >= 50) {
+                if (accuracy >= 100) earnedChances = 3;
+                else if (accuracy >= 80) earnedChances = 2;
+                else earnedChances = 1;
+            }
+        
+            if (earnedChances > 0) {
                 document.getElementById('fallingResultTitle').innerHTML = "🎉 掉落方塊挑戰成功！";
                 playBuzzer('celebrate');
+                addDrawChances(earnedChances); // 自動累加次數
                 document.getElementById('fallingWinBox').classList.remove('hidden');
                 document.getElementById('fallingFailBox').classList.add('hidden');
             } else {
@@ -1418,14 +1438,14 @@
                 document.getElementById('fallingWinBox').classList.add('hidden');
                 document.getElementById('fallingFailBox').classList.remove('hidden');
             }
-
+        
             document.getElementById('fallingLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 掉落方塊 Top 5`;
             const storageKey = `vocab_falling_leaderboard_${currentLessonKey}`;
             let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
             leaderboard.push({ score: fallingScoreVal, lives: fallingLivesVal, date: new Date().toLocaleDateString() });
             leaderboard.sort((a, b) => b.score - a.score || b.lives - a.lives);
             localStorage.setItem(storageKey, JSON.stringify(leaderboard.slice(0, 5)));
-
+        
             const listEl = document.getElementById('fallingLeaderboardList');
             listEl.innerHTML = '';
             leaderboard.slice(0, 5).forEach((entry, idx) => {
@@ -1481,6 +1501,8 @@
                 document.getElementById('spellingResultTitle').textContent = "🏆 本輪聽寫特訓完美通關！";
                 document.getElementById('spellingResultDesc').textContent = "本輪未精通生字已全數達成連續答對 2 次！";
                 document.getElementById('spellingWinBox').classList.remove('hidden');
+                
+                addDrawChances(3); // 🌟 聽寫特訓完美通關直接給予 3 次抽卡機會
                 playBuzzer('celebrate');
                 return;
             }
@@ -1593,10 +1615,22 @@
             document.getElementById('quizGameArea').classList.add('hidden');
             document.getElementById('quizResultArea').classList.remove('hidden');
             const accuracy = (quizCorrectCount / 10) * 100;
-            if (accuracy >= 80) {
+        
+            let earnedChances = 0;
+            if (accuracy >= 100) {
+                earnedChances = 3;
+            } else if (accuracy >= 80) {
+                earnedChances = 2;
+            } else if (accuracy >= 50) {
+                earnedChances = 1;
+            }
+        
+            if (earnedChances > 0) {
                 playBuzzer('celebrate');
+                addDrawChances(earnedChances); // 自動累加次數
                 document.getElementById('quizUnlockBox').classList.remove('hidden');
                 document.getElementById('quizFailBox').classList.add('hidden');
+                document.getElementById('quizUnlockText').textContent = `✨ 正確率 ${accuracy}%！已自動獲得 ${earnedChances} 次抽卡機會：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('quizUnlockBox').classList.add('hidden');
