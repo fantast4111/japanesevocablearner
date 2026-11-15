@@ -379,21 +379,21 @@
         <span style="font-weight:600; color:#64748b;">課程:</span>
         <select id="lesson-select" style="padding: 4px 8px; font-weight: bold; border:1px solid var(--border); border-radius:6px; font-size: 0.95rem; background: #fff; color: var(--text);">
           <option value="adverb1">adverb1</option>
-          <option value="29">L29</option>
-          <option value="30">L30</option>
-          <option value="31">L31</option>
-          <option value="32">L32</option>
-          <option value="33">L33</option>
-          <option value="34">L34</option>
-          <option value="35">L35</option>
-          <option value="36">L36</option>
-          <option value="37">L37</option>
-          <option value="38">L38</option>
-          <option value="39">L39</option>
-          <option value="40">L40</option>
-          <option value="41">L41</option>
-          <option value="42">L42</option>
-          <option value="43">L43</option>
+          <option value="L29">L29</option>
+          <option value="L30">L30</option>
+          <option value="L31">L31</option>
+          <option value="L32">L32</option>
+          <option value="L33">L33</option>
+          <option value="L34">L34</option>
+          <option value="L35">L35</option>
+          <option value="L36">L36</option>
+          <option value="L37">L37</option>
+          <option value="L38">L38</option>
+          <option value="L39">L39</option>
+          <option value="L40">L40</option>
+          <option value="L41">L41</option>
+          <option value="L42">L42</option>
+          <option value="L43">L43</option>
         </select>
         <button onclick="loadLessonJsonFromFolder()">📥 讀取 GitHub</button>
       </div>
@@ -863,7 +863,7 @@
 
   async function loadLessonJsonFromFolder() {
     const lessonNum = document.getElementById('lesson-select').value;
-    const filePath = `json/L${lessonNum}.json`;
+    const filePath = `json/${lessonNum}.json`;
     try {
       const response = await fetch(filePath);
       if (!response.ok) throw new Error(`找不到檔案：${filePath}`);
