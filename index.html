@@ -1184,12 +1184,12 @@
             const accuracy = (speedCorrectCount / 10) * 100;
             document.getElementById('speedGameArea').classList.add('hidden');
             document.getElementById('speedResultArea').classList.remove('hidden');
-
-            if (accuracy >= 80) {
-                playBuzzer('celebrate');
-                document.getElementById('speedUnlockBox').classList.remove('hidden');
-                document.getElementById('speedFailBox').classList.add('hidden');
-                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
+        
+        if (accuracy >= 50) { // 只要達 50% 以上就算解鎖抽卡權限
+            playBuzzer('celebrate');
+            document.getElementById('speedUnlockBox').classList.remove('hidden');
+            document.getElementById('speedFailBox').classList.add('hidden');
+            document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！已自動獲得抽卡機會（可至上方「我的圖庫」抽卡）：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('speedUnlockBox').classList.add('hidden');
@@ -1822,6 +1822,24 @@
             updateCollectionUI();
             closeCollectionModal();
             startCardDrawModal('manual');
+        }
+        // 🌟 通用結算獎勵計算與自動累加函數
+        function processGameReward(correctCount, totalCount) {
+            const accuracy = (correctCount / totalCount) * 100;
+            let earned = 0;
+            
+            if (accuracy >= 100) {
+                earned = 3;
+            } else if (accuracy >= 80) {
+                earned = 2;
+            } else if (accuracy >= 50) {
+                earned = 1;
+            }
+        
+            if (earned > 0) {
+                addDrawChances(earned); // 自動加進抽卡次數並寫入 localStorage
+            }
+            return accuracy;
         }
     </script>
 </body>
