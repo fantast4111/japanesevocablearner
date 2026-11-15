@@ -608,25 +608,9 @@
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png",
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png"
         ];
-        // 🌟 改為動態從 localStorage 讀取手動輸入的網址（若未輸入則帶入預設空字串或預設網址）
-        function getCloudImageSource() {
-            return localStorage.getItem('vocab_cloud_image_source') || "";
-        }
+                                
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxCGdNXhiKG6TgI1_lXnRANMEh_t2OSbO87Auc6DzKCjd5YKYIPnRc6isWk9iokodadod3rhGvyDs8/pub?output=csv";
 
-        // 範例：原本用 fetch(GOOGLE_SHEET_CSV_URL)
-        const targetUrl = getCloudImageSource();
-        if (!targetUrl) {
-            console.warn("尚未設定雲端圖庫來源網址！");
-            return;
-        }
-
-fetch(targetUrl)
-    .then(res => res.text()) // 或 res.json()
-    .then(text => {
-        // 你的解析與載入邏輯...
-    })
-    .catch(err => console.error("載入雲端圖庫失敗", err));
-        
         let rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
         let collectedCardsSet = new Set(JSON.parse(localStorage.getItem('vocab_collected_reward_cards') || '[]'));
 
@@ -1589,73 +1573,50 @@ fetch(targetUrl)
         let currentQuizItem = null;
         
         function initQuiz() {
-            if (!window.vocabList || window.vocabList.length === 0) {
-                alert("請先在上方選擇課數並點擊「讀取」以載入詞庫！");
+            if (!vocabList || vocabList.length === 0) {
+                alert("請先載入詞庫！");
                 return;
             }
             quizScoreVal = 0;
             quizQuestionCount = 0;
             quizCorrectCount = 0;
             isGameFinished = false;
-            
-            const scoreEl = document.getElementById('quizScore');
-            if (scoreEl) scoreEl.textContent = 0;
-            
-            const gameArea = document.getElementById('quizGameArea');
-            const resultArea = document.getElementById('quizResultArea');
-            if (gameArea) gameArea.classList.remove('hidden');
-            if (resultArea) resultArea.classList.add('hidden');
-            
-            const unlockBox = document.getElementById('quizUnlockBox');
-            const failBox = document.getElementById('quizFailBox');
-            if (unlockBox) unlockBox.classList.add('hidden');
-            if (failBox) failBox.classList.add('hidden');
-        
+            document.getElementById('quizScore').textContent = 0;
+            document.getElementById('quizGameArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizUnlockBox').classList.add('hidden');
+            document.getElementById('quizFailBox').classList.add('hidden');
             nextQuizQuestion();
         }
         
         function nextQuizQuestion() {
-            if (!window.vocabList || window.vocabList.length === 0) {
-                alert("詞庫為空，無法出題！");
-                return;
-            }
             if (quizQuestionCount >= 10 || quizQuestionCount >= vocabList.length) {
                 endQuiz();
                 return;
             }
             quizQuestionCount++;
             hasQuizQuestionFailed = false;
-            
-            const currentQEl = document.getElementById('quizCurrentQ');
-            if (currentQEl) currentQEl.textContent = quizQuestionCount;
-            
-            const resultEl = document.getElementById('quizResult');
-            if (resultEl) resultEl.innerHTML = "";
+            document.getElementById('quizCurrentQ').textContent = quizQuestionCount;
+            document.getElementById('quizResult').innerHTML = "";
         
             // 隨機選取一題
             const randomIndex = Math.floor(Math.random() * vocabList.length);
             currentQuizItem = vocabList[randomIndex];
         
-            // 支援多種可能的屬性命名欄位（避免抓不到欄位而變空白）
-            const displayKanji = currentQuizItem.kanji || currentQuizItem.word || currentQuizItem.kana || '';
-            const displayKana = currentQuizItem.kana || currentQuizItem.reading || '';
-            const correctChinese = currentQuizItem.chinese || currentQuizItem.meaning || currentQuizItem.definition || '';
-        
             // 顯示日文生字
             const wordDisplayEl = document.getElementById('quizWordDisplay');
             if (wordDisplayEl) {
                 wordDisplayEl.innerHTML = `
-                    <div class="text-xl font-bold text-indigo-900">${displayKanji}</div>
-                    <div class="text-sm text-slate-500 font-mono">${displayKana}</div>
+                    <div class="text-xl font-bold text-indigo-900">${currentQuizItem.kanji || currentQuizItem.kana}</div>
+                    <div class="text-sm text-slate-500 font-mono">${currentQuizItem.kana}</div>
                 `;
             }
         
             // 產生 4 個選項（1個正確，3個錯誤）
-            let options = [correctChinese];
+            let options = [currentQuizItem.chinese];
             while (options.length < 4 && options.length < vocabList.length) {
-                const randomItem = vocabList[Math.floor(Math.random() * vocabList.length)];
-                const randomOpt = randomItem.chinese || randomItem.meaning || randomItem.definition || '';
-                if (randomOpt && !options.includes(randomOpt)) {
+                const randomOpt = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
+                if (!options.includes(randomOpt)) {
                     options.push(randomOpt);
                 }
             }
@@ -1672,25 +1633,24 @@ fetch(targetUrl)
                     
                     btn.onclick = () => {
                         if (isGameFinished) return;
-                        if (opt === correctChinese) {
+                        if (opt === currentQuizItem.chinese) {
                             if (!hasQuizQuestionFailed) {
                                 quizScoreVal += 10;
                                 quizCorrectCount++;
-                                const sEl = document.getElementById('quizScore');
-                                if (sEl) sEl.textContent = quizScoreVal;
-                                if (resultEl) resultEl.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 一次答對！+10 分</span>`;
+                                document.getElementById('quizScore').textContent = quizScoreVal;
+                                document.getElementById('quizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 一次答對！+10 分</span>`;
                             } else {
-                                if (resultEl) resultEl.innerHTML = `<span class="text-amber-600 font-bold"><i class="fa-solid fa-check"></i> 補答正確（本題曾答錯，不予加分）</span>`;
+                                document.getElementById('quizResult').innerHTML = `<span class="text-amber-600 font-bold"><i class="fa-solid fa-check"></i> 補答正確（本題曾答錯，不予加分）</span>`;
                             }
-                            if (typeof checkConsecutiveReward === 'function') checkConsecutiveReward();
-                            if (typeof playBuzzer === 'function') playBuzzer('correct');
+                            checkConsecutiveReward();
+                            playBuzzer('correct');
                             setTimeout(nextQuizQuestion, 1000);
                         } else {
                             hasQuizQuestionFailed = true;
-                            if (typeof resetConsecutiveReward === 'function') resetConsecutiveReward();
+                            resetConsecutiveReward();
                             btn.className = "w-full py-3 px-4 bg-rose-50 border border-rose-300 rounded-xl text-sm md:text-base font-medium text-rose-700 transition shadow-sm text-left flex items-center justify-between";
-                            if (resultEl) resultEl.innerHTML = `<span class="text-rose-600 font-bold">答錯了（本題不加分）！</span>`;
-                            if (typeof playBuzzer === 'function') playBuzzer('wrong');
+                            document.getElementById('quizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯了（本題不加分）！</span>`;
+                            playBuzzer('wrong');
                         }
                     };
                     optionsContainer.appendChild(btn);
