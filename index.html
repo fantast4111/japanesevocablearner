@@ -54,10 +54,6 @@
             </h1>
             <div class="flex items-center gap-2">
                 <span id="lessonTitleDisplay" class="text-xs md:text-sm bg-indigo-700 px-3 py-1 rounded-full text-indigo-100">請先選取詞庫</span>
-                <!-- 🌟 新增：Header 顯示抽卡次數 -->
-                <span class="text-xs bg-amber-500 text-white px-2.5 py-1 rounded-lg font-medium shadow-sm">
-                    🎴 抽卡次數: <strong id="headerDrawChances">0</strong>
-                </span>
                 <button onclick="openCollectionModal()" class="text-xs bg-pink-500 hover:bg-pink-600 text-white px-3 py-1 rounded-lg transition shadow-sm flex items-center gap-1 font-medium">
                     <i class="fa-solid fa-box-archive"></i> 我的圖庫 (<span id="collectedCountBadge">0</span>)
                 </button>
@@ -96,29 +92,29 @@
                     <div class="flex gap-2 items-center">
                         <span class="text-xs text-slate-500 font-mono">vocab/</span>
                         <select id="lessonNumInput" class="text-xs md:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
-                            <option value="adverb1">adverb1</option>
-                            <option value="L29">L29</option>
-                            <option value="L30">L30</option>
-                            <option value="L31">L31</option>
-                            <option value="L32">L32</option>
-                            <option value="L33">L33</option>
-                            <option value="L34">L34</option>
-                            <option value="L35">L35</option>
-                            <option value="L36">L36</option>
-                            <option value="L37">L37</option>
-                            <option value="L38">L38</option>
-                            <option value="L39">L39</option>
-                            <option value="L40">L40</option>
-                            <option value="L41">L41</option>
-                            <option value="L42">L42</option>
-                            <option value="L43">L43</option>
+                            <option value="adver1">adver1</option>
+                            <option value="29">L29</option>
+                            <option value="30">L30</option>
+                            <option value="31">L31</option>
+                            <option value="32">L32</option>
+                            <option value="33">L33</option>
+                            <option value="34">L34</option>
+                            <option value="35">L35</option>
+                            <option value="36">L36</option>
+                            <option value="37">L37</option>
+                            <option value="38">L38</option>
+                            <option value="39">L39</option>
+                            <option value="40">L40</option>
+                            <option value="41">L41</option>
+                            <option value="42">L42</option>
+                            <option value="43">L43</option>
                         </select>
                         <span class="text-xs text-slate-500 font-mono">.xml</span>
                         <button onclick="loadFromNumber()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-xs md:text-sm transition shadow-sm whitespace-nowrap">
                             讀取
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500">提示：選擇課數後點擊讀取，將自動載入對應的 `vocab/XX.xml`。</p>
+                    <p class="text-[11px] text-slate-500">提示：選擇課數後點擊讀取，將自動載入對應的 `vocab/LXX.xml`。</p>
                 </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-slate-700">或手動上傳自訂 XML 檔案：</label>
@@ -128,17 +124,9 @@
 
             <div class="pt-4 border-t border-slate-100 space-y-3">
                 <div class="flex flex-wrap items-center justify-between gap-2 bg-emerald-50/70 p-3 rounded-xl border border-emerald-100">
-                    <div class="space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="block text-xs font-medium text-slate-700">
-                            <i class="fa-solid fa-cloud-arrow-down text-indigo-600"></i> 雲端圖庫來源設定（手動輸入網址）：
-                        </label>
-                        <div class="flex gap-2">
-                            <input type="text" id="cloudImageSourceInput" value="GOOGLE_SHEET_CSV_URL" placeholder="請輸入 Google Sheet 連結或圖片清單網址" class="flex-grow text-xs bg-white border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <button onclick="loadCloudImagesFromInput()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-medium transition shadow-sm whitespace-nowrap">
-                                套用來源
-                            </button>
-                        </div>
-                        <p class="text-[10px] text-slate-500">提示：輸入後點擊套用，系統將自動從該網址載入獎勵圖片。</p>
+                    <div class="text-xs text-emerald-900">
+                        <i class="fa-solid fa-table text-emerald-600 mr-1"></i>
+                        <b>雲端圖庫來源：</b>已連接 Google Spreadsheet（自動讀取 <b>D 欄</b> 圖片連結）
                     </div>
                     <div class="flex gap-2">
                         <button onclick="loadGoogleSheetColumnD()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">
@@ -429,6 +417,39 @@
                     </button>
                 </div>
             </div>
+
+            <!-- 模式 6：意思配對消除 -->
+            <div id="mode-quiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+                <div id="quizGameArea" class="space-y-6">
+                    <div class="flex justify-between items-center bg-indigo-50 px-4 py-2 rounded-lg text-indigo-800 text-xs md:text-sm font-medium">
+                        <span><i class="fa-solid fa-gamepad mr-1"></i> 配對消除：第 <strong id="quizCurrentQ">1</strong> / 10 題</span>
+                        <span>得分：<strong id="quizScore" class="text-lg">0</strong></span>
+                    </div>
+                    <div class="text-center bg-indigo-50 p-5 md:p-6 rounded-2xl border border-indigo-100">
+                        <div class="text-xs text-indigo-700 uppercase tracking-wider mb-1">請選出以下日文生字正確的中文意思：</div>
+                        <div id="quizKanji" class="text-2xl md:text-4xl font-bold text-slate-800 mb-1">--</div>
+                        <div id="quizKana" class="text-base md:text-lg text-indigo-600 font-medium">--</div>
+                    </div>
+                    <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
+                    <div id="quizResult" class="text-center font-medium h-8"></div>
+                </div>
+                <div id="quizResultArea" class="hidden text-center space-y-4">
+                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 配對挑戰完成！</h3>
+                    <div id="quizUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
+                        <p id="quizUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
+                        <button id="quizRewardBtn" onclick="startCardDrawModal('quiz')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
+                        </button>
+                    </div>
+                    <div id="quizFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
+                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖抽牌。
+                    </div>
+                    <button onclick="initQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
+                        再次挑戰
+                    </button>
+                </div>
+            </div>
+
         </div>
         <!-- 用於保持手機鎖屏後背景播放的無聲音訊 -->
     </main>
@@ -509,9 +530,6 @@
                     <i class="fa-solid fa-trash-can mr-1"></i> 清空圖庫記錄
                 </button>
             </div>
-            <div id="modalDrawBtnContainer" class="py-2 text-center">
-                <!-- 動態產生抽卡按鈕 -->
-            </div>
         </div>
     </dialog>
 
@@ -575,7 +593,7 @@
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png",
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png"
         ];
-                                
+
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxCGdNXhiKG6TgI1_lXnRANMEh_t2OSbO87Auc6DzKCjd5YKYIPnRc6isWk9iokodadod3rhGvyDs8/pub?output=csv";
 
         let rewardImagesArray = [...DEFAULT_POKEMON_IMAGES];
@@ -748,7 +766,7 @@
                 alert('請輸入課數數字（例如 34）！');
                 return;
             }
-            const filePath = `vocab/${num}.xml`;
+            const filePath = `vocab/L${num}.xml`;
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -993,6 +1011,7 @@
             if (mode === 'audioQuiz') initAudioQuiz();
             if (mode === 'falling') initFallingGame();
             if (mode === 'spelling') initSpelling();
+            if (mode === 'quiz') initQuiz();
         }
 
         document.addEventListener('keydown', function(e) {
@@ -1086,30 +1105,22 @@
         }
 
         let speedCorrectCount = 0, speedScoreVal = 0, speedQuestionCount = 0, speedStartTime = 0, speedTimerInterval = null, currentSpeedItem = null, speed10Items = [];
-        let speedSecondsLeft = 20; // 🌟 剩餘秒數
-        
+
         function initSpeedChallenge() {
-            speedScoreVal = 0; speedQuestionCount = 0; speedCorrectCount = 0; isGameFinished = false; 
-            speedSecondsLeft = 20; // 重置為 20 秒
+            speedScoreVal = 0; speedQuestionCount = 0; speedCorrectCount = 0; isGameFinished = false; speedStartTime = Date.now();
             document.getElementById('speedScore').textContent = speedScoreVal;
             document.getElementById('speedGameArea').classList.remove('hidden');
             document.getElementById('speedResultArea').classList.add('hidden');
             document.getElementById('speedRewardBtn').style.display = "inline-flex";
-        
+
             speed10Items = [];
             for (let i = 0; i < 10; i++) speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
-        
+
             if (speedTimerInterval) clearInterval(speedTimerInterval);
-            // 🌟 20秒倒數計時器
             speedTimerInterval = setInterval(() => {
-                speedSecondsLeft--;
-                document.getElementById('speedTimeElapsed').textContent = speedSecondsLeft;
-                if (speedSecondsLeft <= 0) {
-                    clearInterval(speedTimerInterval);
-                    endSpeedChallenge();
-                }
+                document.getElementById('speedTimeElapsed').textContent = Math.floor((Date.now() - speedStartTime) / 1000);
             }, 1000);
-        
+
             nextSpeedQuestion();
         }
 
@@ -1156,40 +1167,27 @@
             isGameFinished = true; 
             const totalTime = Math.floor((Date.now() - speedStartTime) / 1000);
             const accuracy = (speedCorrectCount / 10) * 100;
-            
             document.getElementById('speedGameArea').classList.add('hidden');
             document.getElementById('speedResultArea').classList.remove('hidden');
-        
-            // 🌟 計算準確率對應的抽卡獎勵次數 (50%->1次, 80%->2次, 100%->3次)
-            let earnedChances = 0;
-            if (accuracy >= 100) {
-                earnedChances = 3;
-            } else if (accuracy >= 80) {
-                earnedChances = 2;
-            } else if (accuracy >= 50) {
-                earnedChances = 1;
-            }
-        
-            if (earnedChances > 0) {
+
+            if (accuracy >= 80) {
                 playBuzzer('celebrate');
-                addDrawChances(earnedChances); // 自動累加次數並即時更新 Header 與圖庫按鈕
                 document.getElementById('speedUnlockBox').classList.remove('hidden');
                 document.getElementById('speedFailBox').classList.add('hidden');
-                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！已自動獲得 ${earnedChances} 次抽卡機會（可至上方「我的圖庫」抽卡）：`;
+                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('speedUnlockBox').classList.add('hidden');
                 document.getElementById('speedFailBox').classList.remove('hidden');
             }
-        
-            // 排行榜更新與顯示
+
             document.getElementById('speedLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 限時挑戰 Top 5`;
             const storageKey = `vocab_speed_leaderboard_${currentLessonKey}`;
             let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
             leaderboard.push({ score: speedScoreVal, time: totalTime, date: new Date().toLocaleDateString() });
             leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
             localStorage.setItem(storageKey, JSON.stringify(leaderboard.slice(0, 5)));
-        
+
             const listEl = document.getElementById('speedLeaderboardList');
             listEl.innerHTML = '';
             leaderboard.slice(0, 5).forEach((entry, idx) => {
@@ -1277,28 +1275,17 @@
             document.getElementById('audioQuizGameArea').classList.add('hidden');
             document.getElementById('audioQuizResultArea').classList.remove('hidden');
             const accuracy = (audioCorrectCount / 10) * 100;
-        
-            let earnedChances = 0;
-            if (accuracy >= 100) {
-                earnedChances = 3;
-            } else if (accuracy >= 80) {
-                earnedChances = 2;
-            } else if (accuracy >= 50) {
-                earnedChances = 1;
-            }
-        
-            if (earnedChances > 0) {
+            if (accuracy >= 80) {
                 playBuzzer('celebrate');
-                addDrawChances(earnedChances); // 自動累加次數
                 document.getElementById('audioUnlockBox').classList.remove('hidden');
                 document.getElementById('audioFailBox').classList.add('hidden');
-                document.getElementById('audioUnlockText').textContent = `✨ 一次答對率 ${accuracy}%！已自動獲得 ${earnedChances} 次抽卡機會：`;
+                document.getElementById('audioUnlockText').textContent = `✨ 一次答對率 ${accuracy}% (≥80%)！解鎖抽牌機會：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('audioUnlockBox').classList.add('hidden');
                 document.getElementById('audioFailBox').classList.remove('hidden');
             }
-}
+        }
 
         function revealAudioHint() {
             document.getElementById('audioQuizMeaning').classList.remove('hidden');
@@ -1392,18 +1379,9 @@
             document.getElementById('fallingGameArea').classList.add('hidden');
             document.getElementById('fallingResultArea').classList.remove('hidden');
             const accuracy = (fallingCorrectCount / 10) * 100;
-        
-            let earnedChances = 0;
-            if (isWin && accuracy >= 50) {
-                if (accuracy >= 100) earnedChances = 3;
-                else if (accuracy >= 80) earnedChances = 2;
-                else earnedChances = 1;
-            }
-        
-            if (earnedChances > 0) {
+            if (isWin && accuracy >= 80) {
                 document.getElementById('fallingResultTitle').innerHTML = "🎉 掉落方塊挑戰成功！";
                 playBuzzer('celebrate');
-                addDrawChances(earnedChances); // 自動累加次數
                 document.getElementById('fallingWinBox').classList.remove('hidden');
                 document.getElementById('fallingFailBox').classList.add('hidden');
             } else {
@@ -1412,14 +1390,14 @@
                 document.getElementById('fallingWinBox').classList.add('hidden');
                 document.getElementById('fallingFailBox').classList.remove('hidden');
             }
-        
+
             document.getElementById('fallingLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 掉落方塊 Top 5`;
             const storageKey = `vocab_falling_leaderboard_${currentLessonKey}`;
             let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
             leaderboard.push({ score: fallingScoreVal, lives: fallingLivesVal, date: new Date().toLocaleDateString() });
             leaderboard.sort((a, b) => b.score - a.score || b.lives - a.lives);
             localStorage.setItem(storageKey, JSON.stringify(leaderboard.slice(0, 5)));
-        
+
             const listEl = document.getElementById('fallingLeaderboardList');
             listEl.innerHTML = '';
             leaderboard.slice(0, 5).forEach((entry, idx) => {
@@ -1454,9 +1432,9 @@
                 return;
             }
 
-            // 修改 initSpelling 內的這一段迴圈
             spellingPool = [];
-            [...unmasteredList].sort(() => Math.random() - 0.5).slice(0, 10).forEach(item => spellingPool.push({ ...item, streak: 0, hasError: false }));            nextSpellingQuestion();
+            [...unmasteredList].sort(() => Math.random() - 0.5).slice(0, 10).forEach(item => spellingPool.push({ ...item, streak: 0 }));
+            nextSpellingQuestion();
         }
 
             // 點擊進入下一輪特訓：未全部精通時直接進下一輪；若全部生字已精通則自動重設
@@ -1475,8 +1453,6 @@
                 document.getElementById('spellingResultTitle').textContent = "🏆 本輪聽寫特訓完美通關！";
                 document.getElementById('spellingResultDesc').textContent = "本輪未精通生字已全數達成連續答對 2 次！";
                 document.getElementById('spellingWinBox').classList.remove('hidden');
-                
-                addDrawChances(3); // 🌟 聽寫特訓完美通關直接給予 3 次抽卡機會
                 playBuzzer('celebrate');
                 return;
             }
@@ -1498,41 +1474,105 @@
             const userAns = inputEl.value.trim();
             const resDiv = document.getElementById('spellingResult');
             const targetClean = cleanText(currentSpellingItem.cleanKana);
-        
+
             if (userAns === targetClean) {
                 isSpellingLocked = true; 
                 playBuzzer('correct');
                 document.getElementById('spellingCorrectionHint').classList.add('hidden');
-                
-                // 🌟 規則 1：若本輪曾答錯過，補答正確不計算為一次成功連擊
-                if (!currentSpellingItem.hasError) {
-                    currentSpellingItem.streak++;
-                } else {
-                    currentSpellingItem.hasError = false; // 重置錯誤標記供下一輪使用
-                }
-        
+                currentSpellingItem.streak++;
                 if (currentSpellingItem.streak >= 2) {
                     masteredSpellingSet.add(currentSpellingItem.id);
                     document.getElementById('masteredSpellingCount').textContent = masteredSpellingSet.size;
-                    resDiv.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對！無錯誤連續 2 次，永久精通！</span>`;
+                    resDiv.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對！此生字永久精通！</span>`;
                     spellingPool.shift();
                 } else {
-                    resDiv.innerHTML = `<span class="text-indigo-600 font-bold"><i class="fa-solid fa-check"></i> 答對 1 次！還需 1 次無錯誤答對</span>`;
+                    resDiv.innerHTML = `<span class="text-indigo-600 font-bold"><i class="fa-solid fa-check"></i> 答對 1 次！還需 1 次</span>`;
                     const item = spellingPool.shift();
                     spellingPool.push(item);
                 }
                 setTimeout(nextSpellingQuestion, 1000); 
             } else {
                 playBuzzer('wrong');
-                currentSpellingItem.hasError = true; // 🌟 標記本題曾答錯
-                currentSpellingItem.streak = 0;      // 答錯清空連擊
+                currentSpellingItem.streak = 0;
                 document.getElementById('correctKanaTarget').textContent = targetClean;
                 document.getElementById('spellingCorrectionHint').classList.remove('hidden');
                 inputEl.value = "";
                 inputEl.focus();
-                resDiv.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> 答錯了！補答不算，請重新輸入！</span>`;
+                resDiv.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> 答錯了！請重新輸入！</span>`;
             }
         }
+
+        let quizQuestionCount = 0, quizScoreVal = 0, quizCorrectCount = 0, quiz10Items = [];
+
+        function initQuiz() {
+            if (vocabList.length === 0) return;
+            quizQuestionCount = 0; quizScoreVal = 0; quizCorrectCount = 0; isGameFinished = false;
+            document.getElementById('quizScore').textContent = 0;
+            document.getElementById('quizGameArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizRewardBtn').style.display = "inline-flex";
+            quiz10Items = [];
+            for (let i = 0; i < 10; i++) quiz10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            if (quizQuestionCount >= 10) { endQuiz(); return; }
+            quizQuestionCount++;
+            document.getElementById('quizCurrentQ').textContent = quizQuestionCount;
+            const currentItem = quiz10Items[quizQuestionCount - 1];
+            document.getElementById('quizKanji').innerHTML = currentItem.formattedKanji;
+            document.getElementById('quizKana').textContent = currentItem.rawKana;
+            document.getElementById('quizResult').textContent = '';
+
+            let options = [currentItem.chinese];
+            while (options.length < 4 && options.length < vocabList.length) {
+                const rand = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('quizOptions');
+            container.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.id = "quiz-opt-" + idx;
+                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl font-medium text-slate-700 transition text-left shadow-sm text-sm md:text-base relative";
+                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal">[${idx + 1}]</span> <span class="ml-6">${opt}</span>`;
+                btn.onclick = () => {
+                    if (isGameFinished) return;
+                    if (opt === currentItem.chinese) {
+                        quizScoreVal += 10; quizCorrectCount++;
+                        document.getElementById('quizScore').textContent = quizScoreVal;
+                        document.getElementById('quizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！</span>`;
+                        playBuzzer('correct');
+                        setTimeout(nextQuizQuestion, 1000);
+                    } else {
+                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
+                        document.getElementById('quizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯了！</span>`;
+                        playBuzzer('wrong');
+                    }
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function endQuiz() {
+            isGameFinished = true;
+            document.getElementById('quizGameArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+            const accuracy = (quizCorrectCount / 10) * 100;
+            if (accuracy >= 80) {
+                playBuzzer('celebrate');
+                document.getElementById('quizUnlockBox').classList.remove('hidden');
+                document.getElementById('quizFailBox').classList.add('hidden');
+            } else {
+                playBuzzer('wrong');
+                document.getElementById('quizUnlockBox').classList.add('hidden');
+                document.getElementById('quizFailBox').classList.remove('hidden');
+            }
+        }
+
         let currentPoolImagesForDraw = [];
         let hasPickedCard = false;
 
@@ -1698,126 +1738,6 @@
             if (!text) return "";
             return text.replace(/\[.*?\]/g, '').replace(/[ⅠⅡⅢivxIVXⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+/g, '').replace(/\b[1-3]\b/g, '').replace(/\s+/g, '').trim();
         }
-        // 🌟 確保這個加次數的函數存在於你的 <script> 中
-        let drawChances = parseInt(localStorage.getItem('vocab_draw_chances') || '0');
-        
-        function addDrawChances(amount) {
-            drawChances += amount;
-            localStorage.setItem('vocab_draw_chances', drawChances);
-            updateCollectionUI(); // 同時更新 Header 與圖庫內的按鈕
-        }
-        
-        // 每次答對時呼叫此函數檢查連續 3 次
-        function checkConsecutiveReward() {
-            sessionConsecutiveCorrect++;
-            if (sessionConsecutiveCorrect > 0 && sessionConsecutiveCorrect % 3 === 0) {
-                addDrawChances(1);
-                console.log("✨ 連續答對 3 次！獲得 1 次抽卡機會！");
-            }
-        }
-        
-        // 每次答錯時重置連續計數
-        function resetConsecutiveReward() {
-            sessionConsecutiveCorrect = 0;
-        }
-        
-        // 遊戲完成時根據準確率給予獎勵 (50%->1次, 80%->2次, 100%->3次)
-        function handleGameAccuracyReward(accuracy) {
-            let earned = 0;
-            if (accuracy >= 100) earned = 3;
-            else if (accuracy >= 80) earned = 2;
-            else if (accuracy >= 50) earned = 1;
-            if (earned > 0) addDrawChances(earned);
-        }
-        
-        // 修改圖庫 UI 更新函數，同步更新 Header 次數與按鈕狀態
-        function updateCollectionUI() {
-            const collectedArr = Array.from(collectedCardsSet);
-            document.getElementById('collectedCountBadge').textContent = collectedArr.length;
-            document.getElementById('collectedStatusCount').textContent = collectedArr.length;
-            
-            const headerChancesEl = document.getElementById('headerDrawChances');
-            if (headerChancesEl) headerChancesEl.textContent = drawChances;
-            
-            const modalDrawBtnContainer = document.getElementById('modalDrawBtnContainer');
-            if (modalDrawBtnContainer) {
-                if (drawChances > 0) {
-                    modalDrawBtnContainer.innerHTML = `
-                        <button onclick="startCardDrawFromModal()" class="w-full py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-bold text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 animate-bounce">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入抽卡 (剩餘 ${drawChances} 次機會)
-                        </button>
-                    `;
-                } else {
-                    modalDrawBtnContainer.innerHTML = `<span class="text-xs text-slate-500">（抽卡次數為 0，請透過挑戰遊戲賺取次數！）</span>`;
-                }
-            }
-        }
-        
-        function startCardDrawFromModal() {
-            if (drawChances <= 0) {
-                alert('目前沒有抽卡次數！');
-                return;
-            }
-            drawChances--;
-            localStorage.setItem('vocab_draw_chances', drawChances);
-            updateCollectionUI();
-            closeCollectionModal();
-            startCardDrawModal('manual');
-        }
-        // 🌟 通用結算獎勵計算與自動累加函數
-        function processGameReward(correctCount, totalCount) {
-            const accuracy = (correctCount / totalCount) * 100;
-            let earned = 0;
-            
-            if (accuracy >= 100) {
-                earned = 3;
-            } else if (accuracy >= 80) {
-                earned = 2;
-            } else if (accuracy >= 50) {
-                earned = 1;
-            }
-        
-            if (earned > 0) {
-                addDrawChances(earned); // 自動加進抽卡次數並寫入 localStorage
-            }
-            return accuracy;
-        }
-        // 頁面載入時自動帶入上次儲存的來源
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedSource = localStorage.getItem('vocab_cloud_image_source') || '';
-            const inputEl = document.getElementById('cloudImageSourceInput');
-            if (inputEl) inputEl.value = savedSource;
-        });
-        
-        function loadCloudImagesFromInput() {
-            const sourceUrl = document.getElementById('cloudImageSourceInput').value.trim();
-            if (!sourceUrl) {
-                alert("請先輸入有效的圖庫來源網址！");
-                return;
-            }
-            localStorage.setItem('vocab_cloud_image_source', sourceUrl);
-            
-            // 嘗試從網址抓取資料
-            fetch(sourceUrl)
-                .then(res => res.json())
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        rewardImagesArray = data;
-                    } else if (data.values) {
-                        // 支援 Google Sheets API 格式（假設 Column D 為索引 3）
-                        rewardImagesArray = data.values.map(row => row[3]).filter(Boolean);
-                    }
-                    alert(`成功載入 ${rewardImagesArray.length} 張雲端獎勵圖片！`);
-                    updateCollectionUI();
-                })
-                .catch(err => {
-                    console.warn("直接解析 JSON 失敗，改以文字/單一圖片處理", err);
-                    rewardImagesArray = [sourceUrl];
-                    alert("已成功儲存並套用圖庫來源設定！");
-                    updateCollectionUI();
-                });
-        }
-
-        </script>
+    </script>
 </body>
 </html>
