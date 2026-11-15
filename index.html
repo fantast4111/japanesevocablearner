@@ -1181,10 +1181,13 @@
             if (speedTimerInterval) clearInterval(speedTimerInterval);
             isGameFinished = true; 
             const totalTime = Math.floor((Date.now() - speedStartTime) / 1000);
-            // 🌟 直接用這段取代原本的 if (accuracy >= 50) { ... } else { ... }
             const accuracy = (speedCorrectCount / 10) * 100;
-            let earnedChances = 0;
             
+            document.getElementById('speedGameArea').classList.add('hidden');
+            document.getElementById('speedResultArea').classList.remove('hidden');
+        
+            // 🌟 計算準確率對應的抽卡獎勵次數 (50%->1次, 80%->2次, 100%->3次)
+            let earnedChances = 0;
             if (accuracy >= 100) {
                 earnedChances = 3;
             } else if (accuracy >= 80) {
@@ -1192,26 +1195,27 @@
             } else if (accuracy >= 50) {
                 earnedChances = 1;
             }
-            
+        
             if (earnedChances > 0) {
-                addDrawChances(earnedChances); // 統一在這裡加次數並更新畫面
                 playBuzzer('celebrate');
+                addDrawChances(earnedChances); // 自動累加次數並即時更新 Header 與圖庫按鈕
                 document.getElementById('speedUnlockBox').classList.remove('hidden');
                 document.getElementById('speedFailBox').classList.add('hidden');
-                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！抽卡次數 +${earnedChances}（可至上方「我的圖庫」抽卡）：`;
+                document.getElementById('speedUnlockText').textContent = `✨ 正確率 ${accuracy}%！已自動獲得 ${earnedChances} 次抽卡機會（可至上方「我的圖庫」抽卡）：`;
             } else {
                 playBuzzer('wrong');
                 document.getElementById('speedUnlockBox').classList.add('hidden');
                 document.getElementById('speedFailBox').classList.remove('hidden');
             }
-
+        
+            // 排行榜更新與顯示
             document.getElementById('speedLeaderboardTitle').innerHTML = `<i class="fa-solid fa-trophy text-amber-500"></i> ${currentLessonKey} - 限時挑戰 Top 5`;
             const storageKey = `vocab_speed_leaderboard_${currentLessonKey}`;
             let leaderboard = JSON.parse(localStorage.getItem(storageKey) || '[]');
             leaderboard.push({ score: speedScoreVal, time: totalTime, date: new Date().toLocaleDateString() });
             leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
             localStorage.setItem(storageKey, JSON.stringify(leaderboard.slice(0, 5)));
-
+        
             const listEl = document.getElementById('speedLeaderboardList');
             listEl.innerHTML = '';
             leaderboard.slice(0, 5).forEach((entry, idx) => {
