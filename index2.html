@@ -961,7 +961,7 @@
                 statsBar.classList.add('hidden');
             }
 
-            ['vocabList', 'flashcard', 'speed', 'audioQuiz', 'falling', 'spelling', 'quiz'].forEach(m => {
+            ['vocabList', 'flashcard', 'speed', 'audioQuiz', 'falling', 'spelling'].forEach(m => {
                 document.getElementById(`mode-${m}`).classList.add('hidden');
                 document.getElementById(`btn-${m}`).className = "mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap";
             });
@@ -1001,7 +1001,6 @@
                 let btnIdPrefix = "";
                 if (currentMode === 'speed') btnIdPrefix = "speed-opt-";
                 else if (currentMode === 'audioQuiz') btnIdPrefix = "audio-opt-";
-                else if (currentMode === 'quiz') btnIdPrefix = "quiz-opt-";
 
                 if (btnIdPrefix) {
                     const index = parseInt(e.key) - 1;
