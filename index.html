@@ -1066,112 +1066,62 @@
                 window.speechSynthesis.speak(utterance);
             }
         }
-        let speedCorrectCount = 0, speedScoreVal = 0, speedQuestionCount = 0, speedStartTime = 0, speedTimerInterval = null, currentSpeedItem = null, speed10Items = []
-        let speedTimerInterval = null;
-        let speedEndTime = 0;
-        const SPEED_TOTAL_SECONDS = 20; // 總秒數
-        
+
+        let speedCorrectCount = 0, speedScoreVal = 0, speedQuestionCount = 0, speedStartTime = 0, speedTimerInterval = null, currentSpeedItem = null, speed10Items = [];
+
         function initSpeedChallenge() {
-            speedScoreVal = 0; 
-            speedQuestionCount = 0; 
-            speedCorrectCount = 0; 
-            isGameFinished = false; 
-            
+            speedScoreVal = 0; speedQuestionCount = 0; speedCorrectCount = 0; isGameFinished = false; speedStartTime = Date.now();
             document.getElementById('speedScore').textContent = speedScoreVal;
             document.getElementById('speedGameArea').classList.remove('hidden');
             document.getElementById('speedResultArea').classList.add('hidden');
-            const rewardBtn = document.getElementById('speedRewardBtn');
-            if (rewardBtn) rewardBtn.style.display = "inline-flex";
-        
+            document.getElementById('speedRewardBtn').style.display = "inline-flex";
+
             speed10Items = [];
-            for (let i = 0; i < 10; i++) {
-                speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
-            }
-        
+            for (let i = 0; i < 10; i++) speed10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
+
             if (speedTimerInterval) clearInterval(speedTimerInterval);
-        
-            // 🌟 設定結束時間點（精確到毫秒）
-            const startTime = Date.now();
-            speedEndTime = startTime + (SPEED_TOTAL_SECONDS * 1000);
-        
-            // 🌟 每 50ms 更新一次畫面，讓小數點後的秒數倒數極度流暢且無累積誤差
             speedTimerInterval = setInterval(() => {
-                const now = Date.now();
-                const timeLeft = Math.max(0, (speedEndTime - now) / 1000);
-                
-                // 顯示小數後 1 位
-                const timeEl = document.getElementById('speedTimeElapsed');
-                if (timeEl) timeEl.textContent = timeLeft.toFixed(1);
-        
-                if (timeLeft <= 0) {
-                    clearInterval(speedTimerInterval);
-                    endSpeedChallenge();
-                }
-            }, 50);
-        
+                document.getElementById('speedTimeElapsed').textContent = Math.floor((Date.now() - speedStartTime) / 1000);
+            }, 1000);
+
             nextSpeedQuestion();
         }
 
-        let isSpeedLocked =- false; // 確保全域或函數外層有這個鎖，用來防止 1 秒停留期間重複點擊
-
-        // 💡 替換或更新 nextSpeedQuestion 內的點擊邏輯：
         function nextSpeedQuestion() {
-            if (speedQuestionCount >= 10 || isGameFinished) {
-                endSpeedChallenge();
-                return;
-            }
+            if (speedQuestionCount >= 10) { endSpeedChallenge(); return; }
             speedQuestionCount++;
-            isSpeedLocked = false; // 換新題目時解鎖
-            
-            // ... (前面隨機選題、顯示漢字與假名的程式碼維持不變) ...
-            // 假設當前題目正確答案變數為 currentSpeedItem.chinese
-            // 選項容器為 speedOptionsContainer
-        
-            optionsContainer.innerHTML = '';
+            document.getElementById('speedCurrentQ').textContent = speedQuestionCount;
+            currentSpeedItem = speed10Items[speedQuestionCount - 1];
+            document.getElementById('speedKanji').innerHTML = currentSpeedItem.formattedKanji;
+            document.getElementById('speedKana').textContent = currentSpeedItem.rawKana;
+
+            let options = [currentSpeedItem.chinese];
+            while (options.length < 4 && options.length < vocabList.length) {
+                const rand = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('speedOptions');
+            optContainer.innerHTML = '';
             options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full py-3 px-4 bg-white hover:bg-indigo-50 border border-slate-200 rounded-xl text-sm md:text-base font-medium text-slate-700 transition shadow-sm text-left flex items-center justify-between";
-                btn.innerHTML = `<span><span class="font-mono text-indigo-500 mr-2">${idx + 1}.</span>${opt}</span>`;
-                
+                btn.id = "speed-opt-" + idx;
+                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl font-medium text-slate-700 transition shadow-sm text-center relative text-sm md:text-base";
+                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">[${idx + 1}]</span> ${opt}`;
                 btn.onclick = () => {
-                    if (isGameFinished || isSpeedLocked) return; // 遊戲結束或正在等待時點擊無效
-                    
+                    if (isGameFinished) return;
                     if (opt === currentSpeedItem.chinese) {
-                        // 🟢 答對了
-                        speedScoreVal += 10;
-                        speedCorrectCount++;
+                        speedScoreVal += 10; speedCorrectCount++;
                         document.getElementById('speedScore').textContent = speedScoreVal;
                         playBuzzer('correct');
-                        
-                        // 檢查是否達成連續答對獎勵（若有啟用）
-                        if (typeof checkConsecutiveReward === 'function') checkConsecutiveReward();
-                        
-                        nextSpeedQuestion();
                     } else {
-                        // 🔴 答錯了：鎖定畫面、標記錯誤、用綠框標出正確答案、停留 1 秒
-                        isSpeedLocked = true;
+                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
                         playBuzzer('wrong');
-                        if (typeof resetConsecutiveReward === 'function') resetConsecutiveReward();
-                        
-                        // 將使用者點錯的按鈕標記為紅色
-                        btn.className = "w-full py-3 px-4 bg-rose-50 border-rose-400 text-rose-700 rounded-xl text-sm md:text-base font-medium transition shadow-sm text-left flex items-center justify-between ring-2 ring-rose-300";
-        
-                        // 找出並用「綠框」標示出正確答案的按鈕
-                        const allBtns = optionsContainer.children;
-                        for (let b of allBtns) {
-                            if (b.textContent.includes(currentSpeedItem.chinese)) {
-                                b.className = "w-full py-3 px-4 bg-emerald-50 border-2 border-emerald-500 text-emerald-800 rounded-xl text-sm md:text-base font-bold transition shadow-md text-left flex items-center justify-between ring-4 ring-emerald-200 animate-pulse";
-                                break;
-                            }
-                        }
-        
-                        // 停留 1 秒（1000 毫秒）後自動跳到下一題
-                        setTimeout(() => {
-                            nextSpeedQuestion();
-                        }, 1000);
                     }
+                    setTimeout(nextSpeedQuestion, 400);
                 };
-                optionsContainer.appendChild(btn);
+                optContainer.appendChild(btn);
             });
         }
 
