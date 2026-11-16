@@ -165,9 +165,6 @@
                 <button onclick="switchMode('spelling')" id="btn-spelling" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
                     <i class="fa-solid fa-keyboard mr-1"></i> 聽寫特訓
                 </button>
-                <button onclick="switchMode('quiz')" id="btn-quiz" class="mode-btn px-3.5 py-2 rounded-lg font-medium text-xs md:text-sm bg-white text-slate-600 border border-slate-300 hover:bg-slate-100 transition whitespace-nowrap">
-                    <i class="fa-solid fa-gamepad mr-1"></i> 配對消除
-                </button>
             </div>
 
             <div class="bg-indigo-50 border border-indigo-100 text-indigo-800 text-[11px] md:text-xs px-3 py-2 rounded-lg flex flex-wrap justify-center gap-3">
@@ -412,39 +409,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- 模式 6：意思配對消除 -->
-            <div id="mode-quiz" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
-                <div id="quizGameArea" class="space-y-6">
-                    <div class="flex justify-between items-center bg-indigo-50 px-4 py-2 rounded-lg text-indigo-800 text-xs md:text-sm font-medium">
-                        <span><i class="fa-solid fa-gamepad mr-1"></i> 配對消除：第 <strong id="quizCurrentQ">1</strong> / 10 題</span>
-                        <span>得分：<strong id="quizScore" class="text-lg">0</strong></span>
-                    </div>
-                    <div class="text-center bg-indigo-50 p-5 md:p-6 rounded-2xl border border-indigo-100">
-                        <div class="text-xs text-indigo-700 uppercase tracking-wider mb-1">請選出以下日文生字正確的中文意思：</div>
-                        <div id="quizKanji" class="text-2xl md:text-4xl font-bold text-slate-800 mb-1">--</div>
-                        <div id="quizKana" class="text-base md:text-lg text-indigo-600 font-medium">--</div>
-                    </div>
-                    <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
-                    <div id="quizResult" class="text-center font-medium h-8"></div>
-                </div>
-                <div id="quizResultArea" class="hidden text-center space-y-4">
-                    <h3 class="text-xl md:text-2xl font-bold text-indigo-600">🎉 配對挑戰完成！</h3>
-                    <div id="quizUnlockBox" class="p-4 bg-pink-50 border border-pink-200 rounded-xl space-y-3 hidden">
-                        <p id="quizUnlockText" class="text-xs md:text-sm font-bold text-pink-600">✨ 正確率達標 (≥80%)！解鎖抽牌機會：</p>
-                        <button id="quizRewardBtn" onclick="startCardDrawModal('quiz')" class="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium text-xs md:text-sm shadow-md transition flex items-center justify-center gap-2 mx-auto animate-bounce">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> 進入神祕抽牌區 (抽獎勵圖)
-                        </button>
-                    </div>
-                    <div id="quizFailBox" class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs md:text-sm hidden">
-                        ❌ 正確率未達 80%（需至少答對 8 題），無法解鎖抽牌。
-                    </div>
-                    <button onclick="initQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-xs md:text-sm transition shadow-sm">
-                        再次挑戰
-                    </button>
-                </div>
-            </div>
-
         </div>
         <!-- 用於保持手機鎖屏後背景播放的無聲音訊 -->
         <audio id="silentAudio" loop style="display:none;">
@@ -1008,7 +972,6 @@
             if (mode === 'audioQuiz') initAudioQuiz();
             if (mode === 'falling') initFallingGame();
             if (mode === 'spelling') initSpelling();
-            if (mode === 'quiz') initQuiz();
         }
 
         document.addEventListener('keydown', function(e) {
@@ -1497,77 +1460,6 @@
                 inputEl.value = "";
                 inputEl.focus();
                 resDiv.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> 答錯了！請重新輸入！</span>`;
-            }
-        }
-
-        let quizQuestionCount = 0, quizScoreVal = 0, quizCorrectCount = 0, quiz10Items = [];
-
-        function initQuiz() {
-            if (vocabList.length === 0) return;
-            quizQuestionCount = 0; quizScoreVal = 0; quizCorrectCount = 0; isGameFinished = false;
-            document.getElementById('quizScore').textContent = 0;
-            document.getElementById('quizGameArea').classList.remove('hidden');
-            document.getElementById('quizResultArea').classList.add('hidden');
-            document.getElementById('quizRewardBtn').style.display = "inline-flex";
-            quiz10Items = [];
-            for (let i = 0; i < 10; i++) quiz10Items.push(vocabList[Math.floor(Math.random() * vocabList.length)]);
-            nextQuizQuestion();
-        }
-
-        function nextQuizQuestion() {
-            if (quizQuestionCount >= 10) { endQuiz(); return; }
-            quizQuestionCount++;
-            document.getElementById('quizCurrentQ').textContent = quizQuestionCount;
-            const currentItem = quiz10Items[quizQuestionCount - 1];
-            document.getElementById('quizKanji').innerHTML = currentItem.formattedKanji;
-            document.getElementById('quizKana').textContent = currentItem.rawKana;
-            document.getElementById('quizResult').textContent = '';
-
-            let options = [currentItem.chinese];
-            while (options.length < 4 && options.length < vocabList.length) {
-                const rand = vocabList[Math.floor(Math.random() * vocabList.length)].chinese;
-                if (!options.includes(rand)) options.push(rand);
-            }
-            options.sort(() => Math.random() - 0.5);
-
-            const container = document.getElementById('quizOptions');
-            container.innerHTML = '';
-            options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.id = "quiz-opt-" + idx;
-                btn.className = "p-3 md:p-4 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl font-medium text-slate-700 transition text-left shadow-sm text-sm md:text-base relative";
-                btn.innerHTML = `<span class="absolute top-2 left-3 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-normal">[${idx + 1}]</span> <span class="ml-6">${opt}</span>`;
-                btn.onclick = () => {
-                    if (isGameFinished) return;
-                    if (opt === currentItem.chinese) {
-                        quizScoreVal += 10; quizCorrectCount++;
-                        document.getElementById('quizScore').textContent = quizScoreVal;
-                        document.getElementById('quizResult').innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> 答對了！</span>`;
-                        playBuzzer('correct');
-                        setTimeout(nextQuizQuestion, 1000);
-                    } else {
-                        btn.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-700');
-                        document.getElementById('quizResult').innerHTML = `<span class="text-rose-600 font-bold">答錯了！</span>`;
-                        playBuzzer('wrong');
-                    }
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function endQuiz() {
-            isGameFinished = true;
-            document.getElementById('quizGameArea').classList.add('hidden');
-            document.getElementById('quizResultArea').classList.remove('hidden');
-            const accuracy = (quizCorrectCount / 10) * 100;
-            if (accuracy >= 80) {
-                playBuzzer('celebrate');
-                document.getElementById('quizUnlockBox').classList.remove('hidden');
-                document.getElementById('quizFailBox').classList.add('hidden');
-            } else {
-                playBuzzer('wrong');
-                document.getElementById('quizUnlockBox').classList.add('hidden');
-                document.getElementById('quizFailBox').classList.remove('hidden');
             }
         }
 
