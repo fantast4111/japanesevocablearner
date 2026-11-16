@@ -1066,7 +1066,7 @@
                 window.speechSynthesis.speak(utterance);
             }
         }
-
+        let speedCorrectCount = 0, speedScoreVal = 0, speedQuestionCount = 0, speedStartTime = 0, speedTimerInterval = null, currentSpeedItem = null, speed10Items = []
         let speedTimerInterval = null;
         let speedEndTime = 0;
         const SPEED_TOTAL_SECONDS = 20; // 總秒數
